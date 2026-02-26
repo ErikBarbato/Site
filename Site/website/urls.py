@@ -4,5 +4,5 @@ from .views import Index
 urlpatterns = [
     #path("admin/", admin.site.urls),
 
-    path("inicio", classe, Index.as_view(), name="pagina_inicial"),
+    path("inicio", Index.as_view(), name="pagina_inicial"),
 ]
