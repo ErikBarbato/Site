@@ -1,0 +1,396 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>
+        {% block title %}
+            Meu Site
+        {% endblock %}
+    </title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Bootstrap Icons -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        /* =========================
+           PALETA DE CORES
+        ========================= */
+
+        :root {
+
+            --bs-primary: #0F4C5C;
+            --bs-success: #2FBF71;
+            --bs-info: #3DA5D9;
+            --bs-warning: #F2C14E;
+            --bs-danger: #E63946;
+
+            --bs-primary-rgb: 15,76,92;
+            --bs-success-rgb: 47,191,113;
+            --bs-info-rgb: 61,165,217;
+            --bs-warning-rgb: 242,193,78;
+            --bs-danger-rgb: 230,57,70;
+
+            --petroleum-dark: #0B2E36;
+            --background: #F5F7FA;
+
+        }
+
+        /* =========================
+           LAYOUT
+        ========================= */
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            background: var(--background);
+        }
+
+        main {
+            flex: 1;
+        }
+
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        .navbar {
+            background: var(--petroleum-dark);
+        }
+
+        .navbar .nav-link {
+            color: rgba(255,255,255,.8);
+        }
+
+        .navbar .nav-link:hover {
+            color: #ffffff;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            background: var(--petroleum-dark);
+            color: rgba(255,255,255,.7);
+        }
+
+        footer a {
+            color: rgba(255,255,255,.7);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            color: #ffffff;
+        }
+
+    </style>
+
+    {% block extra_css %}{% endblock %}
+
+</head>
+
+<body>
+
+    <!-- =========================
+         HEADER / NAVBAR
+    ========================= -->
+
+    <header>
+
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow-sm">
+
+            <div class="container">
+
+                <a class="navbar-brand fw-semibold" href="{% url 'pagina_inicial' %}">
+                    <i class="bi bi-bootstrap-fill"></i>
+                    MeuSite
+                </a>
+
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarMain"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarMain">
+
+                    <!-- LINKS CENTRALIZADOS -->
+
+                    <ul class="navbar-nav mx-auto">
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'pagina_inicial' %}">
+                                Home
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'sobre' %}">
+                                Sobre
+                            </a>
+                        </li>
+
+                        <li class="nav-item dropdown">
+
+                            <a
+                                class="nav-link dropdown-toggle"
+                                href="#"
+                                data-bs-toggle="dropdown"
+                            >
+                                Serviços
+                            </a>
+
+                            <ul class="dropdown-menu shadow-sm">
+
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        Desenvolvimento
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        Consultoria
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        Suporte
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        Outro serviço
+                                    </a>
+                                </li>
+
+                            </ul>
+
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'contato' %}">
+                                Contato
+                            </a>
+                        </li>
+
+                    </ul>
+
+                    <!-- LOGIN / USUÁRIO -->
+
+                    <div class="dropdown">
+
+                        <button
+                            class="btn btn-primary dropdown-toggle"
+                            data-bs-toggle="dropdown"
+                        >
+                            <i class="bi bi-person-circle"></i>
+                            Conta
+                        </button>
+
+                        <ul class="dropdown-menu dropdown-menu-end shadow">
+
+                            {% if user.is_authenticated %}
+
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        Perfil
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        Configurações
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+
+                                <li>
+                                    <a
+                                        class="dropdown-item text-danger"
+                                        href="{% url 'logout' %}"
+                                    >
+                                        Logout
+                                    </a>
+                                </li>
+
+                            {% else %}
+
+                                <li>
+                                    <a
+                                        class="dropdown-item"
+                                        href="#"
+                                    >
+                                        Login
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a
+                                        class="dropdown-item"
+                                        href="#"
+                                    >
+                                        Criar conta
+                                    </a>
+                                </li>
+
+                            {% endif %}
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </nav>
+
+    </header>
+
+    <!-- =========================
+         CONTEÚDO
+    ========================= -->
+
+    <main class="container pt-5 mt-4">
+
+        {% block conteudo %}
+
+            <section class="py-5">
+
+                <h1 class="mb-4">
+                    Template Bootstrap + Django
+                </h1>
+
+                <p class="lead">
+                    Este é o layout base do site.
+                </p>
+
+                <hr class="my-4">
+
+                <div class="mb-4">
+
+                    <button class="btn btn-primary">
+                        Primary
+                    </button>
+
+                    <button class="btn btn-success">
+                        Success
+                    </button>
+
+                    <button class="btn btn-info text-white">
+                        Info
+                    </button>
+
+                    <button class="btn btn-warning">
+                        Warning
+                    </button>
+
+                    <button class="btn btn-danger">
+                        Danger
+                    </button>
+
+                </div>
+
+                <div class="alert alert-primary">
+                    Alerta primary
+                </div>
+
+                <div class="alert alert-success">
+                    Alerta success
+                </div>
+
+                <div class="alert alert-info text-white">
+                    Alerta info
+                </div>
+
+                <div class="alert alert-warning">
+                    Alerta warning
+                </div>
+
+                <div class="alert alert-danger">
+                    Alerta danger
+                </div>
+
+            </section>
+
+        {% endblock %}
+
+    </main>
+
+    <!-- =========================
+         FOOTER
+    ========================= -->
+
+    <footer class="py-4 mt-auto">
+
+        <div class="container text-center">
+
+            <p class="mb-1">
+                © 2026 MeuSite
+            </p>
+
+            <small>
+
+                <a href="#">
+                    Termos
+                </a>
+
+                •
+
+                <a href="#">
+                    Privacidade
+                </a>
+
+            </small>
+
+        </div>
+
+    </footer>
+
+    <!-- =========================
+         SCRIPTS
+    ========================= -->
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    {% block extra_js %}{% endblock %}
+
+</body>
+
+</html>
