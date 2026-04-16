@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadastro - IFWatch</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins', sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    background: linear-gradient(120deg, #6f86ff, #8fd3c8, #d6a4ff);
+}
+
+.container{
+    width:1000px;
+    padding-top:40px;
+}
+
+/* botão voltar */
+.voltar{
+    display:inline-block;
+    background:#0a8f2d;
+    color:white;
+    padding:10px 30px;
+    border-radius:25px;
+    text-decoration:none;
+    font-weight:500;
+    margin-bottom:20px;
+}
+
+.voltar:hover{
+    background:#067022;
+}
+
+/* título */
+.titulo{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    margin-bottom:30px;
+}
+
+.bolinha{
+    width:12px;
+    height:12px;
+    background:#1e73be;
+    border-radius:50%;
+}
+
+.titulo h1{
+    color:#1e73be;
+    font-size:40px;
+    font-weight:500;
+}
+
+/* 🔥 CARDS MAIS PARA BAIXO */
+.cards{
+    display:flex;
+    justify-content:center;
+    gap:80px;
+    margin-top:100px; /* 🔥 aqui controla a posição */
+}
+
+.card{
+    width:260px;
+    background:#eee;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 8px 20px rgba(0,0,0,0.15);
+    display:flex;
+    flex-direction:column;
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+}
+
+.card-content{
+    padding:25px;
+    text-align:center;
+    flex:1;
+}
+
+.card img{
+    width:70px;
+    margin-bottom:15px;
+}
+
+.card h2{
+    margin-bottom:10px;
+}
+
+.card p{
+    font-size:14px;
+    color:#666;
+}
+
+/* botão inferior */
+.card-footer{
+    background:#0a8f2d;
+}
+
+.card-footer a{
+    display:block;
+    padding:12px;
+    color:white;
+    text-decoration:none;
+    text-align:center;
+}
+
+.card-footer a:hover{
+    background:#067022;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+    <a href="#" class="voltar">Voltar</a>
+
+    <div class="titulo">
+        <div class="bolinha"></div>
+        <h1>Selecione a forma de cadastro</h1>
+    </div>
+
+    <div class="cards">
+
+        <!-- Aluno -->
+        <div class="card">
+            <div class="card-content">
+                <img src="https://cdn-icons-png.flaticon.com/128/5404/5404967.png">
+                <h2>Aluno</h2>
+                <p>Com esse login você pode apenas assistir e avaliar o conteúdo segundo as diretrizes</p>
+            </div>
+            <div class="card-footer">
+                <a href="#">Acessar →</a>
+            </div>
+        </div>
+
+        <!-- Professor -->
+        <div class="card">
+            <div class="card-content">
+                <img src="https://www.pngfind.com/pngs/m/675-6751456_transparent-pokemon-fire-red-logo-png-pokemon-professor.png">
+                <h2>Professor</h2>
+                <p>Como professor voce tem acesso a habilidade de dar upload de vídeos na plataforma</p>
+            </div>
+            <div class="card-footer">
+                <a href="#">Acessar →</a>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

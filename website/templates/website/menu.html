@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IFWatch</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins', sans-serif;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background: linear-gradient(120deg, #6f86ff, #8fd3c8, #d6a4ff);
+}
+
+.container{
+    width: 900px;
+    text-align:center;
+}
+
+h1{
+    color:#4c6ef5;
+    font-size:42px;
+    font-weight:600;
+    margin-bottom:60px;
+}
+
+.verde{
+    color:#0a8f2d;
+}
+
+/* alinhamento correto */
+.cards{
+    display:flex;
+    justify-content:center;
+    gap:60px;
+    align-items:stretch; /* 🔥 deixa os cards com mesma altura */
+}
+
+.card{
+    width:260px;
+    background:#eee;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 8px 20px rgba(0,0,0,0.15);
+    transition:0.3s;
+
+    display:flex;
+    flex-direction:column; /* 🔥 estrutura vertical */
+}
+
+.card:hover{
+    transform:translateY(-5px);
+}
+
+.card-content{
+    padding:25px;
+    flex:1; /* 🔥 ocupa o espaço e alinha tudo */
+}
+
+.card h2{
+    font-size:24px;
+    margin-bottom:15px;
+}
+
+.card img{
+    width:70px;
+    margin:15px 0;
+}
+
+.card p{
+    font-size:14px;
+    color:#666;
+    line-height:1.4;
+}
+
+/* botão sempre embaixo alinhado */
+.card-footer{
+    background:#0a8f2d;
+}
+
+.card-footer a{
+    display:block;
+    padding:12px;
+    color:white;
+    text-decoration:none;
+    font-weight:500;
+}
+
+.card-footer a:hover{
+    background:#067022;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Bem vindo ao<br><span class="verde">IFWatch</span></h1>
+
+    <div class="cards">
+
+        <!-- Cadastro -->
+        <div class="card">
+            <div class="card-content">
+                <h2>Cadastro</h2>
+                <img src="https://static.vecteezy.com/system/resources/thumbnails/014/179/588/small/computer-thin-line-icon-education-icon-set-png.png"><br><br>
+                <p>Caso ainda não tenha uma conta no IFWatch cadastre-se para ter acesso</p>
+            </div>
+            <div class="card-footer">
+                <a class="nav-link" href="{% url 'menuCadastro' %}">Acessar →</a>
+            </div>
+        </div>
+
+        <!-- Login -->
+        <div class="card">
+            <div class="card-content">
+                <h2>Login</h2>
+                <img src="https://marketplace.canva.com/Dz63E/MAF4KJDz63E/1/tl/canva-user-icon-MAF4KJDz63E.png">
+                <p>Caso ja tenha uma conta clique aqui para realizar o login nela</p>
+            </div>
+            <div class="card-footer">
+                <a href="#">Acessar →</a>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
