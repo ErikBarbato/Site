@@ -5,9 +5,12 @@ from .views import *
 urlpatterns = [
     #path("admin/", admin.site.urls),
 
-    path("inicio", Index.as_view(), name="pagina_inicial"),
+    path("inicio", Index.as_view(), name="menu"),
     path("sobre", Sobre.as_view(), name="sobre"),
     path("contato", Contato.as_view(), name="contato"),
+    path("menuCadastro", MenuCadastro.as_view(), name="menuCadastro"),
+    path("CadastroAluno", CadastroAluno.as_view(), name="CadastroAluno"),
+    path("CadastroProfessor", CadastroProfessor.as_view(), name="CadastroProfessor"),
     
 
 

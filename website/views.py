@@ -8,13 +8,22 @@ from django.urls import reverse_lazy
 from .models import Tema, Subtema, Video, Comentario, Avaliacao, Like
 
 class Index(TemplateView):
-    template_name = "website/modelo.html"
+    template_name = "website/menu.html"
 
 class Sobre(TemplateView):
     template_name = "website/sobre.html"
 
 class Contato(TemplateView):
     template_name = "website/contato.html"
+
+class MenuCadastro(TemplateView):
+    template_name = "website/menuCadastro.html"
+
+class CadastroAluno(TemplateView):
+    template_name = "website/CadastroAluno.html"
+
+class CadastroProfessor(TemplateView):
+    template_name = "website/CadastroProfessor.html"
 
 class TemaCreate(CreateView): 
     model = Tema
@@ -136,7 +145,7 @@ class VideoDetail(DetailView):
 
 
 
-class ComentarioCreate(AlunoRequiredMixin, LoginRequiredMixin, CreateView):
+class ComentarioCreate(CreateView):
     model = Comentario
     fields = ["texto", "video"]
     template_name = "website/form.html"
@@ -153,7 +162,7 @@ class ComentarioCreate(AlunoRequiredMixin, LoginRequiredMixin, CreateView):
 
 
 
-class AvaliacaoCreate(AlunoRequiredMixin, LoginRequiredMixin, CreateView):
+class AvaliacaoCreate(CreateView):
     model = Avaliacao
     fields = ["nota", "video"]
     template_name = "website/form.html"
@@ -169,7 +178,7 @@ class AvaliacaoCreate(AlunoRequiredMixin, LoginRequiredMixin, CreateView):
 
 
 
-class LikeCreate(AlunoRequiredMixin, LoginRequiredMixin, CreateView):
+class LikeCreate(CreateView):
     model = Like
     fields = ["comentario", "like"]
     template_name = "website/form.html"

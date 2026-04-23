@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro Professor - IFWatch</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Poppins', sans-serif;
+        }
+
+        body{
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            background: linear-gradient(120deg, #6f86ff, #8fd3c8, #d6a4ff);
+        }
+
+        .container{
+            width:1000px;
+            padding:40px;
+        }
+
+        .topo{
+            position:relative;
+            margin-bottom:30px;
+        }
+
+        .voltar{
+            position:absolute;
+            left:0;
+            top:0;
+            background:#0a8f2d;
+            color:white;
+            padding:10px 30px;
+            border-radius:25px;
+            text-decoration:none;
+        }
+
+        .titulo{
+            text-align:center;
+            font-size:40px;
+            color:#4c6ef5;
+            font-weight:600;
+        }
+
+        .conteudo{
+            display:flex;
+            justify-content:space-between;
+            align-items:flex-start;
+        }
+
+        /* avatar */
+        .avatar{
+            position:relative;
+            margin-top:40px;
+        }
+
+        .avatar img{
+            width:220px;
+            height:220px;
+            border-radius:50%;
+            object-fit:cover;
+        }
+
+        .camera{
+            position:absolute;
+            bottom:10px;
+            left:10px;
+            width:50px;
+            height:50px;
+            background:#eee;
+            border-radius:50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            cursor:pointer;
+        }
+
+        #upload{
+            display:none;
+        }
+
+        /* form */
+        .form{
+            width:350px;
+        }
+
+        .form label{
+            display:block;
+            margin-top:15px;
+            margin-bottom:5px;
+        }
+
+        .obrigatorio{
+            color:red;
+        }
+
+        .input-box{
+            position:relative;
+        }
+
+        input{
+            width:100%;
+            padding:14px;
+            border-radius:12px;
+            border:1px solid #888;
+            background:#ddd;
+            box-shadow:5px 5px 0px #222;
+            outline:none;
+        }
+
+        .olho{
+            position:absolute;
+            right:10px;
+            top:50%;
+            transform:translateY(-50%);
+            cursor:pointer;
+        }
+
+        .btn{
+            margin-top:30px;
+            background:#0a8f2d;
+            color:white;
+            padding:15px 50px;
+            border:none;
+            border-radius:30px;
+            font-size:20px;
+            cursor:pointer;
+        }
+
+        .btn:hover{
+            background:#067022;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="topo">
+        <a href="menuCadastro" class="voltar">Voltar</a>
+        <div class="titulo">Cadastro Professor</div>
+    </div>
+
+    <div class="conteudo">
+
+        <!-- esquerda -->
+        <div class="form">
+            <div class="avatar">
+                <img id="preview" src="data:image/svg+xml;utf8,
+                <svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'>
+                <circle cx='110' cy='110' r='110' fill='%23444'/>
+                <circle cx='110' cy='90' r='40' fill='%23ccc'/>
+                <rect x='55' y='130' width='110' height='60' rx='30' fill='%23ccc'/>
+                </svg>">
+
+                <div class="camera" onclick="document.getElementById('upload').click()">📸</div>
+                <input type="file" id="upload" accept="image/*">
+            </div>
+        </div>
+
+        <!-- direita -->
+        <div class="form">
+
+            <label>Nome Usuario <span class="obrigatorio">*</span></label>
+            <div class="input-box">
+                <input type="text" placeholder="Nome:">
+            </div>
+
+            <label>Email <span class="obrigatorio">*</span></label>
+            <div class="input-box">
+                <input type="email" placeholder="Email:">
+            </div>
+
+            <label>Senha <span class="obrigatorio">*</span></label>
+            <div class="input-box">
+                <input type="password" id="senha" placeholder="Senha:">
+                <span class="olho" onclick="toggleSenha('senha')">👁️‍🗨️</span>
+            </div>
+
+            <label>Confirma senha <span class="obrigatorio">*</span></label>
+            <div class="input-box">
+                <input type="password" id="confirmar" placeholder="Senha:">
+                <span class="olho" onclick="toggleSenha('confirmar')">👁️‍🗨️</span>
+            </div>
+
+            <!-- SIAPE AGORA POR ÚLTIMO -->
+            <label>SIAPE <span class="obrigatorio">*</span></label>
+            <div class="input-box">
+                <input type="text" placeholder="Id Professor:">
+            </div>
+
+            <button class="btn">Cadastrar</button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+document.getElementById('upload').addEventListener('change', function(e){
+    const file = e.target.files[0];
+    if(file){
+        const reader = new FileReader();
+        reader.onload = function(ev){
+            document.getElementById('preview').src = ev.target.result;
+        }
+        reader.readAsDataURL(file);
+    }
+});
+
+function toggleSenha(id){
+    const input = document.getElementById(id);
+    input.type = input.type === "password" ? "text" : "password";
+}
+</script>
+
+</body>
+</html>
