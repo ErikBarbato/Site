@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IFWatch</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* CORREÇÃO GERAL */
+        html,
+        body {
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* FUNDO */
+        body {
+            min-height: 100vh;
+            display: flex;
+            background: linear-gradient(120deg, #6f86ff, #8fd3c8, #d6a4ff);
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 260px;
+            background: #cfd8dc;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* LOGO */
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 120px;
+        }
+
+        .logo img {
+            width: 170px;
+        }
+
+        /* LINHA */
+        .divisor {
+            height: 2px;
+            background: #000;
+            margin: 15px 0;
+        }
+
+        /* MENU */
+        .menu {
+            padding: 20px;
+        }
+
+        .menu p {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+            font-size: 20px;
+        }
+
+        /* MAIN */
+        .main {
+            flex: 1;
+            padding: 40px;
+        }
+
+        /* SEARCH */
+        .search {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 60%;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 15px 45px 15px 15px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+        }
+
+        /* LUPA */
+        .search-box::after {
+            content: "🔍";
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* GRID */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+        }
+
+        /* CARD */
+        .card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .card h3 {
+            margin-top: 10px;
+            font-size: 20px;
+        }
+
+        .views {
+            font-size: 16px;
+        }
+
+        .stars {
+            color: gold;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+        <div>
+            <div class="logo">
+                <img src="https://img.sanishtech.com/u/136ca91d46743d22d3087838c24bcd55.png">
+            </div>
+
+            <div class="divisor"></div>
+
+            <div class="menu">
+                <p>Inicio <span>🏠</span></p>
+                <p>Canais inscritos <span>☆</span></p>
+                <p>Histórico <span>🔄</span></p>
+            </div>
+        </div>
+
+        <div class="menu">
+            <div class="divisor"></div>
+            <p>Configurações <span>⚙️</span></p>
+            <p>Suporte <span>👨‍💻</span></p>
+            <p>Sobre <span>📦</span></p>
+        </div>
+
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <!-- PESQUISA -->
+        <div class="search">
+            <div class="search-box">
+                <input type="text" placeholder="Pesquisar...">
+            </div>
+        </div>
+
+        <!-- VIDEOS -->
+        <div class="grid">
+
+            <!-- LINHA 1 -->
+            <div class="card">
+                <img src="https://i.ytimg.com/vi/JaHVm4ZgljA/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLD7IevhxDNpO7yC7XpJtffNfxpGtg">
+                <h3>Filosofia 4</h3>
+                <div class="views">24mil Views</div>
+                <div class="stars">⭐⭐⭐⭐⭐</div>
+            </div>
+
+            <div class="card">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvTeO4lcHcIScxHvVP_eWrQwqSeCvVZDCvE6u17JJuZy7mgTRE">
+                <h3>Efeito Borboleta</h3>
+                <div class="views">10mil Views</div>
+                <div class="stars">⭐⭐⭐</div>
+            </div>
+
+            <div class="card">
+                <img src="https://pt.quizur.com/_image?href=https://img.quizur.com/f/img5ed400064565b9.60453495.png?lastEdited=1590951953&w=1024&h=1024&f=webp">
+                <h3>Revolução Francesa</h3>
+                <div class="views">210mil Views</div>
+                <div class="stars">⭐⭐⭐</div>
+            </div>
+
+            <!-- LINHA 2 -->
+            <div class="card">
+                <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcT7BozO3CK75pMEbwux0O9jSsrxWrqV2rt8KxnbBGlvJ9eSQpw1">
+                <h3>Introdução a Física</h3>
+                <div class="views">150mil Views</div>
+                <div class="stars">⭐⭐⭐</div>
+            </div>
+
+            <div class="card">
+                <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcReF9XS11PM1MBeAPDF2eJbyQGmH5v6hMLlU9Sc-4n0UbZqou2W">
+                <h3>Aula 3 - Hidrocarbonetos</h3>
+                <div class="views">100mil Views</div>
+                <div class="stars">⭐⭐⭐⭐⭐</div>
+            </div>
+
+            <div class="card">
+                <img src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQHUujba9lrzDKnNk2KLqAwwhfUc2M1PTogai1mZChLIfVKlT-h">
+                <h3>Matemática Básica</h3>
+                <div class="views">10mil Views</div>
+                <div class="stars">⭐⭐⭐⭐⭐</div>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

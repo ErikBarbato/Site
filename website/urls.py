@@ -11,6 +11,9 @@ urlpatterns = [
     path("menuCadastro", MenuCadastro.as_view(), name="menuCadastro"),
     path("CadastroAluno", CadastroAluno.as_view(), name="CadastroAluno"),
     path("CadastroProfessor", CadastroProfessor.as_view(), name="CadastroProfessor"),
+    path("menuLogin", MenuLogin.as_view(), name="menuLogin"),
+    path("LoginAluno", LoginAluno.as_view(), name="LoginAluno"),
+    path("LoginProfessor", LoginProfessor.as_view(), name="LoginProfessor"),
     
 
 

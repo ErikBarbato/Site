@@ -25,6 +25,26 @@ class CadastroAluno(TemplateView):
 class CadastroProfessor(TemplateView):
     template_name = "website/CadastroProfessor.html"
 
+
+
+class MenuLogin(TemplateView):
+    template_name = "website/menuLogin.html"
+
+class LoginAluno(TemplateView):
+    template_name = "website/LoginAluno.html"
+
+class LoginProfessor(TemplateView):
+    template_name = "website/LoginProfessor.html"
+
+
+
+
+
+
+
+
+
+
 class TemaCreate(CreateView): 
     model = Tema
     fields = ["nome"]
