@@ -1,395 +1,241 @@
-{% load static %}
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IFWatch</title>
 
-    <title>
-        {% block title %}
-            Meu Site
-        {% endblock %}
-    </title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
-    <!-- Bootstrap -->
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
-
-    <!-- Bootstrap Icons -->
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
-        rel="stylesheet"
-    >
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 
     <style>
-
-        /* =========================
-           PALETA DE CORES
-        ========================= */
-
-        :root {
-
-            --bs-primary: #0F4C5C;
-            --bs-success: #2FBF71;
-            --bs-info: #3DA5D9;
-            --bs-warning: #F2C14E;
-            --bs-danger: #E63946;
-
-            --bs-primary-rgb: 15,76,92;
-            --bs-success-rgb: 47,191,113;
-            --bs-info-rgb: 61,165,217;
-            --bs-warning-rgb: 242,193,78;
-            --bs-danger-rgb: 230,57,70;
-
-            --petroleum-dark: #0B2E36;
-            --background: #F5F7FA;
-
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
 
-        /* =========================
-           LAYOUT
-        ========================= */
-
+        /* CORREÇÃO GERAL */
         html,
         body {
-            height: 100%;
+            width: 100%;
+            overflow-x: hidden;
         }
 
+        /* FUNDO */
         body {
+            min-height: 100vh;
+            display: flex;
+            background: linear-gradient(120deg, #6f86ff, #8fd3c8, #d6a4ff);
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 260px;
+            background: #cfd8dc;
             display: flex;
             flex-direction: column;
-            background: var(--background);
+            justify-content: space-between;
         }
 
-        main {
+        /* LOGO */
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 120px;
+        }
+
+        .logo img {
+            width: 170px;
+        }
+
+        /* LINHA */
+        .divisor {
+            height: 2px;
+            background: #000;
+            margin: 15px 0;
+        }
+
+        /* MENU */
+        .menu {
+            padding: 20px;
+        }
+
+        .menu p {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+            font-size: 20px;
+        }
+
+        /* MAIN */
+        .main {
             flex: 1;
+            padding: 40px;
         }
 
-        /* =========================
-           NAVBAR
-        ========================= */
-
-        .navbar {
-            background: var(--petroleum-dark);
+        /* SEARCH */
+        .search {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
         }
 
-        .navbar .nav-link {
-            color: rgba(255,255,255,.8);
+        .search-box {
+            position: relative;
+            width: 60%;
         }
 
-        .navbar .nav-link:hover {
-            color: #ffffff;
+        .search-box input {
+            width: 100%;
+            padding: 15px 45px 15px 15px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
         }
 
-        /* =========================
-           FOOTER
-        ========================= */
-
-        footer {
-            background: var(--petroleum-dark);
-            color: rgba(255,255,255,.7);
+        /* LUPA */
+        .search-box::after {
+            content: "🔍";
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
         }
 
-        footer a {
-            color: rgba(255,255,255,.7);
-            text-decoration: none;
+        /* GRID */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
         }
 
-        footer a:hover {
-            color: #ffffff;
+        /* CARD */
+        .card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 8px;
         }
 
+        .card h3 {
+            margin-top: 10px;
+            font-size: 20px;
+        }
+
+        .views {
+            font-size: 16px;
+        }
+
+        .stars {
+            color: gold;
+            font-size: 18px;
+        }
     </style>
-
-    {% block extra_css %}{% endblock %}
-
 </head>
 
 <body>
 
-    <!-- =========================
-         HEADER / NAVBAR
-    ========================= -->
+    <!-- SIDEBAR -->
+    <div class="sidebar">
 
-    <header>
-
-        <nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow-sm">
-
-            <div class="container">
-
-                <a class="navbar-brand fw-semibold" href="{% url 'pagina_inicial' %}">
-                    <i class="bi bi-bootstrap-fill"></i>
-                    MeuSite
-                </a>
-
-                <button
-                    class="navbar-toggler"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarMain"
-                >
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="collapse navbar-collapse" id="navbarMain">
-
-                    <!-- LINKS CENTRALIZADOS -->
-
-                    <ul class="navbar-nav mx-auto">
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'pagina_inicial' %}">
-                                Home
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'sobre' %}">
-                                Sobre
-                            </a>
-                        </li>
-
-                        <li class="nav-item dropdown">
-
-                            <a
-                                class="nav-link dropdown-toggle"
-                                href="#"
-                                data-bs-toggle="dropdown"
-                            >
-                                Serviços
-                            </a>
-
-                            <ul class="dropdown-menu shadow-sm">
-
-                                <li>
-                                    <a class="dropdown-item" href="#">
-                                        Desenvolvimento
-                                    </a>
-                                </li>
-
-                                <li>
-                                    <a class="dropdown-item" href="#">
-                                        Consultoria
-                                    </a>
-                                </li>
-
-                                <li>
-                                    <a class="dropdown-item" href="#">
-                                        Suporte
-                                    </a>
-                                </li>
-
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-
-                                <li>
-                                    <a class="dropdown-item" href="#">
-                                        Outro serviço
-                                    </a>
-                                </li>
-
-                            </ul>
-
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'contato' %}">
-                                Contato
-                            </a>
-                        </li>
-
-                    </ul>
-
-                    <!-- LOGIN / USUÁRIO -->
-
-                    <div class="dropdown">
-
-                        <button
-                            class="btn btn-primary dropdown-toggle"
-                            data-bs-toggle="dropdown"
-                        >
-                            <i class="bi bi-person-circle"></i>
-                            Conta
-                        </button>
-
-                        <ul class="dropdown-menu dropdown-menu-end shadow">
-
-                            {% if user.is_authenticated %}
-
-                                <li>
-                                    <a class="dropdown-item" href="#">
-                                        Perfil
-                                    </a>
-                                </li>
-
-                                <li>
-                                    <a class="dropdown-item" href="#">
-                                        Configurações
-                                    </a>
-                                </li>
-
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-
-                                <li>
-                                    <a
-                                        class="dropdown-item text-danger"
-                                        href="{% url 'logout' %}"
-                                    >
-                                        Logout
-                                    </a>
-                                </li>
-
-                            {% else %}
-
-                                <li>
-                                    <a
-                                        class="dropdown-item"
-                                        href="#"
-                                    >
-                                        Login
-                                    </a>
-                                </li>
-
-                                <li>
-                                    <a
-                                        class="dropdown-item"
-                                        href="#"
-                                    >
-                                        Criar conta
-                                    </a>
-                                </li>
-
-                            {% endif %}
-
-                        </ul>
-
-                    </div>
-
-                </div>
-
+        <div>
+            <div class="logo">
+                <img src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/trimestre-zusnl2/assets/5bm9oymti6mz/_99DD0F56-3A35-4FCD-975D-B97DB7E1AB35_-removebg-preview.png">
             </div>
 
-        </nav>
+            <div class="divisor"></div>
 
-    </header>
+            <div class="menu">
+                <p><a href="{% url "Tela" %}">Inicio</a> <span>🏠</span></p>
+                <p>Canais inscritos <span>☆</span></p>
+                <p>Histórico <span>🔄</span></p>
+                
+                
+                <p><a href="{% url 'tema_listar' %}">Temas</a> <span>📚</span></p>
+                <p><a href="{% url 'subtema_listar' %}">Subtemas</a> <span>🧩</span></p>
+                <p><a href="{% url 'video_listar' %}">Vídeos</a> <span>🎥</span></p>
+                <p><a href="{% url 'tema_creator' %}">Cadastrar Tema</a> <span>➕</span></p>
+                <p><a href="{% url 'subtema_creator' %}">Cadastrar Subtema</a> <span>➕</span></p>
+                <p><a href="{% url 'video_creator' %}">Cadastrar Vídeo</a> <span>➕</span></p>
 
-    <!-- =========================
-         CONTEÚDO
-    ========================= -->
+                <div class="divisor"></div>
+                <p>Configurações<span>⚙️</span></p>
+                <p><a href="{% url 'sobre' %}">Sobre</a> <span>📦</span></p>
+                <p><a href="{% url 'contato' %}">Suporte</a> <span>👨‍💻</span></p>
+            </div>
+        </div>
 
-    <main class="container pt-5 mt-4">
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
 
         {% block conteudo %}
 
-            <section class="py-5">
+        <!-- PESQUISA -->
+        <div class="search">
+            <div class="search-box">
+                <input type="text" placeholder="Pesquisar...">
+            </div>
+        </div>
 
-                <h1 class="mb-4">
-                    Template Bootstrap + Django
-                </h1>
+        <!-- VIDEOS -->
+        <div class="grid">
 
-                <p class="lead">
-                    Este é o layout base do site.
-                </p>
+            <!-- LINHA 1 -->
+            <div class="card">
+                <img src="https://i.ytimg.com/vi/JaHVm4ZgljA/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLD7IevhxDNpO7yC7XpJtffNfxpGtg">
+                <h3>Filosofia 4</h3>
+                <div class="views">24mil Views</div>
+                <div class="stars">⭐⭐⭐⭐⭐</div>
+            </div>
 
-                <hr class="my-4">
+            <div class="card">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvTeO4lcHcIScxHvVP_eWrQwqSeCvVZDCvE6u17JJuZy7mgTRE">
+                <h3>Efeito Borboleta</h3>
+                <div class="views">10mil Views</div>
+                <div class="stars">⭐⭐⭐</div>
+            </div>
 
-                <div class="mb-4">
+            <div class="card">
+                <img src="https://pt.quizur.com/_image?href=https://img.quizur.com/f/img5ed400064565b9.60453495.png?lastEdited=1590951953&w=1024&h=1024&f=webp">
+                <h3>Revolução Francesa</h3>
+                <div class="views">210mil Views</div>
+                <div class="stars">⭐⭐⭐</div>
+            </div>
 
-                    <button class="btn btn-primary">
-                        Primary
-                    </button>
+            <!-- LINHA 2 -->
+            <div class="card">
+                <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcT7BozO3CK75pMEbwux0O9jSsrxWrqV2rt8KxnbBGlvJ9eSQpw1">
+                <h3>Introdução a Física</h3>
+                <div class="views">150mil Views</div>
+                <div class="stars">⭐⭐⭐</div>
+            </div>
 
-                    <button class="btn btn-success">
-                        Success
-                    </button>
+            <div class="card">
+                <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcReF9XS11PM1MBeAPDF2eJbyQGmH5v6hMLlU9Sc-4n0UbZqou2W">
+                <h3>Aula 3 - Hidrocarbonetos</h3>
+                <div class="views">100mil Views</div>
+                <div class="stars">⭐⭐⭐⭐⭐</div>
+            </div>
 
-                    <button class="btn btn-info text-white">
-                        Info
-                    </button>
-
-                    <button class="btn btn-warning">
-                        Warning
-                    </button>
-
-                    <button class="btn btn-danger">
-                        Danger
-                    </button>
-
-                </div>
-
-                <div class="alert alert-primary">
-                    Alerta primary
-                </div>
-
-                <div class="alert alert-success">
-                    Alerta success
-                </div>
-
-                <div class="alert alert-info text-white">
-                    Alerta info
-                </div>
-
-                <div class="alert alert-warning">
-                    Alerta warning
-                </div>
-
-                <div class="alert alert-danger">
-                    Alerta danger
-                </div>
-
-            </section>
-
-        {% endblock %}
-
-    </main>
-
-    <!-- =========================
-         FOOTER
-    ========================= -->
-
-    <footer class="py-4 mt-auto">
-
-        <div class="container text-center">
-
-            <p class="mb-1">
-                © 2026 MeuSite
-            </p>
-
-            <small>
-
-                <a href="#">
-                    Termos
-                </a>
-
-                •
-
-                <a href="#">
-                    Privacidade
-                </a>
-
-            </small>
+            <div class="card">
+                <img src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQHUujba9lrzDKnNk2KLqAwwhfUc2M1PTogai1mZChLIfVKlT-h">
+                <h3>Matemática Básica</h3>
+                <div class="views">10mil Views</div>
+                <div class="stars">⭐⭐⭐⭐⭐</div>
+            </div>
 
         </div>
 
-    </footer>
+        {% endblock %}
 
-    <!-- =========================
-         SCRIPTS
-    ========================= -->
-
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-    <!-- Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-    {% block extra_js %}{% endblock %}
+    </div>
 
 </body>
 

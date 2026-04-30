@@ -38,7 +38,8 @@ class LoginProfessor(TemplateView):
 
 
 
-
+class Tela(TemplateView):
+    template_name = "website/modelo.html"
 
 
 
@@ -47,40 +48,40 @@ class LoginProfessor(TemplateView):
 
 class TemaCreate(CreateView): 
     model = Tema
-    fields = ["nome"]
+    fields = ["nome", "cadastrado_por"]
     template_name = "website/form.html"
-    success_url = reverse_lazy("pagina_inicial")
+    success_url = reverse_lazy("Tela")
     extra_context = {
-        "Titulo": "Cadastro de Tema",
-        "botão": "Cadastrar"
+        "titulo": "Cadastro de Tema",
+        "botao": "Cadastrar"
     }
 
 class TemaUpdate(UpdateView): 
     model = Tema
     fields = ["nome"]
     template_name = "website/form.html"
-    success_url = reverse_lazy("pagina_inicial")
+    success_url = reverse_lazy("Tela")
     extra_context = {
-        "Titulo": "Edição de Tema",
-        "botão": "Salvar"
+        "titulo": "Atualizar Tema",
+        "botao": "Atualizar"
     }
 
 class TemaDelete(DeleteView):
-    model: Tema
+    model= Tema
     template_name = "website/form.html"
-    success_url = reverse_lazy("pagina_inicial")
+    success_url = reverse_lazy("Tela")
     extra_context = {
-        "Titulo": "Cadastro de Tema",
-        "botão": "Excluir"
+        "titulo": "Cadastro de Tema",
+        "botao": "Excluir"
     }
 
 class TemaList(ListView):
-    model: Tema
+    model= Tema
     template_name = "website/lista/Tema.html"
 
 class TemaDetail(DetailView):
     model = Tema
-    template_name= "website/lista/Tema.html"
+    template_name= "website/ver/Tema.html"
 
 
 
@@ -90,26 +91,38 @@ class TemaDetail(DetailView):
 
 class SubtemaCreate(CreateView):
     model = Subtema
-    fields = ["nome", "tema"]
+    fields = ["nome", "tema", "cadastrado_por"]
     template_name = "website/form.html"
-    success_url = reverse_lazy("pagina_inicial")
+    success_url = reverse_lazy("Tela")
+    extra_context = {
+        "titulo": "Cadastro de Subtemas",
+        "botao": "Cadastrar"
+    }
 
-    def form_valid(self, form):
-        form.instance.cadastrado_por = self.request.user
-        return super().form_valid(form)
+    # def form_valid(self, form):
+    #     form.instance.cadastrado_por = self.request.user
+    #     return super().form_valid(form)
 
 
 class SubtemaUpdate(UpdateView):
     model = Subtema
     fields = ["nome", "tema"]
     template_name = "website/form.html"
-    success_url = reverse_lazy("pagina_inicial")
+    success_url = reverse_lazy("Tela")
+    extra_context = {
+        "titulo": "Atualizar Subtema",
+        "botao": "Atualizar"
+    }
 
 
 class SubtemaDelete(DeleteView):
     model = Subtema
-    template_name = "website/confirm_delete.html"
-    success_url = reverse_lazy("pagina_inicial")
+    template_name = "website/form.html"
+    success_url = reverse_lazy("Tela")
+    extra_context = {
+        "titulo": "Deletar Subtema",
+        "botao": "Excluir"
+    }
 
 
 class SubtemaList(ListView):
@@ -119,7 +132,7 @@ class SubtemaList(ListView):
 
 class SubtemaDetail(DetailView):
     model = Subtema
-    template_name = "website/detalhe/subtema.html"
+    template_name = "website/ver/subtema.html"
 
 
 
@@ -129,26 +142,38 @@ class SubtemaDetail(DetailView):
 
 class VideoCreate(CreateView):
     model = Video
-    fields = ["titulo", "descricao", "link", "subtema", "ativo"]
+    fields = ["titulo", "descricao", "link", "subtema", "ativo", "cadastrado_por"]
     template_name = "website/form.html"
-    success_url = reverse_lazy("pagina_inicial")
+    success_url = reverse_lazy("Tela")
+    extra_context = {
+        "titulo": "Cadastro de Video",
+        "botao": "Cadastrar"
+    }
 
-    def form_valid(self, form):
-        form.instance.cadastrado_por = self.request.user
-        return super().form_valid(form)
+    # def form_valid(self, form):
+    #     form.instance.cadastrado_por = self.request.user
+    #     return super().form_valid(form)
 
 
 class VideoUpdate(UpdateView):
     model = Video
     fields = ["titulo", "descricao", "link", "subtema", "ativo"]
     template_name = "website/form.html"
-    success_url = reverse_lazy("pagina_inicial")
+    success_url = reverse_lazy("Tela")
+    extra_context = {
+        "titulo": "Atualizar Video",
+        "botao": "Atualizar"
+    }
 
 
 class VideoDelete(DeleteView):
     model = Video
-    template_name = "website/confirm_delete.html"
-    success_url = reverse_lazy("pagina_inicial")
+    template_name = "website/form.html"
+    success_url = reverse_lazy("Tela")
+    extra_context = {
+        "titulo": "Deletar de Video",
+        "botao": "Excluir"
+    }
 
 
 class VideoList(ListView):
@@ -161,7 +186,7 @@ class VideoList(ListView):
 
 class VideoDetail(DetailView):
     model = Video
-    template_name = "website/detalhe/video.html"
+    template_name = "website/ver/video.html"
 
 
 
@@ -169,6 +194,10 @@ class ComentarioCreate(CreateView):
     model = Comentario
     fields = ["texto", "video"]
     template_name = "website/form.html"
+    extra_context = {
+        "titulo": "Cadastro de Comentario",
+        "botao": "Cadastrar"
+    }
 
     def form_valid(self, form):
         form.instance.cadastrado_por = self.request.user
@@ -186,6 +215,10 @@ class AvaliacaoCreate(CreateView):
     model = Avaliacao
     fields = ["nota", "video"]
     template_name = "website/form.html"
+    extra_context = {
+        "titulo": "Cadastro de Avaliação",
+        "botao": "Cadastrar"
+    }
 
     def form_valid(self, form):
         form.instance.cadastrado_por = self.request.user
@@ -202,10 +235,14 @@ class LikeCreate(CreateView):
     model = Like
     fields = ["comentario", "like"]
     template_name = "website/form.html"
+    extra_context = {
+        "titulo": "Cadastro de like",
+        "botao": "Cadastrar"
+    }
 
     def form_valid(self, form):
         form.instance.cadastrado_por = self.request.user
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy("pagina_inicial")
+        return reverse_lazy("Tela")

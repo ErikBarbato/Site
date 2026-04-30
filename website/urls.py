@@ -14,19 +14,21 @@ urlpatterns = [
     path("menuLogin", MenuLogin.as_view(), name="menuLogin"),
     path("LoginAluno", LoginAluno.as_view(), name="LoginAluno"),
     path("LoginProfessor", LoginProfessor.as_view(), name="LoginProfessor"),
+    path("Tela", Tela.as_view(), name="Tela"),
+
     
 
 
     #urls 
-    path("Casdatrar/tema", TemaCreate.as_view(), name="tema_creator"),
-    path("listar/tema/<int:pk>/", TemaList.as_view(), name="tema_listar"),
+    path("cadastrar/tema", TemaCreate.as_view(), name="tema_creator"),
+    path("listar/tema/", TemaList.as_view(), name="tema_listar"),
     path("editar/tema/<int:pk>/", TemaUpdate.as_view(), name="tema_update"),
     path("delete/tema/<int:pk>/", TemaDelete.as_view(), name="tema_delete"),
     path("detail/tema/<int:pk>/", TemaDetail.as_view(), name="tema_detail"),
 
 
 
-    path("Cadastrar/subtema", SubtemaCreate.as_view(), name="subtema_creator"),
+    path("cadastrar/subtema", SubtemaCreate.as_view(), name="subtema_creator"),
     path("listar/subtema/", SubtemaList.as_view(), name="subtema_listar"),
     path("editar/subtema/<int:pk>/", SubtemaUpdate.as_view(), name="subtema_update"),
     path("delete/subtema/<int:pk>/", SubtemaDelete.as_view(), name="subtema_delete"),
@@ -34,7 +36,7 @@ urlpatterns = [
 
 
 
-    path("Cadastrar/video", VideoCreate.as_view(), name="video_creator"),
+    path("cadastrar/video", VideoCreate.as_view(), name="video_creator"),
     path("listar/video/", VideoList.as_view(), name="video_listar"),
     path("editar/video/<int:pk>/", VideoUpdate.as_view(), name="video_update"),
     path("delete/video/<int:pk>/", VideoDelete.as_view(), name="video_delete"),
@@ -42,11 +44,11 @@ urlpatterns = [
 
 
 
-    path("Cadastrar/comentario", ComentarioCreate.as_view(), name="comentario_creator"),
+    path("cadastrar/comentario", ComentarioCreate.as_view(), name="comentario_creator"),
 
 
-    path("Cadastrar/avaliacao", AvaliacaoCreate.as_view(), name="avaliacao_creator"),
+    path("cadastrar/avaliacao", AvaliacaoCreate.as_view(), name="avaliacao_creator"),
 
 
-    path("Cadastrar/like", LikeCreate.as_view(), name="like_creator"),
+    path("cadastrar/like", LikeCreate.as_view(), name="like_creator"),
 ]

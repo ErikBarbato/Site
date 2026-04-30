@@ -1,0 +1,51 @@
+{% extends "website/modelo.html" %}
+
+{% load static %}
+
+{% block conteudo %}
+
+<div class="search">
+    <div class="search-box">
+        <input type="text" placeholder="Pesquisar vídeos ativos...">
+    </div>
+</div>
+
+<div class="grid">
+    {% for video in object_list %}
+    <div class="card">
+        <a href="{% url 'video_detail' video.pk %}" style="text-decoration: none; color: inherit;">
+            <img src="https://img.youtube.com/vi/{{ video.link|cut:'https://www.youtube.com/watch?v=' }}/hqdefault.jpg" 
+                 onerror="this.src='https://via.placeholder.com/300x160?text=IFWatch'" 
+                 alt="{{ video.titulo }}">
+            
+            <h3>{{ video.titulo }}</h3>
+            
+            <div class="views">
+                <span>{{ video.subtema.nome }}</span> • 
+                {{ video.cadastrado_em|date:"d/m/Y" }}
+            </div>
+
+            <div class="stars">⭐⭐⭐⭐⭐</div>
+        </a>
+
+        <div class="mt-3 d-flex justify-content-between align-items-center">
+            <small class="text-muted">Por: {{ video.cadastrado_por.username }}</small>
+            <div class="btn-group">
+                <a href="{% url 'video_update' video.pk %}" class="btn btn-sm btn-outline-primary" title="Editar">
+                    📝
+                </a>
+                <a href="{% url 'video_delete' video.pk %}" class="btn btn-sm btn-outline-danger" title="Excluir">
+                    🗑️
+                </a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="text-center w-100 py-5">
+        <h3 class="text-white">Nenhum vídeo ativo encontrado.</h3>
+        <p class="text-white-50">Clique em "Cadastrar Vídeo" no menu lateral para começar.</p>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock conteudo %}

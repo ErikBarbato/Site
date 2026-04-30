@@ -5,41 +5,39 @@
 
 
 {% block conteudo %}
-<section class="py-5 py-lg-6 bg-surface">
-  <div class="container">
-    <h3 class="text-center border-bottom pb-2 mb-4">{{ titulo }}</h3>
+<div class="container">
+  <h2 class="text-center border-bottom pb-2 mb-4">{{ titulo }}</h2>
 
-    <div class="row justify-content-center">
-      <div class="col-md-6">
-        <form method="post">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <form method="post">
 
-            {% csrf_token %}
+          {% csrf_token %}
 
-            {{ form|crispy }}
+          {{ form|crispy }}
 
 
-            {% if botao == "Excluir"%}
+          {% if botao == "Excluir"%}
 
-              <h4>Deseja realmente excluir este item?</h4>
+            <h4>Deseja realmente excluir este item?</h4>
 
-              <div class="alert alert-danger fs-5" role="alert">
-                {{ object }}
-              </div>
+            <div class="alert alert-danger fs-5" role="alert">
+              {{ object }}
+            </div>
 
-              <button type="submit" class="btn btn-danger">
-                  Sim, excluir
-              </button>
+            <button type="submit" class="btn btn-danger">
+                Sim, excluir
+            </button>
 
-            {% else %}
-              <button type="submit" class="btn btn-primary">
-                  {{ botao }}
-              </button>
-            {% endif %}
-            
-        </form>
-      </div>
+          {% else %}
+            <button type="submit" class="btn btn-primary">
+                {{ botao }}
+            </button>
+          {% endif %}
+          
+      </form>
     </div>
-
   </div>
-</section>
+
+</div>
 {% endblock conteudo %}

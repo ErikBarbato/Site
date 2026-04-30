@@ -1,0 +1,59 @@
+{% extends "website/modelo.html" %}
+
+{% load static %}
+
+{% block conteudo %}
+
+<div class="search">
+    <div class="search-box">
+        <input type="text" placeholder="Pesquisar subtemas...">
+    </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-white">Subtemas Disponíveis 🧩</h2>
+    <a href="{% url 'subtema_creator' %}" class="btn btn-success">
+        ➕ Novo Subtema
+    </a>
+</div>
+
+<div class="grid">
+    {% for subtema in object_list %}
+    <div class="card" style="min-height: 200px; display: flex; flex-direction: column; justify-content: space-between;">
+        <a href="{% url 'subtema_detail' subtema.pk %}" style="text-decoration: none; color: inherit;">
+            <div class="p-2">
+                <div class="rounded mb-2 d-flex align-items-center justify-content-center" 
+                     style="height: 100px; background: rgba(0,0,0,0.1); font-size: 40px;">
+                    🧩
+                </div>
+                
+                <h3>{{ subtema.nome }}</h3>
+                
+                <div class="views">
+                    <span class="badge bg-primary">Tema: {{ subtema.tema.nome }}</span>
+                </div>
+                
+                <div class="mt-2 text-muted small">
+                    Criado em: {{ subtema.cadastrado_em|date:"d/m/Y" }}
+                </div>
+            </div>
+        </a>
+
+        <div class="p-2 border-top d-flex justify-content-end gap-2">
+            <a href="{% url 'subtema_update' subtema.pk %}" class="btn btn-sm btn-outline-primary" title="Editar">
+                📝
+            </a>
+            <a href="{% url 'subtema_delete' subtema.pk %}" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                🗑️
+            </a>
+        </div>
+    </div>
+    {% empty %}
+    <div class="text-center w-100 py-5">
+        <h3 class="text-white">Nenhum subtema encontrado.</h3>
+        <p class="text-white-50">Os subtemas ajudam a organizar os vídeos dentro de cada Tema.</p>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock conteudo %}
