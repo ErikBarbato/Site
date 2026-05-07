@@ -41,9 +41,12 @@ class LoginProfessor(TemplateView):
 class Tela(TemplateView):
     template_name = "website/modelo.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
+        context["videos"] = Video.objects.all()[0:9]
 
-
+        return context
 
 
 class TemaCreate(CreateView): 

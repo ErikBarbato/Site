@@ -29,6 +29,29 @@ class Video(models.Model):
 
     def __str__(self):
         return f"{self.titulo}"
+    
+    @property
+    def converter_link(self):
+        import re
+        if not self.link:
+            return ""
+
+        # Se já for um link de embed, retorna o próprio link
+        if "/embed/" in self.link:
+            return self.link
+
+        # Regex para extrair o ID do vídeo de diversos formatos (youtube.com, youtu.be, etc)
+        regex = r'(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})'
+        
+        match = re.search(regex, self.link)
+        
+        if match:
+            video_id = match.group(1)
+            return f"https://www.youtube.com/embed/{video_id}"
+        
+        # Caso não seja um link válido do YouTube, retorna o link original ou string vazia
+        return self.link
+
 
 class Comentario(models.Model):
     video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name='comentarios')
