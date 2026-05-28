@@ -156,12 +156,95 @@
                 <p>Histórico <span>🔄</span></p>
                 
                 
-                <p><a href="{% url 'tema_listar' %}">Temas</a> <span>📚</span></p>
-                <p><a href="{% url 'subtema_listar' %}">Subtemas</a> <span>🧩</span></p>
-                <p><a href="{% url 'video_listar' %}">Vídeos</a> <span>🎥</span></p>
-                <p><a href="{% url 'tema_creator' %}">Cadastrar Tema</a> <span>➕</span></p>
-                <p><a href="{% url 'subtema_creator' %}">Cadastrar Subtema</a> <span>➕</span></p>
-                <p><a href="{% url 'video_creator' %}">Cadastrar Vídeo</a> <span>➕</span></p>
+                <!-- DROPDOWN GERENCIAR -->
+                <div class="dropdown mb-3">
+
+                    <button class="btn btn-primary dropdown-toggle w-100"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+
+                        Gerenciar conteúdo
+
+                    </button>
+
+                    <ul class="dropdown-menu w-100">
+
+                        <li>
+                            <a class="dropdown-item"
+                                href="{% url 'tema_listar' %}">
+
+                                📚 Tema
+
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item"
+                                href="{% url 'subtema_listar' %}">
+
+                                🧩 Subtema
+
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item"
+                                href="{% url 'video_listar' %}">
+
+                                🎥 Vídeos
+
+                            </a>
+                        </li>
+
+                    </ul>
+
+                </div>
+
+                <!-- DROPDOWN CRIAR -->
+                <div class="dropdown mb-3">
+
+                    <button class="btn btn-success dropdown-toggle w-100"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+
+                        Criar conteúdo
+
+                    </button>
+
+                    <ul class="dropdown-menu w-100">
+
+                        <li>
+                            <a class="dropdown-item"
+                                href="{% url 'tema_creator' %}">
+
+                                ➕ Cadastrar Tema
+
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item"
+                                href="{% url 'subtema_creator' %}">
+
+                                ➕ Cadastrar Subtema
+
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item"
+                                href="{% url 'video_creator' %}">
+
+                                ➕ Cadastrar Vídeo
+
+                            </a>
+                        </li>
+
+                    </ul>
+
+                </div>
 
                 <div class="divisor"></div>
                 <p>Configurações<span>⚙️</span></p>
@@ -185,13 +268,13 @@
         </div>
 
         <!-- VIDEOS -->
-        <div class="row">
+        <div class="row gap-3">
 
             {% for vid in videos %}
 
             <!-- LINHA 1 -->
-            <div class="col-md-auto bg-white p-3 rounded-3">
-                <iframe width="360" height="215" src="{{vid.converter_link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            <div class="col-md-4 bg-white p-3 rounded-3">
+                <iframe width="100%" height="215" src="{{vid.converter_link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 <h3>{{ vid.titulo }}</h3>
                 <div class="views">24mil Views</div>
                 <div class="stars">⭐⭐⭐⭐⭐</div>
@@ -244,7 +327,7 @@
         {% endblock %}
 
     </div>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
