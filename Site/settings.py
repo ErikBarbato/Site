@@ -155,3 +155,9 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# Configurações de login
+LOGIN_URL = "login" # qual o name da url de login
+LOGIN_REDIRECT_URL = "Tela" # qual o name da url para onde o usuário é redirecionado após fazer login
+LOGOUT_REDIRECT_URL = "login" # qual o name da url para onde o usuário é redirecionado após fazer logout

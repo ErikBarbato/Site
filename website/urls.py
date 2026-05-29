@@ -1,41 +1,58 @@
 from django.urls import path
-from .views import Index, Sobre, Contato
+# Views implementadas para o projeto
 from .views import *
+# Views importadas do DJango para login, logut e alterar senha
+from django.contrib.auth.views import (
+    LoginView, LogoutView, PasswordChangeView
+)
 
 urlpatterns = [
-    #path("admin/", admin.site.urls),
-
-    path("inicio", Index.as_view(), name="menu"),
-    path("sobre", Sobre.as_view(), name="sobre"),
-    path("contato", Contato.as_view(), name="contato"),
-    path("menuCadastro", MenuCadastro.as_view(), name="menuCadastro"),
-    path("CadastroAluno", CadastroAluno.as_view(), name="CadastroAluno"),
-    path("CadastroProfessor", CadastroProfessor.as_view(), name="CadastroProfessor"),
-    path("menuLogin", MenuLogin.as_view(), name="menuLogin"),
-    path("LoginAluno", LoginAluno.as_view(), name="LoginAluno"),
-    path("LoginProfessor", LoginProfessor.as_view(), name="LoginProfessor"),
-    path("Tela", Tela.as_view(), name="Tela"),
-
     
+    # URLs para o usuário fazer login
+    path("login/", LoginView.as_view(
+        template_name = "website/form.html",
+        extra_context = {
+            "titulo": "Autenticação",
+            "botao": "Entrar"
+        }
+    ), name="login"),
+    # URL para o usuário fazer logout
+    path("logout/", LogoutView.as_view(next_page="login"), name="logout"),
+    # URL para o usuário alterar a senha
+    path("password_change/", PasswordChangeView.as_view(
+        template_name = "website/form.html",
+        extra_context = {
+            "titulo": "Alterar minha senha",
+            "botao": "Alterar"
+        }
+    ), name="alterar_senha"),
 
+    path("", Index.as_view(), name="menu"),
+    path("sobre/", Sobre.as_view(), name="sobre"),
+    path("contato/", Contato.as_view(), name="contato"),
+    path("menuCadastro/", MenuCadastro.as_view(), name="menuCadastro"),
+    path("CadastroAluno/", CadastroAluno.as_view(), name="CadastroAluno"),
+    path("CadastroProfessor/", CadastroProfessor.as_view(), name="CadastroProfessor"),
+    path("menuLogin/", MenuLogin.as_view(), name="menuLogin"),
+    path("LoginAluno/", LoginAluno.as_view(), name="LoginAluno"),
+    path("LoginProfessor/", LoginProfessor.as_view(), name="LoginProfessor"),
+    path("Tela/", Tela.as_view(), name="Tela"),
 
-    #urls 
+    # URLs para o models de Tema
     path("cadastrar/tema", TemaCreate.as_view(), name="tema_creator"),
     path("listar/tema/", TemaList.as_view(), name="tema_listar"),
     path("editar/tema/<int:pk>/", TemaUpdate.as_view(), name="tema_update"),
     path("delete/tema/<int:pk>/", TemaDelete.as_view(), name="tema_delete"),
     path("detail/tema/<int:pk>/", TemaDetail.as_view(), name="tema_detail"),
 
-
-
+    # URLs para o models de Subtema
     path("cadastrar/subtema", SubtemaCreate.as_view(), name="subtema_creator"),
     path("listar/subtema/", SubtemaList.as_view(), name="subtema_listar"),
     path("editar/subtema/<int:pk>/", SubtemaUpdate.as_view(), name="subtema_update"),
     path("delete/subtema/<int:pk>/", SubtemaDelete.as_view(), name="subtema_delete"),
     path("detail/subtema/<int:pk>/", SubtemaDetail.as_view(), name="subtema_detail"),
 
-
-
+    # URls para o models de Video
     path("cadastrar/video", VideoCreate.as_view(), name="video_creator"),
     path("listar/video/", VideoList.as_view(), name="video_listar"),
     path("editar/video/<int:pk>/", VideoUpdate.as_view(), name="video_update"),

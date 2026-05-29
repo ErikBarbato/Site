@@ -202,6 +202,7 @@
                 </div>
 
                 <!-- DROPDOWN CRIAR -->
+                {% if user.is_authenticated %}
                 <div class="dropdown mb-3">
 
                     <button class="btn btn-success dropdown-toggle w-100"
@@ -218,38 +219,41 @@
                         <li>
                             <a class="dropdown-item"
                                 href="{% url 'tema_creator' %}">
-
                                 ➕ Cadastrar Tema
-
                             </a>
                         </li>
 
                         <li>
                             <a class="dropdown-item"
                                 href="{% url 'subtema_creator' %}">
-
                                 ➕ Cadastrar Subtema
-
                             </a>
                         </li>
 
                         <li>
                             <a class="dropdown-item"
                                 href="{% url 'video_creator' %}">
-
                                 ➕ Cadastrar Vídeo
-
                             </a>
                         </li>
 
                     </ul>
-
                 </div>
+                {% endif %}
 
                 <div class="divisor"></div>
                 <p>Configurações<span>⚙️</span></p>
                 <p><a href="{% url 'sobre' %}">Sobre</a> <span>📦</span></p>
                 <p><a href="{% url 'contato' %}">Suporte</a> <span>👨‍💻</span></p>
+
+                <div class="divisor"></div>
+                {% if user.is_authenticated %}
+                <p><a href="{% url 'alterar_senha' %}">Alterar senha</a> <span>🔑</span></p>
+                <p><a href="{% url 'logout' %}">Sair</a> <span>🚪</span></p>
+                {% else %}
+                <p><a href="{% url 'login' %}">Entrar</a> <span>🔐</span></p>
+                {% endif %}
+                
             </div>
         </div>
 
