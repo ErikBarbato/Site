@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IFWatch - Notificações</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    display:flex;
+    min-height:100vh;
+    background:#c8d8e8;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+    width:340px;
+    background:#d7e2ee;
+    border-right:2px solid #b8c3cf;
+}
+
+.logo{
+    text-align:center;
+    padding:20px;
+}
+
+.logo img{
+    width:220px;
+}
+
+.titulo-menu{
+    font-size:26px;
+    padding:20px;
+    border-top:2px solid #b8c3cf;
+    border-bottom:2px solid #b8c3cf;
+}
+
+.menu{
+    padding:18px;
+}
+
+.menu a{
+    display:block;
+    text-decoration:none;
+    color:black;
+    font-size:22px;
+    margin-bottom:18px;
+    padding:16px 25px;
+    border-radius:40px;
+}
+
+.menu a.ativo{
+    background:#c0d0e0;
+}
+
+/* CONTEÚDO */
+
+.main{
+    flex:1;
+    padding:15px;
+}
+
+.search{
+    width:90%;
+    height:45px;
+    background:#b5c0cb;
+    margin:auto;
+    border-radius:30px;
+    position:relative;
+}
+
+.search input{
+    width:100%;
+    height:100%;
+    border:none;
+    outline:none;
+    background:transparent;
+    padding-left:20px;
+    font-size:18px;
+}
+
+.search span{
+    position:absolute;
+    right:20px;
+    top:50%;
+    transform:translateY(-50%);
+    font-size:28px;
+}
+
+.cabecalho{
+    padding:25px 20px;
+    border-bottom:3px solid #6d39ff;
+}
+
+.cabecalho h1{
+    font-size:50px;
+    font-weight:500;
+}
+
+.cabecalho p{
+    font-size:22px;
+    color:#555;
+}
+
+.secao{
+    padding:25px 20px;
+}
+
+.secao h2{
+    font-size:35px;
+    margin-bottom:10px;
+}
+
+.secao p{
+    color:#555;
+    margin-bottom:25px;
+}
+
+/* TOGGLE */
+
+.item{
+    display:flex;
+    align-items:flex-start;
+    gap:20px;
+    margin-bottom:30px;
+}
+
+.switch{
+    position:relative;
+    width:60px;
+    height:30px;
+}
+
+.switch input{
+    opacity:0;
+    width:0;
+    height:0;
+}
+
+.slider{
+    position:absolute;
+    cursor:pointer;
+    inset:0;
+    background:#bbb;
+    border-radius:30px;
+    transition:.3s;
+}
+
+.slider:before{
+    content:"";
+    position:absolute;
+    width:24px;
+    height:24px;
+    left:3px;
+    top:3px;
+    background:white;
+    border-radius:50%;
+    transition:.3s;
+}
+
+.switch input:checked + .slider{
+    background:#3b20ff;
+}
+
+.switch input:checked + .slider:before{
+    transform:translateX(30px);
+}
+
+.texto{
+    max-width:500px;
+}
+
+.texto h3{
+    font-size:22px;
+    margin-bottom:5px;
+}
+
+.texto p{
+    font-size:17px;
+    color:#333;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:40px;
+}
+
+.botoes{
+    display:flex;
+    gap:15px;
+    margin-top:30px;
+}
+
+.btn{
+    padding:12px 30px;
+    border:none;
+    border-radius:25px;
+    cursor:pointer;
+    font-size:18px;
+}
+
+.voltar{
+    background:#9ca8b4;
+}
+
+.salvar{
+    background:#3b20ff;
+    color:white;
+}
+
+</style>
+</head>
+<body>
+
+<!-- MENU -->
+
+<div class="sidebar">
+
+    <!-- LOGO CLICÁVEL -->
+        <div class="logo">
+            <a href="{% url 'Tela' %}">
+                <img src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/trimestre-zusnl2/assets/5bm9oymti6mz/_99DD0F56-3A35-4FCD-975D-B97DB7E1AB35_-removebg-preview.png" alt="IFWatch">
+            </a>
+        </div>
+
+
+    <div class="titulo-menu">
+        Configurações
+    </div>
+
+    <div class="menu">
+        <a href="{% url 'Config_user' %}">Conta</a>
+        <a href="{% url 'Config_noti' %}">Notificações</a>
+        <a href="{% url 'Config_priva' %}">Privacidade</a>
+    </div>
+
+</div>
+
+<!-- CONTEÚDO -->
+
+<div class="main">
+
+    <div class="search">
+        <input type="text" placeholder="Pesquisar...">
+        <span>🔍</span>
+    </div>
+
+    <div class="cabecalho">
+        <small>Notificações</small>
+        <h1>Escolha como suas notificações serão enviadas</h1>
+        <p>Selecione os tipos de notificações que serão enviadas para você</p>
+    </div>
+
+    <div class="secao">
+
+        <h2>Geral</h2>
+
+        <div class="grid">
+
+            <div class="item">
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+
+                <div class="texto">
+                    <h3>Inscrições</h3>
+                    <p>Enviar notificações sobre a atividade dos canais em que me inscrevi.</p>
+                </div>
+            </div>
+
+            <div class="item">
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+
+                <div class="texto">
+                    <h3>Atividade no meu canal</h3>
+                    <p>Receber notificações sobre comentários e atividades em meus vídeos.</p>
+                </div>
+            </div>
+
+            <div class="item">
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+
+                <div class="texto">
+                    <h3>Vídeos recomendados</h3>
+                    <p>Receber notificações de vídeos recomendados.</p>
+                </div>
+            </div>
+
+            <div class="item">
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+
+                <div class="texto">
+                    <h3>Comentários</h3>
+                    <p>Receber notificações sobre respostas e menções.</p>
+                </div>
+            </div>
+
+            <div class="item">
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+
+                <div class="texto">
+                    <h3>Menções</h3>
+                    <p>Quando outros usuários mencionarem meu canal.</p>
+                </div>
+            </div>
+
+            <div class="item">
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+
+                <div class="texto">
+                    <h3>Promoções e Ofertas</h3>
+                    <p>Conteúdo promocional e vantagens exclusivas.</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="secao">
+
+        <h2>Notificações por E-mail</h2>
+
+        <div class="grid">
+
+            <div class="item">
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+
+                <div class="texto">
+                    <h3>Atividade da Conta</h3>
+                    <p>Receber e-mails sobre atividade e atualizações da conta.</p>
+                </div>
+            </div>
+
+            <div class="item">
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+
+                <div class="texto">
+                    <h3>Atualizações do Produto</h3>
+                    <p>Anúncios, recomendações e novidades.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="botoes">
+            <button class="btn voltar">Voltar</button>
+            <button class="btn salvar" onclick="salvar()">Salvar</button>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function salvar(){
+    alert("Configurações salvas com sucesso!");
+}
+
+</script>
+
+</body>
+</html>

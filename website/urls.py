@@ -29,6 +29,9 @@ urlpatterns = [
 
     path("", Index.as_view(), name="menu"),
     path("sobre/", Sobre.as_view(), name="sobre"),
+    path("Config_user", Config_user.as_view(), name="Config_user"),
+    path("Config_noti", Config_noti.as_view(), name="Config_noti"),
+    path("Config_priva", Config_priva.as_view(), name="Config_priva"),
     path("contato/", Contato.as_view(), name="contato"),
     path("menuCadastro/", MenuCadastro.as_view(), name="menuCadastro"),
     path("CadastroAluno/", CadastroAluno.as_view(), name="CadastroAluno"),

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações - IFWatch</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Poppins',sans-serif;
+        }
+
+        body{
+            min-height:100vh;
+            display:flex;
+            background:#d9e6f1;
+        }
+
+        /* MENU LATERAL */
+        .sidebar{
+            width:360px;
+            background:#dbe7f2;
+            border-right:2px solid #b5c0ca;
+        }
+
+        .logo{
+            padding:20px;
+            border-bottom:2px solid #b5c0ca;
+        }
+
+        .logo img{
+            width:220px;
+        }
+
+        .titulo-menu{
+            padding:20px;
+            font-size:28px;
+            border-bottom:2px solid #b5c0ca;
+        }
+
+        .menu{
+            padding-top:20px;
+        }
+
+        .menu a{
+            display:block;
+            text-decoration:none;
+            color:black;
+            font-size:24px;
+            padding:15px 25px;
+        }
+
+        .menu a.ativo{
+            background:#c7d4e1;
+            border-radius:40px;
+            width:80%;
+            margin-left:10px;
+        }
+
+        /* CONTEÚDO */
+        .main{
+            flex:1;
+        }
+
+        /* PESQUISA */
+        .topo{
+            padding:15px 50px;
+        }
+
+        .pesquisa{
+            width:100%;
+            max-width:700px;
+            margin:auto;
+            position:relative;
+        }
+
+        .pesquisa input{
+            width:100%;
+            padding:15px 60px 15px 20px;
+            border:none;
+            border-radius:40px;
+            background:#b6c0cb;
+            font-size:20px;
+        }
+
+        .pesquisa span{
+            position:absolute;
+            right:20px;
+            top:50%;
+            transform:translateY(-50%);
+            font-size:30px;
+        }
+
+        /* BLOCOS */
+        .box{
+            padding:20px;
+            border-top:2px solid #b5c0ca;
+        }
+
+        .conta-topo{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+
+        .conta-topo h1{
+            font-size:28px;
+            font-weight:500;
+        }
+
+        .conta-topo img{
+            width:120px;
+        }
+
+        .email{
+            color:#666;
+            margin-top:10px;
+        }
+
+        .titulo{
+            font-size:22px;
+            margin-bottom:15px;
+        }
+
+        .descricao{
+            font-size:18px;
+            margin-bottom:20px;
+        }
+
+        .conta-google{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+
+        .conta-google a{
+            color:#1847ff;
+            text-decoration:none;
+            font-size:18px;
+        }
+
+        .texto-cinza{
+            color:#666;
+        }
+
+        .canal{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-top:20px;
+        }
+
+        .criar{
+            color:#1847ff;
+            text-decoration:none;
+            font-size:24px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- MENU -->
+    <div class="sidebar">
+
+    <!-- LOGO CLICÁVEL -->
+        <div class="logo">
+            <a href="{% url 'Tela' %}">
+                <img src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/trimestre-zusnl2/assets/5bm9oymti6mz/_99DD0F56-3A35-4FCD-975D-B97DB7E1AB35_-removebg-preview.png" alt="IFWatch">
+            </a>
+        </div>
+
+    
+
+        <div class="titulo-menu">
+            Configurações
+        </div>
+
+        <div class="menu">
+            <a href="{% url 'Config_user' %}">Conta</a>
+            <a href="{% url 'Config_noti' %}">Notificações</a>
+            <a href="{% url 'Config_priva' %}">Privacidade</a>
+        </div>
+
+    </div>
+
+    <!-- CONTEÚDO -->
+    <div class="main">
+
+        <!-- PESQUISA -->
+        <div class="topo">
+            <div class="pesquisa">
+                <input type="text" placeholder="">
+                <span>🔍</span>
+            </div>
+        </div>
+
+        <!-- CONTA -->
+        <div class="box">
+
+            <p>Conta</p>
+
+            <div class="conta-topo">
+
+                <div>
+                    <h1>
+                        Escolha como seu perfil aparecera
+                        para os outros usuários do IFWatch.
+                    </h1>
+
+                    <p class="email">
+                        Conectado como cardoso.souza.lucas@escola.pr.gov.br
+                    </p>
+                </div>
+
+                <img src="https://cdn-icons-png.flaticon.com/512/3212/3212608.png">
+
+            </div>
+
+        </div>
+
+        <!-- SUA CONTA -->
+        <div class="box">
+
+            <h2 class="titulo">Sua conta</h2>
+
+            <p class="descricao">
+                O Login no IFWatch é feito com sua conta do Google
+            </p>
+
+            <div class="conta-google">
+
+                <div>
+                    <h3>Conta Google</h3>
+                </div>
+
+                <div>
+                    <a href="https://myaccount.google.com/" target="_blank">
+                        Ver ou alterar configurações da conta Google
+                    </a>
+
+                    <p class="texto-cinza">
+                        Redirecionar para a página da sua conta
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- CANAL -->
+        <div class="box">
+
+            <h2 class="titulo">Canal do IFWatch</h2>
+
+            <p class="descricao">
+                Crie ou compartilhe vídeos com outros usuários.
+                Para enviar vídeos é necessário ter um canal e um login de professor.
+            </p>
+
+            <div class="canal">
+
+                <h3>Seu canal</h3>
+
+                <a href="#" class="criar">
+                    Criar canal
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

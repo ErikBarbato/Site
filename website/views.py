@@ -13,6 +13,15 @@ class Index(TemplateView):
 class Sobre(TemplateView):
     template_name = "website/sobre.html"
 
+class Config_user(TemplateView):
+    template_name = "website/config_user.html"
+
+class Config_priva(TemplateView):
+    template_name = "website/config_priva.html"
+
+class Config_noti(TemplateView):
+    template_name = "website/config_noti.html"
+
 class Contato(TemplateView):
     template_name = "website/contato.html"
 
@@ -35,6 +44,8 @@ class LoginAluno(TemplateView):
 
 class LoginProfessor(TemplateView):
     template_name = "website/LoginProfessor.html"
+
+
 
 
 
