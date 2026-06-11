@@ -134,7 +134,7 @@
 
     <div class="container">
 
-        <a href="inicio" class="voltar">Voltar</a>
+        <a href="{% url 'menu' %}" class="voltar">Voltar</a>
 
         <div class="titulo">
             <div class="bolinha"></div>
@@ -151,7 +151,7 @@
                     <p>Com esse login você pode apenas assistir e avaliar o conteúdo segundo as diretrizes</p>
                 </div>
                 <div class="card-footer">
-                    <a href="LoginAluno">Acessar →</a>
+                    <a href="{% url 'LoginAluno' %}">Acessar →</a>
                 </div>
             </div>
 
@@ -163,7 +163,7 @@
                     <p>Com o login de professor você tem acesso a habilidade de dar upload de vídeos na plataforma</p>
                 </div>
                 <div class="card-footer">
-                    <a href="LoginProfessor">Acessar →</a>
+                    <a href="{% url 'LoginProfessor' %}">Acessar →</a>
                 </div>
             </div>
 

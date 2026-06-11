@@ -123,35 +123,52 @@
     <div class="container">
 
         <div class="topo">
-            <a href="menuLogin" class="voltar">Voltar</a>
+            <a href="{% url 'menuLogin' %}" class="voltar">Voltar</a>
             <div class="titulo">Login Professor</div>
         </div>
 
-        <form class="form">
+        <form class="form" method="post">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="campo">
+                <div class="input-box" style="background:#f8d7da; color:#842029; border-radius:10px; padding:10px; margin-bottom:20px;">
+                    {% for error in form.non_field_errors %}
+                        <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
 
             <!-- Email -->
             <div class="campo">
                 <label>Email <span class="obrigatorio">*</span></label>
                 <div class="input-box">
-                    <input type="email" placeholder="Email:">
+                    <input type="text" name="username" value="{{ form.username.value|default_if_none:'' }}" placeholder="Email:" autocomplete="username">
                 </div>
-            </div>
-
-            <!-- SIAPE -->
-            <div class="campo">
-                <label>SIAPE <span class="obrigatorio">*</span></label>
-                <div class="input-box">
-                    <input type="text" placeholder="Id Professor:">
+                {% if form.username.errors %}
+                <div class="input-box" style="background:#f8d7da; color:#842029; border-radius:10px; padding:8px; margin-top:8px;">
+                    {% for error in form.username.errors %}
+                        <div>{{ error }}</div>
+                    {% endfor %}
                 </div>
+                {% endif %}
             </div>
 
             <!-- Senha -->
             <div class="campo">
                 <label>Senha <span class="obrigatorio">*</span></label>
                 <div class="input-box">
-                    <input type="password" id="senha" placeholder="Senha:">
+                    <input type="password" name="password" id="senha" placeholder="Senha:" autocomplete="current-password">
                     <span class="olho" onclick="toggleSenha()">👁️‍🗨️</span>
                 </div>
+                {% if form.password.errors %}
+                <div class="input-box" style="background:#f8d7da; color:#842029; border-radius:10px; padding:8px; margin-top:8px;">
+                    {% for error in form.password.errors %}
+                        <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
 
             <button class="btn">Entra</button>

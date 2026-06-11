@@ -131,7 +131,7 @@ body{
 
 <div class="container">
 
-    <a href="inicio" class="voltar">Voltar</a>
+    <a href="{% url 'menu' %}" class="voltar">Voltar</a>
 
     <div class="titulo">
         <div class="bolinha"></div>
@@ -148,7 +148,7 @@ body{
                 <p>Como aluno você pode apenas assistir e avaliar o conteúdo segundo as diretrizes</p>
             </div>
             <div class="card-footer">
-                <a href="CadastroAluno">Acessar →</a>
+                <a href="{% url 'CadastroAluno' %}">Acessar →</a>
             </div>
         </div>
 
@@ -160,7 +160,7 @@ body{
                 <p>Como professor você tem acesso a habilidade de dar upload de vídeos na plataforma</p>
             </div>
             <div class="card-footer">
-                <a href="CadastroProfessor">Acessar →</a>
+                <a href="{% url 'CadastroProfessor' %}">Acessar →</a>
             </div>
         </div>
 
