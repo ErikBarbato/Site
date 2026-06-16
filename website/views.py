@@ -12,6 +12,9 @@ class Index(TemplateView):
 
 class Sobre(TemplateView):
     template_name = "website/sobre.html"
+    
+class Criadores(TemplateView):
+    template_name = "website/criadores.html"
 
 class Config_user(TemplateView):
     template_name = "website/config_user.html"
