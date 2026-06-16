@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criadores - IFWatch</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Poppins',sans-serif;
+        }
+
+        body{
+            background:#d8e8f0;
+        }
+
+        /* TOPO */
+        .topo{
+            padding:10px 25px;
+            border-bottom:3px solid #9ea7ad;
+        }
+
+        .logo img{
+            width:240px;
+        }
+
+        /* MENU */
+        .menu{
+            display:flex;
+            align-items:center;
+            gap:40px;
+            padding:10px 20px;
+        }
+
+        .menu a{
+            text-decoration:none;
+            color:#6f7377;
+            font-size:22px;
+        }
+
+        .ativo{
+            background:#bcc9d6;
+            padding:8px 40px;
+            border-radius:20px;
+        }
+
+        /* CONTEUDO */
+        .container{
+            width:98%;
+            margin:0 auto;
+            margin-top:10px;
+
+            background:rgba(220,230,240,.85);
+            border-radius:35px;
+            padding:40px;
+
+            background-image:
+            linear-gradient(rgba(220,230,240,.90),
+            rgba(220,230,240,.90)),
+            url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3');
+
+            background-size:cover;
+            background-position:center;
+        }
+
+        h1{
+            font-size:48px;
+            color:#72777c;
+            font-weight:400;
+            margin-bottom:50px;
+        }
+
+        .criador{
+            margin-bottom:80px;
+        }
+
+        .criador p{
+            font-size:20px;
+            color:#6d7277;
+            line-height:1.8;
+            max-width:1000px;
+        }
+
+        .linha{
+            height:4px;
+            background:#9ea7ad;
+            border-radius:10px;
+            margin-top:50px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOPO -->
+    <div class="topo">
+        <div class="logo">
+            <img src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/trimestre-zusnl2/assets/5bm9oymti6mz/_99DD0F56-3A35-4FCD-975D-B97DB7E1AB35_-removebg-preview.png">
+        </div>
+    </div>
+
+    <!-- MENU -->
+    <div class="menu">
+        <a href="#">Como o IFWatch Funciona</a>
+
+        <a href="#" class="ativo">
+            Criadores
+        </a>
+    </div>
+
+    <!-- CARD -->
+    <div class="container">
+
+        <h1>
+            Os responsáveis por essa afronta a programação
+        </h1>
+
+        <div class="criador">
+
+            <p>
+                Erik Moreira Barbato:
+                Foi quem teve a ideia para o projeto,
+                sendo responsável pela programação e
+                elaboração de ideias, estudante do Instituto
+                Federal de Paranavaí no seu último ano de curso.
+            </p>
+
+        </div>
+
+        <div class="criador">
+
+            <p>
+                Lucas Delfino Cardoso de Souza:
+                Responsável pela elaboração da interface e
+                assistência na elaboração de ideias, estudante
+                do Instituto Federal de Paranavaí no seu último
+                ano de curso.
+            </p>
+
+        </div>
+
+        <div class="linha"></div>
+
+    </div>
+
+</body>
+</html>

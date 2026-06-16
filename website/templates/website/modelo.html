@@ -68,8 +68,131 @@
         .menu p {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             margin: 15px 0;
             font-size: 20px;
+        }
+        
+        .menu p a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* ITEM DE SUPORTE CLICÁVEL (IGUAL AOS OUTROS) */
+        .item-clicavel {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .suporte-container {
+            position: relative;
+            width: 100%;
+        }
+
+        /* CARD DE AJUDA FLOATING */
+        .ajuda-popover {
+            display: none; 
+            position: absolute;
+            left: 240px; 
+            bottom: -50px; 
+            width: 290px;
+            background: rgba(207, 216, 220, 0.95); 
+            backdrop-filter: blur(8px); 
+            border-radius: 25px;
+            padding: 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            z-index: 999;
+        }
+
+        /* EXIBIR VIA JAVASCRIPT */
+        .ajuda-popover.visivel {
+            display: block !important;
+        }
+
+        .ajuda-popover h4 {
+            text-align: center;
+            font-size: 22px;
+            color: #555;
+            margin-bottom: 8px;
+            font-weight: 400;
+        }
+
+        .ajuda-popover .divisor-ajuda {
+            height: 1px;
+            background: #999;
+            margin: 12px 0;
+            opacity: 0.5;
+        }
+
+        /* LISTA DE OPÇÕES DENTRO DA AJUDA */
+        .ajuda-lista {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .ajuda-lista li {
+            font-size: 13px;
+            font-weight: 500;
+            color: #000;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        /* ÍCONE QUADRADO ESCURO COM LINHAS BRANCAS */
+        .ajuda-icon {
+            width: 22px;
+            height: 22px;
+            background: #1a1a1a;
+            color: #fff;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 10px;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        /* FOOTER DO CARD DE AJUDA */
+        .ajuda-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ajuda-footer p {
+            font-size: 11px;
+            color: #333;
+            margin: 0 !important;
+            line-height: 1.3;
+        }
+
+        .ajuda-footer a {
+            font-size: 12px;
+            color: #0056b3;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* ÍCONE DE CHAT AZUL */
+        .chat-icon-blue {
+            width: 34px;
+            height: 34px;
+            background: #3f51b5;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 16px;
+            flex-shrink: 0;
         }
 
         /* MAIN */
@@ -140,7 +263,6 @@
 
 <body>
 
-    <!-- SIDEBAR -->
     <div class="sidebar">
 
         <div>
@@ -155,96 +277,93 @@
                 <p>Canais inscritos <span>☆</span></p>
                 <p>Histórico <span>🔄</span></p>
                 
-                
-                <!-- DROPDOWN GERENCIAR -->
                 <div class="dropdown mb-3">
-
                     <button class="btn btn-primary dropdown-toggle w-100"
                         type="button"
                         data-bs-toggle="dropdown"
                         aria-expanded="false">
-
                         Gerenciar conteúdo
-
                     </button>
-
                     <ul class="dropdown-menu w-100">
-
                         <li>
-                            <a class="dropdown-item"
-                                href="{% url 'tema_listar' %}">
-
-                                📚 Tema
-
-                            </a>
+                            <a class="dropdown-item" href="{% url 'tema_listar' %}">📚 Tema</a>
                         </li>
-
                         <li>
-                            <a class="dropdown-item"
-                                href="{% url 'subtema_listar' %}">
-
-                                🧩 Subtema
-
-                            </a>
+                            <a class="dropdown-item" href="{% url 'subtema_listar' %}">🧩 Subtema</a>
                         </li>
-
                         <li>
-                            <a class="dropdown-item"
-                                href="{% url 'video_listar' %}">
-
-                                🎥 Vídeos
-
-                            </a>
+                            <a class="dropdown-item" href="{% url 'video_listar' %}">🎥 Vídeos</a>
                         </li>
-
                     </ul>
-
                 </div>
 
-                <!-- DROPDOWN CRIAR -->
                 {% if user.is_authenticated %}
                 <div class="dropdown mb-3">
-
                     <button class="btn btn-success dropdown-toggle w-100"
                         type="button"
                         data-bs-toggle="dropdown"
                         aria-expanded="false">
-
                         Criar conteúdo
-
                     </button>
-
                     <ul class="dropdown-menu w-100">
-
                         <li>
-                            <a class="dropdown-item"
-                                href="{% url 'tema_creator' %}">
-                                ➕ Cadastrar Tema
-                            </a>
+                            <a class="dropdown-item" href="{% url 'tema_creator' %}">➕ Cadastrar Tema</a>
                         </li>
-
                         <li>
-                            <a class="dropdown-item"
-                                href="{% url 'subtema_creator' %}">
-                                ➕ Cadastrar Subtema
-                            </a>
+                            <a class="dropdown-item" href="{% url 'subtema_creator' %}">➕ Cadastrar Subtema</a>
                         </li>
-
                         <li>
-                            <a class="dropdown-item"
-                                href="{% url 'video_creator' %}">
-                                ➕ Cadastrar Vídeo
-                            </a>
+                            <a class="dropdown-item" href="{% url 'video_creator' %}">➕ Cadastrar Vídeo</a>
                         </li>
-
                     </ul>
                 </div>
                 {% endif %}
 
                 <div class="divisor"></div>
                 <p><a href="{% url 'Config_user' %}">Configurações</a> <span>⚙️</span></p>
+
+                <div class="suporte-container">
+                    <p class="item-clicavel" id="btnSuporte">
+                        <a href="#">Suporte</a> 
+                        <span>🙋🏻‍♂️</span>
+                    </p>
+
+                    <div class="ajuda-popover" id="menuAjuda">
+                        <h4>Ajuda</h4>
+                        <div class="divisor-ajuda"></div>
+                        
+                        <ul class="ajuda-lista">
+                            <li>
+                                <div class="ajuda-icon">☰</div>
+                                Performance da plataforma
+                            </li>
+                            <li>
+                                <div class="ajuda-icon">☰</div>
+                                Problemas no envio de vídeo
+                            </li>
+                            <li>
+                                <div class="ajuda-icon">☰</div>
+                                Problemas com o login
+                            </li>
+                            <li>
+                                <div class="ajuda-icon">☰</div>
+                                Reportar bugs
+                            </li>
+                        </ul>
+
+                        <div class="divisor-ajuda"></div>
+
+                        <div class="ajuda-footer">
+                            <div>
+                                <p>Quer um atendimento mais aprofundado?</p>
+                                <a href="{% url 'contato' %}">Entre em contato</a>
+                            </div>
+                            <div class="chat-icon-blue">💬</div>
+                        </div>
+                    </div>
+                </div>
+
                 <p><a href="{% url 'sobre' %}">Sobre</a> <span>📦</span></p>
-                <p><a href="{% url 'contato' %}">Suporte</a> <span>👨‍💻</span></p>
 
                 <div class="divisor"></div>
                 {% if user.is_authenticated %}
@@ -259,24 +378,20 @@
 
     </div>
 
-    <!-- MAIN -->
     <div class="main">
 
         {% block conteudo %}
 
-        <!-- PESQUISA -->
         <div class="search">
             <div class="search-box">
                 <input type="text" placeholder="Pesquisar...">
             </div>
         </div>
 
-        <!-- VIDEOS -->
         <div class="row gap-3">
 
             {% for vid in videos %}
 
-            <!-- LINHA 1 -->
             <div class="col-md-4 bg-white p-3 rounded-3">
                 <iframe width="100%" height="215" src="{{vid.converter_link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 <h3>{{ vid.titulo }}</h3>
@@ -286,52 +401,38 @@
 
             {% empty %}
 
-            <h4>Nenhum vídeo cadatrado!</h4>
+            <h4>Nenhum vídeo cadastrado!</h4>
 
             {% endfor %}
-
-            {% comment %} <div class="card">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvTeO4lcHcIScxHvVP_eWrQwqSeCvVZDCvE6u17JJuZy7mgTRE">
-                <h3>Efeito Borboleta</h3>
-                <div class="views">10mil Views</div>
-                <div class="stars">⭐⭐⭐</div>
-            </div>
-
-            <div class="card">
-                <img src="https://pt.quizur.com/_image?href=https://img.quizur.com/f/img5ed400064565b9.60453495.png?lastEdited=1590951953&w=1024&h=1024&f=webp">
-                <h3>Revolução Francesa</h3>
-                <div class="views">210mil Views</div>
-                <div class="stars">⭐⭐⭐</div>
-            </div>
-
-            <!-- LINHA 2 -->
-            <div class="card">
-                <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcT7BozO3CK75pMEbwux0O9jSsrxWrqV2rt8KxnbBGlvJ9eSQpw1">
-                <h3>Introdução a Física</h3>
-                <div class="views">150mil Views</div>
-                <div class="stars">⭐⭐⭐</div>
-            </div>
-
-            <div class="card">
-                <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcReF9XS11PM1MBeAPDF2eJbyQGmH5v6hMLlU9Sc-4n0UbZqou2W">
-                <h3>Aula 3 - Hidrocarbonetos</h3>
-                <div class="views">100mil Views</div>
-                <div class="stars">⭐⭐⭐⭐⭐</div>
-            </div>
-
-            <div class="card">
-                <img src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQHUujba9lrzDKnNk2KLqAwwhfUc2M1PTogai1mZChLIfVKlT-h">
-                <h3>Matemática Básica</h3>
-                <div class="views">10mil Views</div>
-                <div class="stars">⭐⭐⭐⭐⭐</div>
-            </div> {% endcomment %}
 
         </div>
 
         {% endblock %}
 
     </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const btnSuporte = document.getElementById("btnSuporte");
+        const menuAjuda = document.getElementById("menuAjuda");
+
+        // Abre ou fecha o menu ao clicar no botão Suporte
+        btnSuporte.addEventListener("click", function (event) {
+            event.preventDefault(); 
+            event.stopPropagation(); 
+            menuAjuda.classList.toggle("visivel");
+        });
+
+        // Fecha o menu se o usuário clicar em qualquer outro lugar da tela
+        document.addEventListener("click", function (event) {
+            if (!menuAjuda.contains(event.target) && event.target !== btnSuporte) {
+                menuAjuda.classList.remove("visivel");
+            }
+        });
+    });
+</script>
 </body>
 
 </html>
