@@ -486,8 +486,18 @@
             <div class="col-md-4 bg-white p-3 rounded-3 card-video">
                 <iframe width="100%" height="215" src="{{vid.converter_link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 <h3>{{ vid.titulo }}</h3>
-                <div class="views">24mil Views</div>
-                <div class="stars">⭐⭐⭐⭐⭐</div>
+                <div class="views">{{ vid.visualizacoes }} Views</div>
+                <div class="stars">
+                    {% for _ in "12345" %}
+                        {% if forloop.counter <= vid.media_avaliacao_rounded|default:0 %}
+                            ★
+                        {% else %}
+                            ☆
+                        {% endif %}
+                    {% endfor %}
+                    <span style="font-size:14px; color:#333;"> ({{ vid.media_avaliacao|default:0|floatformat:1 }})</span>
+                </div>
+                <div class="comments">Comentários: {{ vid.comentarios_qtd }}</div>
             </div>
 
             {% empty %}

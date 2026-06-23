@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db.models import Avg
 # Create your models here.
 class Tema(models.Model):
     nome = models.CharField(max_length=255)
@@ -24,6 +26,7 @@ class Video(models.Model):
     link = models.URLField()
     ativo = models.BooleanField(default=True)
     subtema = models.ForeignKey(Subtema, on_delete=models.CASCADE, related_name='videos')
+    visualizacoes = models.PositiveIntegerField(default=0, verbose_name="Visualizações")
     cadastrado_por = models.ForeignKey(User, on_delete=models.CASCADE)
     cadastrado_em = models.DateTimeField(auto_now_add=True)
 
@@ -52,6 +55,15 @@ class Video(models.Model):
         # Caso não seja um link válido do YouTube, retorna o link original ou string vazia
         return self.link
 
+    @property
+    def average_rating(self):
+        agg = self.avaliacoes.aggregate(avg=Avg('nota'))
+        return agg.get('avg') or 0
+
+    @property
+    def comentarios_count(self):
+        return self.comentarios.count()
+
 
 class Comentario(models.Model):
     video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name='comentarios')
@@ -64,7 +76,7 @@ class Comentario(models.Model):
 
 class Avaliacao(models.Model):
     video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name='avaliacoes')
-    nota = models.PositiveSmallIntegerField()
+    nota = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     cadastrado_por = models.ForeignKey(User, on_delete=models.CASCADE)
     cadastrado_em = models.DateTimeField(auto_now_add=True)
     def __str__(self):

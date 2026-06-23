@@ -6,6 +6,8 @@ from django.views.generic.list import ListView
 from django.urls import reverse_lazy
 
 from .models import Tema, Subtema, Video, Comentario, Avaliacao, Like
+from django.db.models import Avg, Count, F
+from django.db.models.functions import Round
 
 class Index(TemplateView):
     template_name = "website/menu.html"
@@ -38,6 +40,11 @@ class CadastroProfessor(TemplateView):
     template_name = "website/CadastroProfessor.html"
 
 
+class Video(TemplateView):
+    template_name = "website/video.html"
+
+
+
 
 class MenuLogin(TemplateView):
     template_name = "website/menuLogin.html"
@@ -58,7 +65,11 @@ class Tela(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context["videos"] = Video.objects.all()[0:9]
+        context["videos"] = Video.objects.annotate(
+            media_avaliacao=Avg('avaliacoes__nota'),
+            media_avaliacao_rounded=Round(Avg('avaliacoes__nota')),
+            comentarios_qtd=Count('comentarios')
+        )[:9]
 
         return context
 
@@ -204,6 +215,12 @@ class VideoList(ListView):
 class VideoDetail(DetailView):
     model = Video
     template_name = "website/ver/video.html"
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        Video.objects.filter(pk=self.object.pk).update(visualizacoes=F('visualizacoes') + 1)
+        self.object.refresh_from_db(fields=['visualizacoes'])
+        return super().get(request, *args, **kwargs)
 
 
 
