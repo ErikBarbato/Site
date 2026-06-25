@@ -18,7 +18,7 @@ urlpatterns = [
         }
     ), name="login"),
     # URL para o usuário fazer logout
-    path("logout/", LogoutView.as_view(next_page="login"), name="logout"),
+    path("logout/", sair, name="logout"),
     # URL para o usuário alterar a senha
     path("password_change/", PasswordChangeView.as_view(
         template_name = "website/form.html",

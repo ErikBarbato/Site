@@ -274,6 +274,8 @@
         <div class="col-xl-8 col-lg-7 col-12">
             <div class="bg-slate-panel">
                 
+                <div id="feedbackMessage" class="feedback-message d-none"></div>
+                
                 <div class="video-main-title">{{ video.titulo }}</div>
                 
                 <div class="player-canvas">
@@ -453,11 +455,65 @@
             const pct = x / rect.width;
             let rating = Math.round(pct * 10) / 2; // 0.5 steps
             rating = Math.max(0.5, Math.min(5, rating));
-            if (!notaInput) return;
+            if (!notaInput || !ratingForm) return;
             notaInput.value = rating;
-            // submit the form to register rating
-            if (ratingForm) ratingForm.submit();
+
+            const formData = new FormData(ratingForm);
+            const csrfToken = ratingForm.querySelector('input[name=csrfmiddlewaretoken]')?.value;
+            const postUrl = window.location.pathname + window.location.search;
+
+            fetch(postUrl, {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': csrfToken,
+                },
+                body: formData,
+            })
+            .then(async response => {
+                const text = await response.text();
+                let data = null;
+                try {
+                    data = text ? JSON.parse(text) : {};
+                } catch (err) {
+                    data = null;
+                }
+
+                if (!response.ok) {
+                    if (response.status === 401 || response.status === 403) {
+                        throw new Error('Você precisa estar logado para avaliar este vídeo.');
+                    }
+                    throw new Error(data?.detail || data?.error || 'Erro ao enviar avaliação.');
+                }
+                return data;
+            })
+            .then(data => {
+                if (data.average_rating != null) {
+                    const average = parseFloat(data.average_rating);
+                    setFrontWidthByRating(average);
+                    if (ratingValue) ratingValue.textContent = '(' + average.toFixed(1) + ')';
+                }
+                setFeedbackMessage('Avaliação enviada com sucesso!', false);
+            })
+            .catch(error => {
+                console.error('Rating error:', error);
+                setFeedbackMessage(error.message, true);
+            });
         });
+
+        function setFeedbackMessage(message, isError) {
+            const feedback = document.getElementById('feedbackMessage');
+            if (!feedback) return;
+            feedback.textContent = message;
+            feedback.classList.toggle('d-none', !message);
+            feedback.style.color = isError ? '#bf1650' : '#0f5132';
+            feedback.style.background = isError ? '#f8d7da' : '#d1e7dd';
+            feedback.style.border = isError ? '1px solid #f5c2c7' : '1px solid #badbcc';
+            feedback.style.padding = '12px 16px';
+            feedback.style.borderRadius = '12px';
+            feedback.style.marginTop = '12px';
+        }
     })();
 </script>
 {% endblock %}

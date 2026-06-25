@@ -1,9 +1,13 @@
+from decimal import Decimal, InvalidOperation
+
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
+from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import redirect
+from django.http import JsonResponse
 
 from django.urls import reverse, reverse_lazy
 
@@ -34,6 +38,12 @@ class Contato(TemplateView):
 
 class MenuCadastro(TemplateView):
     template_name = "website/menuCadastro.html"
+
+
+def sair(request):
+    logout(request)
+    return redirect("login")
+
 
 class CadastroAluno(TemplateView):
     template_name = "website/CadastroAluno.html"
@@ -230,18 +240,28 @@ class VideoDetail(DetailView):
         self.object = self.get_object()
         tema_id = request.GET.get("tema")
         # Handle rating (nota) submission (supports 0.5 - 5.0)
+        rating_response = None
+
         if request.POST.get("nota") is not None:
             if request.user.is_authenticated:
                 try:
-                    nota = float(request.POST.get("nota"))
-                    if 0.5 <= nota <= 5.0:
+                    nota = Decimal(request.POST.get("nota"))
+                    if Decimal("0.5") <= nota <= Decimal("5.0"):
                         Avaliacao.objects.update_or_create(
                             video=self.object,
                             cadastrado_por=request.user,
                             defaults={"nota": nota}
                         )
-                except (ValueError, TypeError):
-                    pass
+                except (ValueError, TypeError, InvalidOperation):
+                    nota = None
+
+            if request.headers.get("x-requested-with") == "XMLHttpRequest":
+                self.object.refresh_from_db()
+                return JsonResponse({
+                    "success": request.user.is_authenticated,
+                    "average_rating": float(self.object.average_rating),
+                    "rating": float(nota) if request.user.is_authenticated and nota is not None else None,
+                }, status=200 if request.user.is_authenticated else 401)
 
         # Handle comment submission
         if request.POST.get("texto") is not None:
