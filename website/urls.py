@@ -35,7 +35,7 @@ urlpatterns = [
     path("Config_noti/", Config_noti.as_view(), name="Config_noti"),
     path("Config_priva/", Config_priva.as_view(), name="Config_priva"),
     path("contato/", Contato.as_view(), name="contato"),
-    path("video/", Video.as_view(), name="video"),
+    path("video/", VideoTela.as_view(), name="video"),
     path("menuCadastro/", MenuCadastro.as_view(), name="menuCadastro"),
     path("CadastroAluno/", CadastroAluno.as_view(), name="CadastroAluno"),
     path("CadastroProfessor/", CadastroProfessor.as_view(), name="CadastroProfessor"),
@@ -76,7 +76,7 @@ urlpatterns = [
 
 
     path("cadastrar/comentario/", ComentarioCreate.as_view(), name="comentario_creator"),
-
+    path("delete/comentario/<int:pk>/", ComentarioDelete.as_view(), name="comentario_delete"),
 
     path("cadastrar/avaliacao/", AvaliacaoCreate.as_view(), name="avaliacao_creator"),
 

@@ -35,7 +35,8 @@ class Video(models.Model):
     
     @property
     def converter_link(self):
-        import re
+        from urllib.parse import urlparse, parse_qs
+
         if not self.link:
             return ""
 
@@ -43,17 +44,64 @@ class Video(models.Model):
         if "/embed/" in self.link:
             return self.link
 
-        # Regex para extrair o ID do vídeo de diversos formatos (youtube.com, youtu.be, etc)
-        regex = r'(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})'
-        
-        match = re.search(regex, self.link)
-        
-        if match:
-            video_id = match.group(1)
-            return f"https://www.youtube.com/embed/{video_id}"
-        
-        # Caso não seja um link válido do YouTube, retorna o link original ou string vazia
-        return self.link
+        try:
+            parsed = urlparse(self.link)
+            netloc = parsed.netloc.lower()
+
+            # youtu.be short link -> path component is the id
+            if 'youtu.be' in netloc:
+                video_id = parsed.path.lstrip('/')
+                if video_id:
+                    return f"https://www.youtube.com/embed/{video_id}"
+
+            # youtube.com links
+            if 'youtube' in netloc or 'youtube-nocookie' in netloc:
+                # query param v
+                qs = parse_qs(parsed.query)
+                if 'v' in qs and qs['v']:
+                    return f"https://www.youtube.com/embed/{qs['v'][0]}"
+
+                # path may contain /embed/VIDEOID or /v/VIDEOID
+                parts = parsed.path.split('/')
+                for i, part in enumerate(parts):
+                    if part in ('embed', 'v') and i + 1 < len(parts):
+                        candidate = parts[i + 1]
+                        return f"https://www.youtube.com/embed/{candidate}"
+
+            # Fallback: return original link
+            return self.link
+        except Exception:
+            return self.link
+
+    @property
+    def thumbnail_url(self):
+        from urllib.parse import urlparse, parse_qs
+        if not self.link:
+            return ""
+
+        try:
+            parsed = urlparse(self.link)
+            netloc = parsed.netloc.lower()
+
+            video_id = None
+            if 'youtu.be' in netloc:
+                video_id = parsed.path.lstrip('/')
+            elif 'youtube' in netloc or 'youtube-nocookie' in netloc:
+                qs = parse_qs(parsed.query)
+                if 'v' in qs and qs['v']:
+                    video_id = qs['v'][0]
+                else:
+                    parts = parsed.path.split('/')
+                    for i, part in enumerate(parts):
+                        if part in ('embed', 'v') and i + 1 < len(parts):
+                            video_id = parts[i + 1]
+                            break
+
+            if video_id:
+                return f"https://img.youtube.com/vi/{video_id}/hqdefault.jpg"
+            return ""
+        except Exception:
+            return ""
 
     @property
     def average_rating(self):

@@ -236,6 +236,36 @@
         color: #ffca28;
         font-size: 14px;
     }
+
+    /* Estrelas de avaliação (camada back/front para preenchimento) */
+    .star-rating {
+        display: inline-block;
+        position: relative;
+        font-size: 30px;
+        line-height: 1;
+        height: 34px;
+        cursor: pointer;
+        vertical-align: middle;
+        user-select: none;
+    }
+
+    .star-rating .stars-back,
+    .star-rating .stars-front {
+        position: absolute;
+        left: 0;
+        top: 0;
+        white-space: nowrap;
+    }
+
+    .star-rating .stars-back {
+        color: #d6d6d6; /* neutra, visível mesmo sem hover */
+    }
+
+    .star-rating .stars-front {
+        color: #ffca28;
+        overflow: hidden;
+        width: 0; /* será controlada pelo JS */
+    }
 </style>
 
 <div class="container-fluid ifwatch-detail-container">
@@ -247,15 +277,23 @@
                 <div class="video-main-title">{{ video.titulo }}</div>
                 
                 <div class="player-canvas">
-                    <iframe src="{{ video.link }}" title="IFWatch Player" allowfullscreen></iframe>
+                    {% comment %} <iframe src="{{ video.converter_link }}" title="IFWatch Player" allowfullscreen></iframe> {% endcomment %}
+                    <iframe width="100%" height="100%" src="{{ video.converter_link }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 </div>
 
                 <div class="action-bar-row">
                     <div>
                         <div class="pill-author">Prof. {{ video.cadastrado_por.username|default:"Professor" }}</div>
-                        <div class="stars-indicator mt-1 ps-2">
-                            ★ ★ ★ ★ ☆
-                        </div>
+
+                        <form id="ratingForm" method="POST" action="#" style="display:inline-block; margin-left:12px;">
+                            {% csrf_token %}
+                            <input type="hidden" name="nota" id="notaInput" value="">
+                            <div id="starRating" style="display:inline-block; vertical-align:middle; cursor:pointer; position:relative; width:140px; height:34px; font-size:34px; line-height:1;">
+                                <div class="stars-back" style="position:absolute; left:0; top:0; width:100%; height:100%; color:#e0e0e0; overflow:visible;">★★★★★</div>
+                                <div class="stars-front" style="position:absolute; left:0; top:0; width:0; height:100%; color:#ffca28; overflow:hidden; white-space:nowrap; z-index:2;">★★★★★</div>
+                            </div>
+                            <span id="ratingValue" style="margin-left:10px; color:#34495e; font-weight:600;">({{ video.average_rating|default:0|floatformat:1 }})</span>
+                        </form>
                     </div>
 
                     <div class="d-flex flex-wrap gap-2 align-items-center">
@@ -291,43 +329,23 @@
                 </form>
 
                 <div class="d-flex flex-column gap-3 mt-2">
-                    
+                    {% for comentario in comentarios %}
                     <div class="d-flex gap-2">
                         <div class="user-avatar-circle">👤</div>
                         <div>
-                            <div class="comment-author-name">Ramiro Vasconcellos</div>
-                            <div class="comment-text-content">Muito bom conteúdo</div>
+                            <div class="comment-author-name">{{ comentario.cadastrado_por.get_full_name|default:comentario.cadastrado_por.username }}</div>
+                            <div class="comment-text-content">{{ comentario.texto }}</div>
                             <div class="comment-meta-actions">
-                                <a href="#">2 Respostas</a>
-                                <span>👍 2 Marcações Gostei</span>
+                                <span>{{ comentario.cadastrado_em|date:"d/m/Y H:i" }}</span>
+                                {% if comentario.cadastrado_por == user %}
+                                <a href="{% url 'comentario_delete' comentario.pk %}">Excluir</a>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
-
-                    <div class="d-flex gap-2">
-                        <div class="user-avatar-circle">👤</div>
-                        <div>
-                            <div class="comment-author-name">Samantha Cruz</div>
-                            <div class="comment-text-content">Suas aulas ajudam muito nos meus estudos &lt;3</div>
-                            <div class="comment-meta-actions">
-                                <a href="#">16 Respostas</a>
-                                <span>👍 23 Marcações Gostei</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="d-flex gap-2">
-                        <div class="user-avatar-circle">👤</div>
-                        <div>
-                            <div class="comment-author-name">Diana Menezes</div>
-                            <div class="comment-text-content">Estudando para uma prova amanhã, seus vídeos estão salvando muito kkkkkkk</div>
-                            <div class="comment-meta-actions">
-                                <a href="#">345 Respostas</a>
-                                <span>👍 234 Marcações Gostei</span>
-                            </div>
-                        </div>
-                    </div>
-
+                    {% empty %}
+                    <div class="text-secondary">Seja o primeiro a comentar neste vídeo.</div>
+                    {% endfor %}
                 </div>
 
             </div>
@@ -337,32 +355,35 @@
             <div class="bg-slate-panel">
                 
                 <div class="d-flex gap-2 mb-3 flex-wrap">
-                    <a href="#" class="filter-chip-link">Filosofia</a>
-                    <a href="#" class="filter-chip-link">História</a>
-                    <div class="filter-chip-link" style="width: 50px; height: 32px; padding: 0;"></div>
-                    <div class="filter-chip-link" style="width: 30px; height: 32px; padding: 0;"></div>
+                    <a href="#" data-tema="all" class="filter-chip-link">Todos</a>
+                    {% for tema in tema_filtros %}
+                    <a href="#" data-tema="{{ tema.pk }}" class="filter-chip-link">{{ tema.nome }}</a>
+                    {% endfor %}
                 </div>
 
-                <div class="sidebar-video-card">
+                <div id="sidebar-video-list">
+                {% for item in sidebar_videos %}
+                <a href="{% url 'video_detail' item.pk %}" class="sidebar-video-card" data-tema="{{ item.subtema.tema.pk }}">
+                    {% if item.thumbnail_url %}
+                    <img src="{{ item.thumbnail_url }}" alt="{{ item.titulo }}" style="width:100%; border-radius: 16px; object-fit: cover; height: 220px; margin-bottom: 12px;">
+                    {% endif %}
                     <div class="d-flex justify-content-between align-items-start">
-                        <div class="sidebar-card-title">Aula 8 - Filósofos pré Socráticos</div>
+                        <div class="sidebar-card-title">{{ item.titulo }}</div>
                         <span class="text-secondary opacity-50" style="font-size: 16px;">🔄</span>
                     </div>
                     <div class="mt-auto">
-                        <div class="stars-indicator">★ ★ ★ ★ ☆</div>
-                        <div class="sidebar-card-prof">Prof. Marcelo</div>
+                        <div class="stars-indicator">
+                            {% for _ in "12345"|make_list %}
+                                {% if forloop.counter <= item.average_rating|floatformat:0 %}★{% else %}☆{% endif %}
+                            {% endfor %}
+                        </div>
+                        <div class="sidebar-card-prof">Prof. {{ item.cadastrado_por.username }}</div>
+                        <div class="text-secondary small">{{ item.visualizacoes }} visualizações</div>
                     </div>
-                </div>
-
-                <div class="sidebar-video-card">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div class="sidebar-card-title">Aula 12 - Surgimento da Pólis Grega</div>
-                        <span class="text-secondary opacity-50" style="font-size: 16px;">🔄</span>
-                    </div>
-                    <div class="mt-auto">
-                        <div class="stars-indicator">★ ★ ★ ★ ★</div>
-                        <div class="sidebar-card-prof">Prof. Clodoaldo</div>
-                    </div>
+                </a>
+                {% empty %}
+                <div class="sidebar-video-card text-secondary">Nenhum vídeo cadastrado ainda.</div>
+                {% endfor %}
                 </div>
 
             </div>
@@ -370,4 +391,73 @@
 
     </div>
 </div>
+ 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterLinks = document.querySelectorAll('.filter-chip-link[data-tema]');
+        const sidebarList = document.getElementById('sidebar-video-list');
+        if (!sidebarList) return;
+        const cards = sidebarList.querySelectorAll('.sidebar-video-card');
+
+        filterLinks.forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+                const selectedTema = this.getAttribute('data-tema');
+
+                cards.forEach(card => {
+                    const cardTema = card.getAttribute('data-tema');
+                    card.style.display = selectedTema === 'all' || cardTema === selectedTema ? 'flex' : 'none';
+                });
+            });
+        });
+    });
+</script>
+<script>
+    // Rating interactivity: supports half-star (0.5) increments
+    (function(){
+        const starRating = document.getElementById('starRating');
+        const starsFront = starRating ? starRating.querySelector('.stars-front') : null;
+        const notaInput = document.getElementById('notaInput');
+        const ratingForm = document.getElementById('ratingForm');
+        const ratingValue = document.getElementById('ratingValue');
+
+        if (!starRating || !starsFront) return;
+
+        function setFrontWidthByRating(r){
+            const pct = Math.max(0, Math.min(100, (r/5)*100));
+            starsFront.style.width = pct + '%';
+            if(ratingValue) ratingValue.textContent = '(' + r.toFixed(1) + ')';
+        }
+
+        // initialize from server average
+        const initial = parseFloat('{{ video.average_rating|default:0 }}') || 0;
+        setFrontWidthByRating(initial);
+
+        starRating.addEventListener('mousemove', function(e){
+            const rect = starRating.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const pct = x / rect.width;
+            let rating = Math.round(pct * 10) / 2; // 0.5 steps
+            rating = Math.max(0.5, Math.min(5, rating));
+            setFrontWidthByRating(rating);
+        });
+
+        starRating.addEventListener('mouseleave', function(){
+            // restore to initial average
+            setFrontWidthByRating(initial);
+        });
+
+        starRating.addEventListener('click', function(e){
+            const rect = starRating.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const pct = x / rect.width;
+            let rating = Math.round(pct * 10) / 2; // 0.5 steps
+            rating = Math.max(0.5, Math.min(5, rating));
+            if (!notaInput) return;
+            notaInput.value = rating;
+            // submit the form to register rating
+            if (ratingForm) ratingForm.submit();
+        });
+    })();
+</script>
 {% endblock %}

@@ -484,8 +484,17 @@
             {% for vid in videos %}
 
             <div class="col-md-4 bg-white p-3 rounded-3 card-video">
-                <iframe width="100%" height="215" src="{{vid.converter_link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                <h3>{{ vid.titulo }}</h3>
+                <a href="{% url 'video_detail' vid.pk %}" style="text-decoration:none; color:inherit; display:block;">
+                    {% if vid.thumbnail_url %}
+                    <div style="position:relative; width:100%; height:215px; overflow:hidden; border-radius:8px;">
+                        <img src="{{ vid.thumbnail_url }}" alt="{{ vid.titulo }}" style="width:100%; height:100%; object-fit:cover; display:block;">
+                        <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); font-size:42px; color:rgba(255,255,255,0.9); text-shadow:0 2px 8px rgba(0,0,0,0.6);">▶</div>
+                    </div>
+                    {% else %}
+                    <div style="width:100%; height:215px; background:#ddd; display:flex; align-items:center; justify-content:center; border-radius:8px;">Sem miniatura</div>
+                    {% endif %}
+                </a>
+                <h3 style="margin-top:12px;">{{ vid.titulo }}</h3>
                 <div class="views">{{ vid.visualizacoes }} Views</div>
                 <div class="stars">
                     {% for _ in "12345" %}

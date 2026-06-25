@@ -2,8 +2,10 @@ from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.shortcuts import redirect
 
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 
 from .models import Tema, Subtema, Video, Comentario, Avaliacao, Like
 from django.db.models import Avg, Count, F
@@ -40,7 +42,7 @@ class CadastroProfessor(TemplateView):
     template_name = "website/CadastroProfessor.html"
 
 
-class Video(TemplateView):
+class VideoTela(TemplateView):
     template_name = "website/video.html"
 
 
@@ -214,14 +216,73 @@ class VideoList(ListView):
 
 class VideoDetail(DetailView):
     model = Video
-    template_name = "website/ver/video.html"
+    template_name = "website/video.html"
+    context_object_name = "video"
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         Video.objects.filter(pk=self.object.pk).update(visualizacoes=F('visualizacoes') + 1)
         self.object.refresh_from_db(fields=['visualizacoes'])
+        self.object.link = self.object.converter_link
         return super().get(request, *args, **kwargs)
 
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        tema_id = request.GET.get("tema")
+        # Handle rating (nota) submission (supports 0.5 - 5.0)
+        if request.POST.get("nota") is not None:
+            if request.user.is_authenticated:
+                try:
+                    nota = float(request.POST.get("nota"))
+                    if 0.5 <= nota <= 5.0:
+                        Avaliacao.objects.update_or_create(
+                            video=self.object,
+                            cadastrado_por=request.user,
+                            defaults={"nota": nota}
+                        )
+                except (ValueError, TypeError):
+                    pass
+
+        # Handle comment submission
+        if request.POST.get("texto") is not None:
+            if request.user.is_authenticated:
+                texto = request.POST.get("texto", "").strip()
+                if texto:
+                    Comentario.objects.create(
+                        video=self.object,
+                        texto=texto,
+                        cadastrado_por=request.user
+                    )
+        redirect_url = reverse("video_detail", kwargs={"pk": self.object.pk})
+        if tema_id:
+            redirect_url = f"{redirect_url}?tema={tema_id}"
+        return redirect(redirect_url)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["comentarios"] = self.object.comentarios.order_by("-cadastrado_em")
+        context["avaliacao_media"] = self.object.average_rating
+        context["tema_filtros"] = Tema.objects.all()
+        context["sidebar_videos"] = Video.objects.filter(
+            ativo=True,
+            ).exclude(pk=self.object.pk).select_related("subtema__tema").order_by("-cadastrado_em")[:20]
+        return context
+
+
+class ComentarioDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Comentario
+    template_name = "website/form.html"
+    extra_context = {
+        "titulo": "Excluir Comentário",
+        "botao": "Excluir"
+    }
+
+    def test_func(self):
+        comentario = self.get_object()
+        return comentario.cadastrado_por == self.request.user
+
+    def get_success_url(self):
+        return reverse_lazy("video_detail", kwargs={"pk": self.object.video.pk})
 
 
 class ComentarioCreate(CreateView):
