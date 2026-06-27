@@ -231,24 +231,11 @@
             transform: translateY(-50%);
         }
 
-        /* GRID */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 40px;
-        }
-
-        /* CARD */
-        .card img {
-            width: 100%;
-            height: 160px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-
-        .card h3 {
-            margin-top: 10px;
-            font-size: 20px;
+        /* GRID RESPONSIVO */
+        .card-video {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .views {
@@ -475,7 +462,7 @@
             </div>
         </div>
 
-        <div class="row gap-3" id="containerVideos">
+        <div class="row g-4" id="containerVideos">
 
             <div id="msgNenhumEncontrado" class="col-12 d-none text-center mt-3 text-white">
                 <h4>Nenhum vídeo correspondente encontrado!</h4>
@@ -483,30 +470,32 @@
 
             {% for vid in videos %}
 
-            <div class="col-md-4 bg-white p-3 rounded-3 card-video">
-                <a href="{% url 'video_detail' vid.pk %}" style="text-decoration:none; color:inherit; display:block;">
-                    {% if vid.thumbnail_url %}
-                    <div style="position:relative; width:100%; height:215px; overflow:hidden; border-radius:8px;">
-                        <img src="{{ vid.thumbnail_url }}" alt="{{ vid.titulo }}" style="width:100%; height:100%; object-fit:cover; display:block;">
-                        <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); font-size:42px; color:rgba(255,255,255,0.9); text-shadow:0 2px 8px rgba(0,0,0,0.6);">▶</div>
-                    </div>
-                    {% else %}
-                    <div style="width:100%; height:215px; background:#ddd; display:flex; align-items:center; justify-content:center; border-radius:8px;">Sem miniatura</div>
-                    {% endif %}
-                </a>
-                <h3 style="margin-top:12px;">{{ vid.titulo }}</h3>
-                <div class="views">{{ vid.visualizacoes }} Views</div>
-                <div class="stars">
-                    {% for _ in "12345" %}
-                        {% if forloop.counter <= vid.media_avaliacao_rounded|default:0 %}
-                            ★
+            <div class="col-md-4 card-video mb-4">
+                <div class="bg-white p-3 rounded-3 h-100">
+                    <a href="{% url 'video_detail' vid.pk %}" style="text-decoration:none; color:inherit; display:block;">
+                        {% if vid.thumbnail_url %}
+                        <div style="position:relative; width:100%; height:215px; overflow:hidden; border-radius:8px;">
+                            <img src="{{ vid.thumbnail_url }}" alt="{{ vid.titulo }}" style="width:100%; height:100%; object-fit:cover; display:block;">
+                            <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); font-size:42px; color:rgba(255,255,255,0.9); text-shadow:0 2px 8px rgba(0,0,0,0.6);">▶</div>
+                        </div>
                         {% else %}
-                            ☆
+                        <div style="width:100%; height:215px; background:#ddd; display:flex; align-items:center; justify-content:center; border-radius:8px;">Sem miniatura</div>
                         {% endif %}
-                    {% endfor %}
-                    <span style="font-size:14px; color:#333;"> ({{ vid.media_avaliacao|default:0|floatformat:1 }})</span>
+                    </a>
+                    <h3 style="margin-top:12px;">{{ vid.titulo }}</h3>
+                    <div class="views">{{ vid.visualizacoes }} Views</div>
+                    <div class="stars">
+                        {% for _ in "12345" %}
+                            {% if forloop.counter <= vid.media_avaliacao_rounded|default:0 %}
+                                ★
+                            {% else %}
+                                ☆
+                            {% endif %}
+                        {% endfor %}
+                        <span style="font-size:14px; color:#333;"> ({{ vid.media_avaliacao|default:0|floatformat:1 }})</span>
+                    </div>
+                    <div class="comments">Comentários: {{ vid.comentarios_qtd }}</div>
                 </div>
-                <div class="comments">Comentários: {{ vid.comentarios_qtd }}</div>
             </div>
 
             {% empty %}
