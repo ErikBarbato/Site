@@ -336,6 +336,9 @@
                 <p>Canais inscritos <span>☆</span></p>
                 <p>Histórico <span>🔄</span></p>
                 
+                
+
+                {% if user.is_authenticated %}
                 <div class="dropdown mb-3">
                     <button class="btn btn-primary dropdown-toggle w-100"
                         type="button"
@@ -356,7 +359,6 @@
                     </ul>
                 </div>
 
-                {% if user.is_authenticated %}
                 <div class="dropdown mb-3">
                     <button class="btn btn-success dropdown-toggle w-100"
                         type="button"

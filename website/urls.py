@@ -75,11 +75,12 @@ urlpatterns = [
 
 
 
-    path("cadastrar/comentario/", ComentarioCreate.as_view(), name="comentario_creator"),
     path("delete/comentario/<int:pk>/", ComentarioDelete.as_view(), name="comentario_delete"),
+    
+    # path("cadastrar/comentario/", ComentarioCreate.as_view(), name="comentario_creator"),
+    # path("cadastrar/avaliacao/", AvaliacaoCreate.as_view(), name="avaliacao_creator"),
+    # path("cadastrar/like/", LikeCreate.as_view(), name="like_creator"),
 
-    path("cadastrar/avaliacao/", AvaliacaoCreate.as_view(), name="avaliacao_creator"),
 
 
-    path("cadastrar/like/", LikeCreate.as_view(), name="like_creator"),
 ]

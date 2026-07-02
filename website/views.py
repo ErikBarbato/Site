@@ -86,7 +86,7 @@ class Tela(TemplateView):
         return context
 
 
-class TemaCreate(CreateView): 
+class TemaCreate(LoginRequiredMixin, CreateView): 
     model = Tema
     fields = ["nome", "cadastrado_por"]
     template_name = "website/form.html"
@@ -96,7 +96,11 @@ class TemaCreate(CreateView):
         "botao": "Cadastrar"
     }
 
-class TemaUpdate(UpdateView): 
+    def form_valid(self, form):
+        form.instance.cadastrado_por = self.request.user
+        return super().form_valid(form)
+
+class TemaUpdate(LoginRequiredMixin, UpdateView): 
     model = Tema
     fields = ["nome"]
     template_name = "website/form.html"
@@ -105,8 +109,10 @@ class TemaUpdate(UpdateView):
         "titulo": "Atualizar Tema",
         "botao": "Atualizar"
     }
+    def get_queryset(self):
+        return super().get_queryset().filter(usuario=self.request.user)
 
-class TemaDelete(DeleteView):
+class TemaDelete(LoginRequiredMixin, DeleteView):
     model= Tema
     template_name = "website/form.html"
     success_url = reverse_lazy("Tela")
@@ -114,24 +120,32 @@ class TemaDelete(DeleteView):
         "titulo": "Cadastro de Tema",
         "botao": "Excluir"
     }
+    def get_queryset(self):
+        return super().get_queryset().filter(usuario=self.request.user)
 
-class TemaList(ListView):
+class TemaList(LoginRequiredMixin, ListView):
     model= Tema
     template_name = "website/lista/Tema.html"
 
-class TemaDetail(DetailView):
+    def get_queryset(self):
+        return super().get_queryset().filter(usuario=self.request.user)
+
+class TemaDetail(LoginRequiredMixin, DetailView):
     model = Tema
     template_name= "website/ver/Tema.html"
 
+    def get_queryset(self):
+        return super().get_queryset().filter(usuario=self.request.user)
 
 
 
 
 
 
-class SubtemaCreate(CreateView):
+
+class SubtemaCreate(LoginRequiredMixin, CreateView):
     model = Subtema
-    fields = ["nome", "tema", "cadastrado_por"]
+    fields = ["nome", "tema"]
     template_name = "website/form.html"
     success_url = reverse_lazy("Tela")
     extra_context = {
@@ -139,12 +153,12 @@ class SubtemaCreate(CreateView):
         "botao": "Cadastrar"
     }
 
-    # def form_valid(self, form):
-    #     form.instance.cadastrado_por = self.request.user
-    #     return super().form_valid(form)
+    def form_valid(self, form):
+        form.instance.cadastrado_por = self.request.user
+        return super().form_valid(form)
 
 
-class SubtemaUpdate(UpdateView):
+class SubtemaUpdate(LoginRequiredMixin, UpdateView):
     model = Subtema
     fields = ["nome", "tema"]
     template_name = "website/form.html"
@@ -154,8 +168,11 @@ class SubtemaUpdate(UpdateView):
         "botao": "Atualizar"
     }
 
+    def get_queryset(self):
+        return super().get_queryset().filter(usuario=self.request.user)
 
-class SubtemaDelete(DeleteView):
+
+class SubtemaDelete(LoginRequiredMixin, DeleteView):
     model = Subtema
     template_name = "website/form.html"
     success_url = reverse_lazy("Tela")
@@ -164,23 +181,32 @@ class SubtemaDelete(DeleteView):
         "botao": "Excluir"
     }
 
+    def get_queryset(self):
+        return super().get_queryset().filter(usuario=self.request.user)
 
-class SubtemaList(ListView):
+
+class SubtemaList(LoginRequiredMixin, ListView):
     model = Subtema
     template_name = "website/lista/subtema.html"
 
+    def get_queryset(self):
+        return super().get_queryset().filter(usuario=self.request.user)
 
-class SubtemaDetail(DetailView):
+
+class SubtemaDetail(LoginRequiredMixin, DetailView):
     model = Subtema
     template_name = "website/ver/subtema.html"
 
+    def get_queryset(self):
+        return super().get_queryset().filter(usuario=self.request.user)
 
 
 
 
 
 
-class VideoCreate(CreateView):
+
+class VideoCreate(LoginRequiredMixin, CreateView):
     model = Video
     fields = ["titulo", "descricao", "link", "subtema", "ativo", "cadastrado_por"]
     template_name = "website/form.html"
@@ -190,12 +216,12 @@ class VideoCreate(CreateView):
         "botao": "Cadastrar"
     }
 
-    # def form_valid(self, form):
-    #     form.instance.cadastrado_por = self.request.user
-    #     return super().form_valid(form)
+    def form_valid(self, form):
+        form.instance.cadastrado_por = self.request.user
+        return super().form_valid(form)
 
 
-class VideoUpdate(UpdateView):
+class VideoUpdate(LoginRequiredMixin, UpdateView):
     model = Video
     fields = ["titulo", "descricao", "link", "subtema", "ativo"]
     template_name = "website/form.html"
@@ -204,9 +230,11 @@ class VideoUpdate(UpdateView):
         "titulo": "Atualizar Video",
         "botao": "Atualizar"
     }
+    def get_queryset(self):
+        return super().get_queryset().filter(usuario=self.request.user)
 
 
-class VideoDelete(DeleteView):
+class VideoDelete(LoginRequiredMixin,DeleteView):
     model = Video
     template_name = "website/form.html"
     success_url = reverse_lazy("Tela")
@@ -214,14 +242,17 @@ class VideoDelete(DeleteView):
         "titulo": "Deletar de Video",
         "botao": "Excluir"
     }
+    def get_queryset(self):
+        return super().get_queryset().filter(usuario=self.request.user)
 
 
-class VideoList(ListView):
+class VideoList(LoginRequiredMixin, ListView):
     model = Video
     template_name = "website/lista/video.html"
 
+
     def get_queryset(self):
-        return Video.objects.filter(ativo=True)
+        return super().get_queryset().filter(usuario=self.request.user)
 
 
 class VideoDetail(DetailView):
@@ -305,59 +336,59 @@ class ComentarioDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return reverse_lazy("video_detail", kwargs={"pk": self.object.video.pk})
 
 
-class ComentarioCreate(CreateView):
-    model = Comentario
-    fields = ["texto", "video"]
-    template_name = "website/form.html"
-    extra_context = {
-        "titulo": "Cadastro de Comentario",
-        "botao": "Cadastrar"
-    }
+# class ComentarioCreate(CreateView):
+#     model = Comentario
+#     fields = ["texto", "video"]
+#     template_name = "website/form.html"
+#     extra_context = {
+#         "titulo": "Cadastro de Comentario",
+#         "botao": "Cadastrar"
+#     }
 
-    def form_valid(self, form):
-        form.instance.cadastrado_por = self.request.user
-        return super().form_valid(form)
+#     def form_valid(self, form):
+#         form.instance.cadastrado_por = self.request.user
+#         return super().form_valid(form)
 
-    def get_success_url(self):
-        return reverse_lazy("video_detail", kwargs={"pk": self.object.video.pk})
+#     def get_success_url(self):
+#         return reverse_lazy("video_detail", kwargs={"pk": self.object.video.pk})
     
 
 
 
 
 
-class AvaliacaoCreate(CreateView):
-    model = Avaliacao
-    fields = ["nota", "video"]
-    template_name = "website/form.html"
-    extra_context = {
-        "titulo": "Cadastro de Avaliação",
-        "botao": "Cadastrar"
-    }
+# class AvaliacaoCreate(CreateView):
+#     model = Avaliacao
+#     fields = ["nota", "video"]
+#     template_name = "website/form.html"
+#     extra_context = {
+#         "titulo": "Cadastro de Avaliação",
+#         "botao": "Cadastrar"
+#     }
 
-    def form_valid(self, form):
-        form.instance.cadastrado_por = self.request.user
-        return super().form_valid(form)
+#     def form_valid(self, form):
+#         form.instance.cadastrado_por = self.request.user
+#         return super().form_valid(form)
 
-    def get_success_url(self):
-        return reverse_lazy("video_detail", kwargs={"pk": self.object.video.pk})
-
-
+#     def get_success_url(self):
+#         return reverse_lazy("video_detail", kwargs={"pk": self.object.video.pk})
 
 
 
-class LikeCreate(CreateView):
-    model = Like
-    fields = ["comentario", "like"]
-    template_name = "website/form.html"
-    extra_context = {
-        "titulo": "Cadastro de like",
-        "botao": "Cadastrar"
-    }
 
-    def form_valid(self, form):
-        form.instance.cadastrado_por = self.request.user
-        return super().form_valid(form)
 
-    def get_success_url(self):
-        return reverse_lazy("Tela")
+# class LikeCreate(CreateView):
+#     model = Like
+#     fields = ["comentario", "like"]
+#     template_name = "website/form.html"
+#     extra_context = {
+#         "titulo": "Cadastro de like",
+#         "botao": "Cadastrar"
+#     }
+
+#     def form_valid(self, form):
+#         form.instance.cadastrado_por = self.request.user
+#         return super().form_valid(form)
+
+#     def get_success_url(self):
+#         return reverse_lazy("Tela")

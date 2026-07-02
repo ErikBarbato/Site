@@ -1,0 +1,60 @@
+Relatório de Implementação
+=========================
+
+1. Templates para ListView
+--------------------------
+- Implementado: Sim.
+- Foram encontrados templates de listagem para as views:
+  - `website/templates/website/lista/Tema.html`
+  - `website/templates/website/lista/subtema.html`
+  - `website/templates/website/lista/video.html`
+- As classes `TemaList`, `SubtemaList` e `VideoList` usam esses templates.
+
+2. URLs de login, logout e alteração de senha
+---------------------------------------------
+- Implementado: Sim.
+- `website/urls.py` define:
+  - `login/` com `LoginView` usando `website/form.html`
+  - `logout/` com a função `sair`
+  - `password_change/` com `PasswordChangeView` usando `website/form.html`
+- O mesmo template de formulário (`website/form.html`) é reutilizado para login e alteração de senha.
+
+3. Controle de acesso com autenticação (LoginRequiredMixin)
+----------------------------------------------------------
+- Parcialmente implementado.
+- Usado em várias views com relação a usuário:
+  - `TemaCreate`, `TemaUpdate`, `TemaDelete`, `TemaList`, `TemaDetail`
+  - `SubtemaCreate`, `SubtemaUpdate`, `SubtemaDelete`, `SubtemaList`, `SubtemaDetail`
+  - `VideoCreate`, `VideoUpdate`, `VideoDelete`, `VideoList`
+  - `ComentarioDelete`
+- Atenção: as views abaixo não usam `LoginRequiredMixin`, apesar de dependerem de `request.user`:
+  - `ComentarioCreate`
+  - `AvaliacaoCreate`
+  - `LikeCreate`
+- Conclusão: o controle de acesso está aplicado nos principais fluxos, mas algumas views de criação de objetos relacionados a usuário podem precisar de proteção adicional.
+
+4. Uso de `request.user.is_authenticated` em templates HTML
+----------------------------------------------------------
+- Implementado: Sim.
+- Em `website/templates/website/modelo.html` há blocos `if user.is_authenticated` que exibem links de login, logout e alteração de senha dinamicamente.
+
+5. Relacionar e filtrar objetos por usuário com `form_valid()` e `get_queryset()`
+--------------------------------------------------------------------------------
+- Implementado: Sim, em grande parte.
+- `form_valid()` insere `cadastrado_por = self.request.user` em:
+  - `TemaCreate`
+  - `SubtemaCreate`
+  - `VideoCreate`
+  - `ComentarioCreate`
+  - `AvaliacaoCreate`
+  - `LikeCreate`
+- `get_queryset()` filtra por `usuario=self.request.user` em:
+  - `TemaUpdate`, `TemaDelete`, `TemaList`, `TemaDetail`
+  - `SubtemaUpdate`, `SubtemaDelete`, `SubtemaList`, `SubtemaDetail`
+  - `VideoUpdate`, `VideoDelete`, `VideoList`
+- Observação: as classes `ComentarioCreate`, `AvaliacaoCreate` e `LikeCreate` têm `form_valid()`, mas não têm proteção de login associada.
+
+Resumo final
+------------
+- Critérios atendidos: sim, com exceção de uma pequena inconsistência de controle de acesso em algumas views de criação de objetos relacionados a usuário.
+- Recomendação: adicionar `LoginRequiredMixin` em `ComentarioCreate`, `AvaliacaoCreate` e `LikeCreate` se esses formulários devem ser acessíveis apenas por usuários autenticados.
