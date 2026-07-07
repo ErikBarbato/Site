@@ -1,21 +1,165 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Contato</h1>
-    <p>
-        como contatar nossos serviços ?
-    </p>
-    <p>
-        Acesse clona_cartão.com.br e insira as informações do seu cartão de credito
-         e de seus familiares tambem, após espere o agiota entrar em contato
-    </p>  
-    <img src="https://i.pinimg.com/736x/ce/e7/d3/cee7d3f35d1368ffc350df4a6cbabaf4.jpg" alt="Pato"> 
-</body>
-</html>
+<style>
+    /* Força o reset completo de margens do navegador e aplica o fundo azul em tudo */
+    html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #6b94e6 !important; /* Aplica a cor na página inteira */
+    }
 
+    /* Container que envelopa e garante a tela cheia */
+    .suporte-wrapper {
+        background-color: #6b94e6;
+        min-height: 100vh;
+        width: 100vw;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        color: #ffffff;
+        box-sizing: border-box;
+    }
 
+    /* Topo com fundo transparente */
+    .topo {
+        padding: 30px 50px 20px 50px;
+        background-color: transparent;
+    }
+
+    .topo .logo img {
+        height: 45px;
+        object-fit: contain;
+    }
+
+    /* Linha divisória fina com opacidade branca suave */
+    .linha {
+        height: 1px;
+        background-color: rgba(255, 255, 255, 0.2);
+        width: 100%;
+        margin-bottom: 40px;
+    }
+
+    /* Container do Conteúdo centralizado */
+    .suporte-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 50px;
+    }
+
+    /* Bloco de Informações (Esquerda) */
+    .suporte-info {
+        flex: 1;
+        max-width: 500px;
+    }
+
+    .suporte-info h1 {
+        font-size: 3.5rem;
+        color: #ffffff;
+        font-weight: 500;
+        margin: 0 0 25px 0;
+    }
+
+    .suporte-info p {
+        font-size: 1.25rem;
+        line-height: 1.6;
+        color: #e2e8f0; 
+        margin: 0 0 45px 0;
+    }
+
+    /* Botão Estilizado Arredondado */
+    .btn-suporte {
+        display: inline-flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: rgba(255, 255, 255, 0.25);
+        width: 320px;
+        height: 48px;
+        padding: 0 12px 0 20px;
+        border-radius: 24px;
+        text-decoration: none;
+        backdrop-filter: blur(5px);
+        transition: background-color 0.2s ease, transform 0.1s ease;
+    }
+
+    .btn-suporte:hover {
+        background-color: rgba(255, 255, 255, 0.35);
+    }
+
+    .btn-suporte:active {
+        transform: scale(0.98);
+    }
+
+    /* Ícone interno da Seta */
+    .btn-suporte .seta {
+        background-color: #ffffff;
+        color: #6b94e6;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+        font-weight: bold;
+    }
+
+    /* Bloco da Imagem Circular (Direita) */
+    .suporte-imagem {
+        flex: 1;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .suporte-imagem .circulo-img {
+        width: 380px;
+        height: 380px;
+        object-fit: cover;
+        border-radius: 50%;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Ajuste responsivo */
+    @media (max-width: 900px) {
+        .suporte-container {
+            flex-direction: column-reverse;
+            text-align: center;
+            gap: 40px;
+            padding: 20px;
+        }
+        .suporte-imagem {
+            justify-content: center;
+        }
+        .btn-suporte {
+            margin: 0 auto;
+        }
+    }
+</style>
+
+<div class="suporte-wrapper">
+    <div class="topo">
+        <div class="logo">
+            <a href="{% url 'Tela' %}">
+                <img src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/trimestre-zusnl2/assets/5bm9oymti6mz/_99DD0F56-3A35-4FCD-975D-B97DB7E1AB35_-removebg-preview.png" alt="IFWatch Logo">
+            </a>
+        </div>
+    </div>
+
+    <div class="linha"></div>
+
+    <div class="suporte-container">
+        <div class="suporte-info">
+            <h1>Suporte</h1>
+            <p>Informe o problema que lhe ocorreu durante o uso do site e tentaremos te ajudar a resolver o problema</p>
+            
+            <a href="#" class="btn-suporte">
+                <span></span> 
+                <span class="seta">›</span>
+            </a>
+        </div>
+
+        <div class="suporte-imagem">
+            <img class="circulo-img" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/trimestre-zusnl2/assets/5ehugy4sjm86/images_(2).jpg" alt="Atendimento Suporte">
+        </div>
+    </div>
+</div>

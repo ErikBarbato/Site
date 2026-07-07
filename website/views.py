@@ -110,7 +110,7 @@ class TemaUpdate(LoginRequiredMixin, UpdateView):
         "botao": "Atualizar"
     }
     def get_queryset(self):
-        return super().get_queryset().filter(usuario=self.request.user)
+        return super().get_queryset().filter(cadastrado_por=self.request.user)
 
 class TemaDelete(LoginRequiredMixin, DeleteView):
     model= Tema
@@ -121,21 +121,21 @@ class TemaDelete(LoginRequiredMixin, DeleteView):
         "botao": "Excluir"
     }
     def get_queryset(self):
-        return super().get_queryset().filter(usuario=self.request.user)
+        return super().get_queryset().filter(cadastrado_por=self.request.user)
 
 class TemaList(LoginRequiredMixin, ListView):
     model= Tema
     template_name = "website/lista/Tema.html"
 
     def get_queryset(self):
-        return super().get_queryset().filter(usuario=self.request.user)
+        return super().get_queryset().filter(cadastrado_por=self.request.user)
 
 class TemaDetail(LoginRequiredMixin, DetailView):
     model = Tema
     template_name= "website/ver/Tema.html"
 
     def get_queryset(self):
-        return super().get_queryset().filter(usuario=self.request.user)
+        return super().get_queryset().filter(cadastrado_por=self.request.user)
 
 
 
@@ -169,7 +169,7 @@ class SubtemaUpdate(LoginRequiredMixin, UpdateView):
     }
 
     def get_queryset(self):
-        return super().get_queryset().filter(usuario=self.request.user)
+        return super().get_queryset().filter(cadastrado_por=self.request.user)
 
 
 class SubtemaDelete(LoginRequiredMixin, DeleteView):
@@ -182,7 +182,7 @@ class SubtemaDelete(LoginRequiredMixin, DeleteView):
     }
 
     def get_queryset(self):
-        return super().get_queryset().filter(usuario=self.request.user)
+        return super().get_queryset().filter(cadastrado_por=self.request.user)
 
 
 class SubtemaList(LoginRequiredMixin, ListView):
@@ -190,7 +190,7 @@ class SubtemaList(LoginRequiredMixin, ListView):
     template_name = "website/lista/subtema.html"
 
     def get_queryset(self):
-        return super().get_queryset().filter(usuario=self.request.user)
+       return super().get_queryset().filter(cadastrado_por=self.request.user)
 
 
 class SubtemaDetail(LoginRequiredMixin, DetailView):
@@ -198,7 +198,7 @@ class SubtemaDetail(LoginRequiredMixin, DetailView):
     template_name = "website/ver/subtema.html"
 
     def get_queryset(self):
-        return super().get_queryset().filter(usuario=self.request.user)
+        return super().get_queryset().filter(cadastrado_por=self.request.user)
 
 
 
@@ -231,7 +231,7 @@ class VideoUpdate(LoginRequiredMixin, UpdateView):
         "botao": "Atualizar"
     }
     def get_queryset(self):
-        return super().get_queryset().filter(usuario=self.request.user)
+        return super().get_queryset().filter(cadastrado_por=self.request.user)
 
 
 class VideoDelete(LoginRequiredMixin,DeleteView):
@@ -243,7 +243,7 @@ class VideoDelete(LoginRequiredMixin,DeleteView):
         "botao": "Excluir"
     }
     def get_queryset(self):
-        return super().get_queryset().filter(usuario=self.request.user)
+        return super().get_queryset().filter(cadastrado_por=self.request.user)
 
 
 class VideoList(LoginRequiredMixin, ListView):
@@ -252,7 +252,7 @@ class VideoList(LoginRequiredMixin, ListView):
 
 
     def get_queryset(self):
-        return super().get_queryset().filter(usuario=self.request.user)
+        return super().get_queryset().filter(cadastrado_por=self.request.user)
 
 
 class VideoDetail(DetailView):
