@@ -47,6 +47,9 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
 ]
 
+if DEBUG:
+    INSTALLED_APPS += ["debug_toolbar"]
+
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
@@ -61,6 +64,20 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+if DEBUG:
+    MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+    "localhost",
+    "::1",
+]
+
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_TOOLBAR_CALLBACK": lambda request: DEBUG and request.META.get("REMOTE_ADDR") in {"127.0.0.1", "::1", "localhost"},
+    "IS_RUNNING_TESTS": False,
+}
 
 ROOT_URLCONF = "Site.urls"
 

@@ -1,6 +1,7 @@
 {% extends "website/modelo.html" %}
 
 {% load static %}
+{% load pagination_tags %}
 
 {% block conteudo %}
 <h2 class="border-bottom pb-2 mb-4">Lista de Temas</h2>
@@ -47,5 +48,7 @@
         {% endfor %}
     </tbody>
 </table>
+
+{% include "website/includes/paginacao.html" %}
 
 {% endblock conteudo %}

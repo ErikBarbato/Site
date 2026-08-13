@@ -1,6 +1,7 @@
 {% extends "website/modelo.html" %}
 
 {% load static %}
+{% load pagination_tags %}
 
 {% block conteudo %}
 
@@ -47,5 +48,7 @@
     </div>
     {% endfor %}
 </div>
+
+{% include "website/includes/paginacao.html" %}
 
 {% endblock conteudo %}

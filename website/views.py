@@ -1,5 +1,5 @@
 from decimal import Decimal, InvalidOperation
-
+from braces.views import GroupRequiredMixin
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.detail import DetailView
@@ -86,11 +86,15 @@ class Tela(TemplateView):
         return context
 
 
+from .forms import SubtemaForm, VideoForm
+
+
 class TemaCreate(LoginRequiredMixin, CreateView): 
     model = Tema
     fields = ["nome", "cadastrado_por"]
     template_name = "website/form.html"
     success_url = reverse_lazy("Tela")
+    
     extra_context = {
         "titulo": "Cadastro de Tema",
         "botao": "Cadastrar"
@@ -105,6 +109,7 @@ class TemaUpdate(LoginRequiredMixin, UpdateView):
     fields = ["nome"]
     template_name = "website/form.html"
     success_url = reverse_lazy("Tela")
+    
     extra_context = {
         "titulo": "Atualizar Tema",
         "botao": "Atualizar"
@@ -116,6 +121,7 @@ class TemaDelete(LoginRequiredMixin, DeleteView):
     model= Tema
     template_name = "website/form.html"
     success_url = reverse_lazy("Tela")
+    
     extra_context = {
         "titulo": "Cadastro de Tema",
         "botao": "Excluir"
@@ -126,16 +132,26 @@ class TemaDelete(LoginRequiredMixin, DeleteView):
 class TemaList(LoginRequiredMixin, ListView):
     model= Tema
     template_name = "website/lista/Tema.html"
+    paginate_by = 20
 
     def get_queryset(self):
-        return super().get_queryset().filter(cadastrado_por=self.request.user)
+        return (
+            super().get_queryset()
+            .filter(cadastrado_por=self.request.user)
+            .select_related("cadastrado_por")
+            .order_by("-cadastrado_em")
+        )
 
 class TemaDetail(LoginRequiredMixin, DetailView):
     model = Tema
     template_name= "website/ver/Tema.html"
 
     def get_queryset(self):
-        return super().get_queryset().filter(cadastrado_por=self.request.user)
+        return (
+            super().get_queryset()
+            .filter(cadastrado_por=self.request.user)
+            .select_related("cadastrado_por")
+        )
 
 
 
@@ -143,39 +159,52 @@ class TemaDetail(LoginRequiredMixin, DetailView):
 
 
 
-class SubtemaCreate(LoginRequiredMixin, CreateView):
+class SubtemaCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     model = Subtema
-    fields = ["nome", "tema"]
+    form_class = SubtemaForm
     template_name = "website/form.html"
     success_url = reverse_lazy("Tela")
+    group_required = "Professor"
     extra_context = {
         "titulo": "Cadastro de Subtemas",
         "botao": "Cadastrar"
     }
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
 
     def form_valid(self, form):
         form.instance.cadastrado_por = self.request.user
         return super().form_valid(form)
 
 
-class SubtemaUpdate(LoginRequiredMixin, UpdateView):
+class SubtemaUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     model = Subtema
-    fields = ["nome", "tema"]
+    form_class = SubtemaForm
     template_name = "website/form.html"
     success_url = reverse_lazy("Tela")
+    group_required = "Professor"
     extra_context = {
         "titulo": "Atualizar Subtema",
         "botao": "Atualizar"
     }
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+
     def get_queryset(self):
         return super().get_queryset().filter(cadastrado_por=self.request.user)
 
 
-class SubtemaDelete(LoginRequiredMixin, DeleteView):
+class SubtemaDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
     model = Subtema
     template_name = "website/form.html"
     success_url = reverse_lazy("Tela")
+    group_required = "Professor"
     extra_context = {
         "titulo": "Deletar Subtema",
         "botao": "Excluir"
@@ -185,20 +214,32 @@ class SubtemaDelete(LoginRequiredMixin, DeleteView):
         return super().get_queryset().filter(cadastrado_por=self.request.user)
 
 
-class SubtemaList(LoginRequiredMixin, ListView):
+class SubtemaList(GroupRequiredMixin, LoginRequiredMixin, ListView):
     model = Subtema
     template_name = "website/lista/subtema.html"
+    group_required = "Professor"
+    paginate_by = 20
 
     def get_queryset(self):
-       return super().get_queryset().filter(cadastrado_por=self.request.user)
+        return (
+            super().get_queryset()
+            .filter(cadastrado_por=self.request.user)
+            .select_related("tema", "cadastrado_por")
+            .order_by("-cadastrado_em")
+        )
 
 
-class SubtemaDetail(LoginRequiredMixin, DetailView):
+class SubtemaDetail(GroupRequiredMixin, LoginRequiredMixin, DetailView):
     model = Subtema
     template_name = "website/ver/subtema.html"
+    group_required = "Professor"
 
     def get_queryset(self):
-        return super().get_queryset().filter(cadastrado_por=self.request.user)
+        return (
+            super().get_queryset()
+            .filter(cadastrado_por=self.request.user)
+            .select_related("tema", "cadastrado_por")
+        )
 
 
 
@@ -206,38 +247,52 @@ class SubtemaDetail(LoginRequiredMixin, DetailView):
 
 
 
-class VideoCreate(LoginRequiredMixin, CreateView):
+class VideoCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     model = Video
-    fields = ["titulo", "descricao", "link", "subtema", "ativo", "cadastrado_por"]
+    form_class = VideoForm
     template_name = "website/form.html"
     success_url = reverse_lazy("Tela")
+    group_required = "Professor"
     extra_context = {
         "titulo": "Cadastro de Video",
         "botao": "Cadastrar"
     }
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
 
     def form_valid(self, form):
         form.instance.cadastrado_por = self.request.user
         return super().form_valid(form)
 
 
-class VideoUpdate(LoginRequiredMixin, UpdateView):
+class VideoUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     model = Video
-    fields = ["titulo", "descricao", "link", "subtema", "ativo"]
+    form_class = VideoForm
     template_name = "website/form.html"
     success_url = reverse_lazy("Tela")
+    group_required = "Professor"
     extra_context = {
         "titulo": "Atualizar Video",
         "botao": "Atualizar"
     }
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+
     def get_queryset(self):
         return super().get_queryset().filter(cadastrado_por=self.request.user)
 
 
-class VideoDelete(LoginRequiredMixin,DeleteView):
+class VideoDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
     model = Video
     template_name = "website/form.html"
     success_url = reverse_lazy("Tela")
+    group_required = "Professor"
     extra_context = {
         "titulo": "Deletar de Video",
         "botao": "Excluir"
@@ -246,19 +301,46 @@ class VideoDelete(LoginRequiredMixin,DeleteView):
         return super().get_queryset().filter(cadastrado_por=self.request.user)
 
 
-class VideoList(LoginRequiredMixin, ListView):
+class VideoList(GroupRequiredMixin, LoginRequiredMixin, ListView):
     model = Video
     template_name = "website/lista/video.html"
-
+    paginate_by = 2
+    group_required = "Professor"
 
     def get_queryset(self):
-        return super().get_queryset().filter(cadastrado_por=self.request.user)
+        return (
+            super().get_queryset()
+            .filter(cadastrado_por=self.request.user)
+            .select_related("cadastrado_por", "subtema__tema")
+            .annotate(
+                media_avaliacao=Avg("avaliacoes__nota"),
+                comentarios_qtd=Count("comentarios")
+            )
+            .order_by("-cadastrado_em")
+        )
 
 
-class VideoDetail(DetailView):
+class VideoDetail(GroupRequiredMixin, LoginRequiredMixin, DetailView):
     model = Video
     template_name = "website/video.html"
     context_object_name = "video"
+    group_required = "Professor"
+
+    def get_queryset(self):
+        return (
+            super().get_queryset()
+            .filter(cadastrado_por=self.request.user)
+            .select_related("cadastrado_por", "subtema__tema")
+            .prefetch_related(
+                "comentarios__cadastrado_por",
+                "comentarios__likes",
+                "avaliacoes__cadastrado_por",
+            )
+            .annotate(
+                media_avaliacao=Avg("avaliacoes__nota"),
+                comentarios_qtd=Count("comentarios")
+            )
+        )
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -311,12 +393,20 @@ class VideoDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["comentarios"] = self.object.comentarios.order_by("-cadastrado_em")
-        context["avaliacao_media"] = self.object.average_rating
-        context["tema_filtros"] = Tema.objects.all()
-        context["sidebar_videos"] = Video.objects.filter(
-            ativo=True,
-            ).exclude(pk=self.object.pk).select_related("subtema__tema").order_by("-cadastrado_em")[:20]
+        context["comentarios"] = (
+            self.object.comentarios.select_related("cadastrado_por")
+            .prefetch_related("likes")
+            .order_by("-cadastrado_em")
+        )
+        context["avaliacao_media"] = float(self.object.media_avaliacao or 0)
+        context["tema_filtros"] = Tema.objects.only("pk", "nome").order_by("nome")
+        context["sidebar_videos"] = (
+            Video.objects.filter(ativo=True)
+            .exclude(pk=self.object.pk)
+            .select_related("cadastrado_por", "subtema__tema")
+            .annotate(media_avaliacao=Avg("avaliacoes__nota"))
+            .order_by("-cadastrado_em")[:20]
+        )
         return context
 
 
