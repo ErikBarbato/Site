@@ -6,6 +6,8 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import redirect
 from django.http import JsonResponse
 
@@ -89,11 +91,12 @@ class Tela(TemplateView):
 from .forms import SubtemaForm, VideoForm
 
 
-class TemaCreate(LoginRequiredMixin, CreateView): 
+class TemaCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Tema
     fields = ["nome", "cadastrado_por"]
     template_name = "website/form.html"
     success_url = reverse_lazy("Tela")
+    success_message = 'Tema "%(nome)s" cadastrado com sucesso.'
     
     extra_context = {
         "titulo": "Cadastro de Tema",
@@ -104,11 +107,12 @@ class TemaCreate(LoginRequiredMixin, CreateView):
         form.instance.cadastrado_por = self.request.user
         return super().form_valid(form)
 
-class TemaUpdate(LoginRequiredMixin, UpdateView): 
+class TemaUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Tema
     fields = ["nome"]
     template_name = "website/form.html"
     success_url = reverse_lazy("Tela")
+    success_message = 'Tema "%(nome)s" atualizado com sucesso.'
     
     extra_context = {
         "titulo": "Atualizar Tema",
@@ -117,10 +121,11 @@ class TemaUpdate(LoginRequiredMixin, UpdateView):
     def get_queryset(self):
         return super().get_queryset().filter(cadastrado_por=self.request.user)
 
-class TemaDelete(LoginRequiredMixin, DeleteView):
+class TemaDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model= Tema
     template_name = "website/form.html"
     success_url = reverse_lazy("Tela")
+    success_message = 'Tema "%(nome)s" excluído com sucesso.'
     
     extra_context = {
         "titulo": "Cadastro de Tema",
@@ -128,6 +133,13 @@ class TemaDelete(LoginRequiredMixin, DeleteView):
     }
     def get_queryset(self):
         return super().get_queryset().filter(cadastrado_por=self.request.user)
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        nome = self.object.nome
+        response = super().delete(request, *args, **kwargs)
+        messages.success(request, f'Tema "{nome}" excluído com sucesso.')
+        return response
 
 class TemaList(LoginRequiredMixin, ListView):
     model= Tema
@@ -159,11 +171,12 @@ class TemaDetail(LoginRequiredMixin, DetailView):
 
 
 
-class SubtemaCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
+class SubtemaCreate(SuccessMessageMixin, GroupRequiredMixin, LoginRequiredMixin, CreateView):
     model = Subtema
     form_class = SubtemaForm
     template_name = "website/form.html"
     success_url = reverse_lazy("Tela")
+    success_message = 'Subtema "%(nome)s" cadastrado com sucesso.'
     group_required = "Professor"
     extra_context = {
         "titulo": "Cadastro de Subtemas",
@@ -180,11 +193,12 @@ class SubtemaCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class SubtemaUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
+class SubtemaUpdate(SuccessMessageMixin, GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     model = Subtema
     form_class = SubtemaForm
     template_name = "website/form.html"
     success_url = reverse_lazy("Tela")
+    success_message = 'Subtema "%(nome)s" atualizado com sucesso.'
     group_required = "Professor"
     extra_context = {
         "titulo": "Atualizar Subtema",
@@ -200,10 +214,11 @@ class SubtemaUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
         return super().get_queryset().filter(cadastrado_por=self.request.user)
 
 
-class SubtemaDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
+class SubtemaDelete(SuccessMessageMixin, GroupRequiredMixin, LoginRequiredMixin, DeleteView):
     model = Subtema
     template_name = "website/form.html"
     success_url = reverse_lazy("Tela")
+    success_message = 'Subtema "%(nome)s" excluído com sucesso.'
     group_required = "Professor"
     extra_context = {
         "titulo": "Deletar Subtema",
@@ -212,6 +227,13 @@ class SubtemaDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
 
     def get_queryset(self):
         return super().get_queryset().filter(cadastrado_por=self.request.user)
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        nome = self.object.nome
+        response = super().delete(request, *args, **kwargs)
+        messages.success(request, f'Subtema "{nome}" excluído com sucesso.')
+        return response
 
 
 class SubtemaList(GroupRequiredMixin, LoginRequiredMixin, ListView):
@@ -247,11 +269,12 @@ class SubtemaDetail(GroupRequiredMixin, LoginRequiredMixin, DetailView):
 
 
 
-class VideoCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
+class VideoCreate(SuccessMessageMixin, GroupRequiredMixin, LoginRequiredMixin, CreateView):
     model = Video
     form_class = VideoForm
     template_name = "website/form.html"
     success_url = reverse_lazy("Tela")
+    success_message = 'Vídeo "%(titulo)s" cadastrado com sucesso.'
     group_required = "Professor"
     extra_context = {
         "titulo": "Cadastro de Video",
@@ -268,11 +291,12 @@ class VideoCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class VideoUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
+class VideoUpdate(SuccessMessageMixin, GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     model = Video
     form_class = VideoForm
     template_name = "website/form.html"
     success_url = reverse_lazy("Tela")
+    success_message = 'Vídeo "%(titulo)s" atualizado com sucesso.'
     group_required = "Professor"
     extra_context = {
         "titulo": "Atualizar Video",
@@ -288,10 +312,11 @@ class VideoUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
         return super().get_queryset().filter(cadastrado_por=self.request.user)
 
 
-class VideoDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
+class VideoDelete(SuccessMessageMixin, GroupRequiredMixin, LoginRequiredMixin, DeleteView):
     model = Video
     template_name = "website/form.html"
     success_url = reverse_lazy("Tela")
+    success_message = 'Vídeo "%(titulo)s" excluído com sucesso.'
     group_required = "Professor"
     extra_context = {
         "titulo": "Deletar de Video",
@@ -299,6 +324,13 @@ class VideoDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
     }
     def get_queryset(self):
         return super().get_queryset().filter(cadastrado_por=self.request.user)
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        titulo = self.object.titulo
+        response = super().delete(request, *args, **kwargs)
+        messages.success(request, f'Vídeo "{titulo}" excluído com sucesso.')
+        return response
 
 
 class VideoList(GroupRequiredMixin, LoginRequiredMixin, ListView):
@@ -410,17 +442,25 @@ class VideoDetail(GroupRequiredMixin, LoginRequiredMixin, DetailView):
         return context
 
 
-class ComentarioDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class ComentarioDelete(SuccessMessageMixin, LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Comentario
     template_name = "website/form.html"
     extra_context = {
         "titulo": "Excluir Comentário",
         "botao": "Excluir"
     }
+    success_message = 'Comentário excluído com sucesso.'
 
     def test_func(self):
         comentario = self.get_object()
         return comentario.cadastrado_por == self.request.user
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        texto = self.object.texto
+        response = super().delete(request, *args, **kwargs)
+        messages.success(request, f'Comentário "{texto}" excluído com sucesso.')
+        return response
 
     def get_success_url(self):
         return reverse_lazy("video_detail", kwargs={"pk": self.object.video.pk})

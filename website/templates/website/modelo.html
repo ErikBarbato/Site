@@ -317,10 +317,83 @@
             margin: 5px 0;
             opacity: 0.5;
         }
+
+        .django-toast-container {
+            position: fixed;
+            top: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(92vw, 520px);
+            display: grid;
+            gap: 0.75rem;
+            z-index: 1100;
+        }
+
+        .django-toast {
+            width: 100%;
+            border: 0;
+            border-radius: 0.75rem;
+            box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.2);
+            overflow-wrap: anywhere;
+        }
+
+        .django-toast .toast-body {
+            padding: 0.9rem 1rem;
+            font-weight: 500;
+        }
+
+        .django-toast .btn-close {
+            flex-shrink: 0;
+            margin: 0.8rem 0.8rem 0 0;
+        }
+
+        .django-toast-success {
+            color: #0f5132;
+            background: #d1e7dd;
+        }
+
+        .django-toast-error {
+            color: #842029;
+            background: #f8d7da;
+        }
+
+        .django-toast-warning {
+            color: #664d03;
+            background: #fff3cd;
+        }
+
+        .django-toast-info {
+            color: #055160;
+            background: #cff4fc;
+        }
+
+        @media (max-width: 576px) {
+            .django-toast-container {
+                top: 0.75rem;
+                width: calc(100vw - 1.5rem);
+            }
+
+            .django-toast .toast-body {
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
 
 <body>
+
+    {% if messages %}
+    <div class="django-toast-container" aria-live="polite" aria-atomic="true">
+        {% for message in messages %}
+        <div class="toast show django-toast django-toast-{{ message.tags|default:'info' }}" role="alert" data-bs-autohide="true" data-bs-delay="5000">
+            <div class="d-flex align-items-start">
+                <div class="toast-body">{{ message }}</div>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Fechar"></button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 
     <div class="sidebar">
 
@@ -515,6 +588,10 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+    document.querySelectorAll('.django-toast').forEach(function (toastElement) {
+        bootstrap.Toast.getOrCreateInstance(toastElement).show();
+    });
+
     document.addEventListener("DOMContentLoaded", function () {
         const btnSuporte = document.getElementById("btnSuporte");
         const menuAjuda = document.getElementById("menuAjuda");
