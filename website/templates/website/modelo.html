@@ -199,7 +199,9 @@
         .main {
             flex: 1;
             padding: 40px;
+            padding-top: 25px;
             position: relative;
+            overflow: visible;
         }
 
         /* SEARCH */
@@ -247,12 +249,25 @@
             font-size: 18px;
         }
 
-        /* AJUSTADO: ALINHAMENTO COM A BARRA DE PESQUISA */
-        .login-topo-container {
+        .header-actions-right {
             position: absolute;
-            top: 44px;
-            right: 40px;
-            z-index: 1000;
+            top: 15px;
+            right: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            z-index: 9999;
+        }
+
+        .user-profile-icon,
+        .profile-avatar,
+        #profile-icon {
+            position: static;
+            width: 40px;
+            height: 40px;
+            display: block !important;
+            clip-path: none;
         }
 
         .login-avatar-btn {
@@ -264,6 +279,11 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
             background-color: #fff;
             transition: transform 0.2s ease;
+        }
+
+        .header-actions-right .user-profile-icon {
+            width: 40px;
+            height: 40px;
         }
 
         .login-avatar-btn:hover {
@@ -407,8 +427,7 @@
             <div class="menu">
                 <p><a href="{% url 'Tela' %}">Inicio</a> <span>🏠</span></p>
                 <p>Canais inscritos <span>☆</span></p>
-                <p>Histórico <span>🔄</span></p>
-                
+                <p><a href="{% url 'historico' %}">Histórico</a> <span>🔄</span></p>
                 
 
                 {% if user.is_authenticated %}
@@ -514,8 +533,12 @@
 
     <div class="main">
 
-        <div class="login-topo-container">
-            <img src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/trimestre-zusnl2/assets/oacm626o1ib4/png-transparent-anonymous-person-login-google-account-computer-icons-user-activity-miscellaneous-computer-monochrome-thumbnail.png" alt="Login" class="login-avatar-btn" id="btnLoginTopo">
+        <div class="header-actions-right login-topo-container">
+            <img src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/trimestre-zusnl2/assets/oacm626o1ib4/png-transparent-anonymous-person-login-google-account-computer-icons-user-activity-miscellaneous-computer-monochrome-thumbnail.png" alt="Login" class="login-avatar-btn user-profile-icon" id="btnLoginTopo">
+
+            {% if request.resolver_match.url_name == "historico" %}
+                <a class="historico-ver-tudo" href="{% url 'historico_completo' %}">Ver tudo</a>
+            {% endif %}
             
             <div class="login-dropdown-box" id="dropdownLoginTopo">
                 {% if user.is_authenticated %}
@@ -534,6 +557,7 @@
         <div class="search">
             <div class="search-box">
                 <input type="text" id="inputPesquisa" placeholder="Pesquisar...">
+                {% csrf_token %}
             </div>
         </div>
 
@@ -658,6 +682,26 @@
             } else {
                 msgNenhumEncontrado.classList.add("d-none");
             }
+        });
+
+        inputPesquisa.addEventListener("keydown", function (event) {
+            if (event.key !== "Enter" || inputPesquisa.value.trim() === "") {
+                return;
+            }
+
+            const csrfToken = document.querySelector(
+                "input[name=csrfmiddlewaretoken]"
+            ).value;
+
+            fetch("{% url 'registrar_pesquisa' %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": csrfToken,
+                    "X-Requested-With": "XMLHttpRequest",
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: new URLSearchParams({ termo: inputPesquisa.value.trim() }),
+            });
         });
     });
 </script>

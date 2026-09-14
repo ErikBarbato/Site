@@ -91,6 +91,144 @@
         justify-content: center;
     }
 
+    .save-playlist-anchor {
+        position: relative;
+    }
+
+    .save-playlist-popover {
+        display: none;
+        position: absolute;
+        right: 0;
+        bottom: calc(100% + 10px);
+        width: 290px;
+        padding: 16px;
+        background: #fff;
+        border: 1px solid #d7e0e7;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(35, 52, 66, 0.2);
+        z-index: 20;
+    }
+
+    .save-playlist-popover.aberto {
+        display: block;
+    }
+
+    .save-playlist-title {
+        color: #263238;
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 12px;
+    }
+
+    .save-playlist-list {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        max-height: 210px;
+        overflow-y: auto;
+    }
+
+    .save-playlist-option {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 5px;
+        border-radius: 6px;
+        color: #455a64;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .save-playlist-option:hover {
+        background: #f1f5f8;
+    }
+
+    .save-playlist-option input {
+        width: 17px;
+        height: 17px;
+        accent-color: #3f51b5;
+    }
+
+    .save-playlist-footer {
+        border-top: 1px solid #e5ebef;
+        margin-top: 10px;
+        padding-top: 10px;
+    }
+
+    .new-playlist-button {
+        width: 100%;
+        border: 0;
+        border-radius: 6px;
+        padding: 9px;
+        background: #eef2f7;
+        color: #34495e;
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+    .new-playlist-button:hover {
+        background: #dfe6ed;
+    }
+
+    .quick-playlist-modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.45);
+        z-index: 1050;
+    }
+
+    .quick-playlist-modal.aberto {
+        display: flex;
+    }
+
+    .quick-playlist-form {
+        width: min(380px, calc(100% - 32px));
+        padding: 22px;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .quick-playlist-form h3 {
+        margin: 0 0 16px;
+        color: #263238;
+        font-size: 18px;
+    }
+
+    .quick-playlist-form input {
+        width: 100%;
+        border: 1px solid #c5d2da;
+        border-radius: 6px;
+        padding: 10px 12px;
+        margin-bottom: 14px;
+    }
+
+    .quick-playlist-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+
+    .quick-playlist-actions button {
+        border: 0;
+        border-radius: 6px;
+        padding: 8px 13px;
+        cursor: pointer;
+    }
+
+    .quick-playlist-cancel {
+        background: #eef2f7;
+        color: #34495e;
+    }
+
+    .quick-playlist-submit {
+        background: #3f51b5;
+        color: #fff;
+    }
+
     /* Caixa de Descrição Fina */
     .info-desc-box {
         background-color: #eef2f7;
@@ -232,6 +370,70 @@
         font-weight: 500;
     }
 
+    .playlist-sidebar-title {
+        color: #37474f;
+        font-size: 17px;
+        font-weight: 600;
+        margin-bottom: 14px;
+    }
+
+    .playlist-sidebar-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px;
+        margin-bottom: 6px;
+        border-radius: 10px;
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .playlist-sidebar-item:hover,
+    .playlist-sidebar-item.atual {
+        background: #dce6ee;
+    }
+
+    .playlist-sidebar-order {
+        width: 22px;
+        color: #78909c;
+        font-size: 12px;
+        text-align: center;
+        flex-shrink: 0;
+    }
+
+    .playlist-sidebar-thumb {
+        width: 86px;
+        height: 50px;
+        border-radius: 6px;
+        background: #cbd7e2;
+        object-fit: cover;
+        flex-shrink: 0;
+    }
+
+    .playlist-sidebar-info {
+        min-width: 0;
+    }
+
+    .playlist-sidebar-video-title,
+    .playlist-sidebar-channel {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .playlist-sidebar-video-title {
+        color: #37474f;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .playlist-sidebar-channel {
+        color: #78909c;
+        font-size: 11px;
+        margin-top: 3px;
+    }
+
     .stars-indicator {
         color: #ffca28;
         font-size: 14px;
@@ -302,7 +504,31 @@
                         <button class="pill-button">Inscrever-se</button>
                         <button class="pill-button circle-btn">🔔</button>
                         <button class="pill-button circle-btn">💬</button>
-                        <button class="pill-button">Ver Depois 🔄</button>
+                        <div class="save-playlist-anchor" id="savePlaylistAnchor">
+                            <button class="pill-button" id="savePlaylistButton" type="button" aria-expanded="false" aria-controls="savePlaylistPopover">
+                                🔖 Salvar
+                            </button>
+                            <div class="save-playlist-popover" id="savePlaylistPopover" role="dialog" aria-label="Salvar em">
+                                <div class="save-playlist-title">Salvar em...</div>
+                                <div class="save-playlist-list">
+                                    {% for playlist in playlists %}
+                                        <label class="save-playlist-option">
+                                            <input
+                                                type="checkbox"
+                                                data-playlist-id="{{ playlist.pk }}"
+                                                {% if playlist.pk in playlists_com_video %}checked{% endif %}
+                                            >
+                                            <span>{{ playlist.nome }}</span>
+                                        </label>
+                                    {% empty %}
+                                        <span class="text-secondary small">Nenhuma playlist disponível.</span>
+                                    {% endfor %}
+                                </div>
+                                <div class="save-playlist-footer">
+                                    <button class="new-playlist-button" id="openQuickPlaylist" type="button">+ Nova playlist</button>
+                                </div>
+                            </div>
+                        </div>
                         <button class="pill-button circle-btn" style="font-weight: bold;">•••</button>
                     </div>
                 </div>
@@ -356,6 +582,31 @@
         <div class="col-xl-4 col-lg-5 col-12">
             <div class="bg-slate-panel">
                 
+                {% if playlist_atual %}
+                <div class="playlist-sidebar-title">{{ playlist_atual.nome }}</div>
+                <div id="playlist-sidebar-list">
+                    {% for playlist_video in playlist_videos %}
+                    <a
+                        class="playlist-sidebar-item{% if playlist_video.pk == video.pk %} atual{% endif %}"
+                        href="{% url 'video_detail' playlist_video.pk %}?list={{ playlist_atual.pk }}"
+                    >
+                        <span class="playlist-sidebar-order">{{ forloop.counter }}</span>
+                        {% if playlist_video.thumbnail_url %}
+                            <img class="playlist-sidebar-thumb" src="{{ playlist_video.thumbnail_url }}" alt="Capa de {{ playlist_video.titulo }}">
+                        {% else %}
+                            <span class="playlist-sidebar-thumb"></span>
+                        {% endif %}
+                        <span class="playlist-sidebar-info">
+                            <span class="playlist-sidebar-video-title">{{ playlist_video.titulo }}</span>
+                            <span class="playlist-sidebar-channel">{{ playlist_video.cadastrado_por.username }}</span>
+                        </span>
+                    </a>
+                    {% empty %}
+                    <div class="text-secondary">Esta playlist está vazia.</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
                 <div class="d-flex gap-2 mb-3 flex-wrap">
                     <a href="#" data-tema="all" class="filter-chip-link">Todos</a>
                     {% for tema in tema_filtros %}
@@ -393,6 +644,20 @@
 
     </div>
 </div>
+
+<div class="quick-playlist-modal" id="quickPlaylistModal" role="dialog" aria-modal="true" aria-labelledby="quickPlaylistTitle">
+    <form class="quick-playlist-form" method="post" action="{% url 'criar_playlist' %}">
+        {% csrf_token %}
+        <h3 id="quickPlaylistTitle">Nova playlist</h3>
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+        <input type="hidden" name="video_id" value="{{ video.pk }}">
+        <input type="text" name="nome" maxlength="255" placeholder="Nome da playlist" required>
+        <div class="quick-playlist-actions">
+            <button class="quick-playlist-cancel" id="closeQuickPlaylist" type="button">Cancelar</button>
+            <button class="quick-playlist-submit" type="submit">Criar playlist</button>
+        </div>
+    </form>
+</div>
  
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -412,6 +677,83 @@
                 });
             });
         });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const saveButton = document.getElementById('savePlaylistButton');
+        const savePopover = document.getElementById('savePlaylistPopover');
+        const saveAnchor = document.getElementById('savePlaylistAnchor');
+        const quickModal = document.getElementById('quickPlaylistModal');
+        const openQuickPlaylist = document.getElementById('openQuickPlaylist');
+        const closeQuickPlaylist = document.getElementById('closeQuickPlaylist');
+        const csrfToken = document.querySelector('input[name=csrfmiddlewaretoken]')?.value;
+
+        if (!saveButton || !savePopover || !saveAnchor) return;
+
+        saveButton.addEventListener('click', function(event) {
+            event.stopPropagation();
+            const aberto = savePopover.classList.toggle('aberto');
+            saveButton.setAttribute('aria-expanded', aberto ? 'true' : 'false');
+        });
+
+        document.addEventListener('click', function(event) {
+            if (!saveAnchor.contains(event.target)) {
+                savePopover.classList.remove('aberto');
+                saveButton.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        savePopover.querySelectorAll('input[data-playlist-id]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                const estadoAnterior = !checkbox.checked;
+                const body = new URLSearchParams({
+                    video_id: '{{ video.pk }}',
+                    playlist_id: checkbox.dataset.playlistId,
+                    salvo: checkbox.checked ? 'true' : 'false',
+                });
+
+                checkbox.disabled = true;
+                fetch('{% url "toggle_video_playlist" %}', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: body,
+                })
+                    .then(function(response) {
+                        if (!response.ok) throw new Error('Não foi possível atualizar a playlist.');
+                        return response.json();
+                    })
+                    .catch(function(error) {
+                        checkbox.checked = estadoAnterior;
+                        console.error(error);
+                    })
+                    .finally(function() {
+                        checkbox.disabled = false;
+                    });
+            });
+        });
+
+        if (quickModal && openQuickPlaylist && closeQuickPlaylist) {
+            openQuickPlaylist.addEventListener('click', function() {
+                quickModal.classList.add('aberto');
+                quickModal.querySelector('input[name=nome]').focus();
+            });
+
+            closeQuickPlaylist.addEventListener('click', function() {
+                quickModal.classList.remove('aberto');
+            });
+
+            quickModal.addEventListener('click', function(event) {
+                if (event.target === quickModal) {
+                    quickModal.classList.remove('aberto');
+                }
+            });
+        }
     });
 </script>
 <script>

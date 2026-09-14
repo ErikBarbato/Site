@@ -1,0 +1,460 @@
+{% extends 'website/modelo.html' %}
+{% load static %}
+
+{% block conteudo %}
+<style>
+  /* ESTILOS ESPECÍFICOS DA PÁGINA DE HISTÓRICO */
+  .historico-container {
+    padding-top: 20px;
+  }
+
+  .historico-titulo {
+    font-size: 22px;
+    font-weight: 400;
+    color: #000;
+    margin-bottom: 20px;
+  }
+
+  .historico-cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 150px;
+    margin-right: 0;
+    margin-bottom: 15px;
+    gap: 16px;
+  }
+
+  .historico-ver-tudo {
+    color: #3f51b5;
+    font-size: 14px;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .historico-ver-tudo:hover {
+    text-decoration: underline;
+  }
+
+  .linha-divisor-historico {
+    border: none;
+    height: 1.5px;
+    background-color: rgba(0, 0, 0, 0.4);
+    margin: 35px 0;
+  }
+
+  /* CARDS DO HISTÓRICO DE VÍDEOS */
+  .historico-row {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding-bottom: 15px;
+  }
+
+  .historico-card-item {
+    width: 260px;
+    min-width: 260px;
+    height: 210px;
+    flex-shrink: 0;
+    background-color: #e3eff7;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .historico-card-thumb {
+    width: 100%;
+    height: 140px;
+    flex-shrink: 0;
+    object-fit: cover;
+    background-color: #cbdde8;
+  }
+
+  .historico-card-info {
+    padding: 10px 12px;
+  }
+
+  .historico-card-titulo,
+  .historico-card-canal {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .historico-card-titulo {
+    font-weight: 600;
+  }
+
+  .historico-card-canal {
+    color: #555;
+    font-size: 13px;
+    margin-top: 4px;
+  }
+
+  .historico-vazio {
+    color: #555;
+    padding: 20px 0;
+  }
+
+  /* PLAYLISTS */
+  .playlists-grid {
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
+    flex-wrap: wrap;
+  }
+
+  .playlist-card {
+    position: relative;
+    width: 260px;
+    min-width: 260px;
+    flex-shrink: 0;
+  }
+
+  .playlist-delete-form {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 2;
+  }
+
+  .playlist-delete-button {
+    width: 30px;
+    height: 30px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    color: #b42318;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+  }
+
+  .playlist-delete-button:hover {
+    background: #fff;
+    color: #8e1b12;
+  }
+
+  .playlist-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .playlist-thumb {
+    width: 100%;
+    height: 130px;
+    background-color: #e3eff7;
+    border-radius: 20px 20px 0 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .playlist-thumb .historico-card-thumb {
+    display: block;
+    height: 130px;
+  }
+
+  .playlist-video-count {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    padding: 4px 7px;
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.72);
+    color: #fff;
+    font-size: 12px;
+  }
+
+  .playlist-card-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .playlist-card-name {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 600;
+  }
+
+  .playlist-card-meta {
+    display: block;
+    color: #6b7880;
+    font-size: 12px;
+    margin-top: 3px;
+  }
+
+  .playlist-card-action {
+    display: inline-block;
+    color: #3f51b5;
+    font-size: 12px;
+    margin-top: 8px;
+    text-decoration: none;
+  }
+
+  .playlist-thumb .play-icon-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 15px;
+    font-size: 14px;
+    color: #555;
+  }
+
+  .playlist-footer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    font-size: 13px;
+  }
+
+  /* BOTÃO ADICIONAR PLAYLIST (+) */
+  .btn-add-playlist-container {
+    display: flex;
+    align-items: center;
+    height: 130px;
+    margin-top: 25px;
+  }
+
+  .btn-add-playlist {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background-color: #e3eff7;
+    border: none;
+    font-size: 26px;
+    color: #555;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+  }
+
+  .btn-add-playlist:hover {
+    transform: scale(1.08);
+  }
+
+  .playlist-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 1050;
+  }
+
+  .playlist-modal.aberto {
+    display: flex;
+  }
+
+  .playlist-modal-conteudo {
+    width: min(420px, calc(100% - 32px));
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+  }
+
+  .playlist-modal-cabecalho {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+
+  .playlist-modal-cabecalho h3 {
+    margin: 0;
+    font-size: 20px;
+  }
+
+  .playlist-modal-fechar {
+    border: 0;
+    background: transparent;
+    color: #555;
+    cursor: pointer;
+    font-size: 24px;
+    line-height: 1;
+  }
+
+  .playlist-modal input {
+    width: 100%;
+    border: 1px solid #c5d2da;
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-bottom: 16px;
+  }
+
+  .playlist-modal-acoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  .playlist-modal-acoes button {
+    border: 0;
+    border-radius: 6px;
+    padding: 9px 15px;
+    cursor: pointer;
+  }
+
+  .playlist-modal-cancelar {
+    background: #e8eef2;
+    color: #333;
+  }
+
+  .playlist-modal-salvar {
+    background: #3f51b5;
+    color: #fff;
+  }
+</style>
+
+<div class="historico-container">
+
+  <!-- SEÇÃO: HISTÓRICO DE VÍDEOS -->
+  <section>
+    <div class="historico-cabecalho">
+      <h2 class="historico-titulo mb-0">Histórico</h2>
+    </div>
+    <div class="historico-row" id="containerHistoricoVideos">
+      
+      {% for historico in historicos|slice:":8" %}
+        <a class="historico-card-item" href="{% url 'video_detail' historico.video.pk %}">
+          {% if historico.video.thumbnail_url %}
+            <img
+              class="historico-card-thumb"
+              src="{{ historico.video.thumbnail_url }}"
+              alt="Capa de {{ historico.video.titulo }}"
+            >
+          {% else %}
+            <div class="historico-card-thumb d-flex align-items-center justify-content-center">
+              Sem miniatura
+            </div>
+          {% endif %}
+          <div class="historico-card-info">
+            <span class="historico-card-titulo">{{ historico.video.titulo }}</span>
+            <span class="historico-card-canal">{{ historico.video.cadastrado_por.username }}</span>
+          </div>
+        </a>
+      {% empty %}
+        <p class="historico-vazio">Nenhum vídeo assistido.</p>
+      {% endfor %}
+
+    </div>
+  </section>
+
+  <hr class="linha-divisor-historico" />
+
+  <!-- SEÇÃO: PLAYLISTS -->
+  <section>
+    <h2 class="historico-titulo">Playlists</h2>
+    <div class="playlists-grid">
+
+      {% for playlist in playlists %}
+        <div class="playlist-card">
+          <form class="playlist-delete-form" method="post" action="{% url 'deletar_playlist' playlist.pk %}">
+            {% csrf_token %}
+            <button class="playlist-delete-button" type="submit" title="Excluir playlist" aria-label="Excluir playlist">🗑️</button>
+          </form>
+          {% with video=playlist.videos.first %}
+            {% if video %}
+              <a class="playlist-card-link" href="{% url 'video_detail' video.pk %}?list={{ playlist.pk }}">
+            {% endif %}
+                <div class="playlist-header">
+                  <span class="playlist-card-name" title="{{ playlist.nome }}">{{ playlist.nome }}</span>
+                </div>
+                <div class="playlist-thumb">
+                  {% if video and video.thumbnail_url %}
+                    <img class="historico-card-thumb" src="{{ video.thumbnail_url }}" alt="Capa de {{ video.titulo }}">
+                  {% else %}
+                    <span class="play-icon-btn">▶</span>
+                  {% endif %}
+                  <span class="playlist-video-count">≡ {{ playlist.videos.count }} vídeos</span>
+                </div>
+                <div class="playlist-footer">
+                  <span class="playlist-card-meta">Privado • Playlist</span>
+                  {% if video %}
+                    <span class="playlist-card-action">Ver playlist completa</span>
+                  {% endif %}
+                </div>
+            {% if video %}
+              </a>
+            {% endif %}
+          {% endwith %}
+        </div>
+      {% empty %}
+        <p class="historico-vazio">Nenhuma playlist criada.</p>
+      {% endfor %}
+
+      <!-- Botão Adicionar Playlist (+) -->
+      <div class="btn-add-playlist-container">
+        <button class="btn-add-playlist" id="abrirPlaylistModal" title="Criar nova playlist" type="button">+</button>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+
+<div class="playlist-modal" id="playlistModal" role="dialog" aria-modal="true" aria-labelledby="playlistModalTitulo">
+  <div class="playlist-modal-conteudo">
+    <div class="playlist-modal-cabecalho">
+      <h3 id="playlistModalTitulo">Criar playlist</h3>
+      <button class="playlist-modal-fechar" id="fecharPlaylistModal" type="button" aria-label="Fechar">&times;</button>
+    </div>
+    <form method="post" action="{% url 'criar_playlist' %}">
+      {% csrf_token %}
+      <input type="text" name="nome" maxlength="255" placeholder="Nome da playlist" required autofocus>
+      <div class="playlist-modal-acoes">
+        <button class="playlist-modal-cancelar" id="cancelarPlaylistModal" type="button">Cancelar</button>
+        <button class="playlist-modal-salvar" type="submit">Criar playlist</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const modal = document.getElementById("playlistModal");
+    const abrir = document.getElementById("abrirPlaylistModal");
+    const fechar = document.getElementById("fecharPlaylistModal");
+    const cancelar = document.getElementById("cancelarPlaylistModal");
+
+    function fecharModal() {
+      modal.classList.remove("aberto");
+    }
+
+    abrir.addEventListener("click", function () {
+      modal.classList.add("aberto");
+      modal.querySelector("input[name=nome]").focus();
+    });
+    fechar.addEventListener("click", fecharModal);
+    cancelar.addEventListener("click", fecharModal);
+    document.querySelectorAll(".playlist-delete-form").forEach(function (form) {
+      form.addEventListener("submit", function (event) {
+        if (!confirm("Tem certeza que deseja excluir esta playlist?")) {
+          event.preventDefault();
+        }
+      });
+    });
+    modal.addEventListener("click", function (event) {
+      if (event.target === modal) {
+        fecharModal();
+      }
+    });
+  });
+</script>
+
+{% endblock %}

@@ -1,0 +1,158 @@
+{% extends 'website/modelo.html' %}
+{% load static %}
+
+{% block conteudo %}
+<style>
+  .historico-completo {
+    padding-top: 20px;
+  }
+
+  .historico-completo-cabecalho {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .historico-completo-titulo {
+    margin: 0;
+    color: #263238;
+    font-size: 24px;
+    font-weight: 600;
+  }
+
+  .historico-completo-voltar {
+    color: #3f51b5;
+    font-size: 14px;
+    text-decoration: none;
+  }
+
+  .historico-completo-grupo {
+    margin-bottom: 34px;
+  }
+
+  .historico-completo-grupo h2 {
+    margin-bottom: 14px;
+    color: #37474f;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .historico-completo-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .historico-completo-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-height: 112px;
+    padding: 10px;
+    border-radius: 12px;
+    background: #eef2f7;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .historico-completo-item:hover {
+    background: #e1e9f0;
+  }
+
+  .historico-completo-thumb {
+    width: 180px;
+    height: 102px;
+    flex: 0 0 180px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: #cbd7e2;
+  }
+
+  .historico-completo-info {
+    min-width: 0;
+  }
+
+  .historico-completo-item h3,
+  .historico-completo-canal {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .historico-completo-item h3 {
+    margin: 0 0 7px;
+    color: #263238;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .historico-completo-canal,
+  .historico-completo-metadados {
+    color: #60727c;
+    font-size: 13px;
+  }
+
+  .historico-completo-metadados {
+    margin-top: 8px;
+  }
+
+  .historico-completo-vazio {
+    padding: 28px 0;
+    color: #60727c;
+  }
+
+  @media (max-width: 576px) {
+    .historico-completo-item {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .historico-completo-thumb {
+      width: 100%;
+      height: 180px;
+      flex-basis: auto;
+    }
+  }
+</style>
+
+<div class="historico-completo">
+  <div class="historico-completo-cabecalho">
+    <h1 class="historico-completo-titulo">Histórico completo</h1>
+    <a class="historico-completo-voltar" href="{% url 'historico' %}">Voltar ao resumo</a>
+  </div>
+
+  {% for grupo in grupos_historico %}
+    <section class="historico-completo-grupo">
+      <h2>{{ grupo.titulo }}</h2>
+      <div class="historico-completo-lista">
+        {% for item in grupo.itens %}
+          <a class="historico-completo-item" href="{% url 'video_detail' item.registro.video.pk %}">
+            {% if item.registro.video.thumbnail_url %}
+              <img
+                class="historico-completo-thumb"
+                src="{{ item.registro.video.thumbnail_url }}"
+                alt="Capa de {{ item.registro.video.titulo }}"
+              >
+            {% else %}
+              <div class="historico-completo-thumb d-flex align-items-center justify-content-center">
+                Sem miniatura
+              </div>
+            {% endif %}
+            <div class="historico-completo-info">
+              <h3>{{ item.registro.video.titulo }}</h3>
+              <div class="historico-completo-canal">{{ item.registro.video.cadastrado_por.username }}</div>
+              <div class="historico-completo-metadados">
+                {{ item.registro.video.visualizacoes }} visualizações · Assistido às {{ item.assistido_em|date:"H:i" }}
+              </div>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    </section>
+  {% empty %}
+    <p class="historico-completo-vazio">Nenhum vídeo assistido.</p>
+  {% endfor %}
+</div>
+{% endblock %}

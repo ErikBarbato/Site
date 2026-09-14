@@ -8,12 +8,25 @@ from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
-from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect, render
 from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.utils import timezone
 
 from django.urls import reverse, reverse_lazy
 
-from .models import Tema, Subtema, Video, Comentario, Avaliacao, Like
+from .models import (
+    Avaliacao,
+    Comentario,
+    HistoricoPesquisa,
+    HistoricoVideo,
+    Like,
+    Playlist,
+    Subtema,
+    Tema,
+    Video,
+)
 from django.db.models import Avg, Count, F
 from django.db.models.functions import Round
 
@@ -40,6 +53,148 @@ class Contato(TemplateView):
 
 class MenuCadastro(TemplateView):
     template_name = "website/menuCadastro.html"
+
+class Historico(LoginRequiredMixin, TemplateView):
+    template_name = "website/historico.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        Playlist.objects.get_or_create(
+            usuario=self.request.user,
+            nome="Assistir mais tarde",
+        )
+        context["historicos"] = (
+            HistoricoVideo.objects.filter(usuario=self.request.user)
+            .select_related("video", "video__cadastrado_por")
+            .order_by("-data_visualizacao")
+            [:8]
+        )
+        context["playlists"] = (
+            Playlist.objects.filter(usuario=self.request.user)
+            .prefetch_related("videos")
+            .order_by("nome")
+        )
+        return context
+
+
+@login_required
+def historico_completo(request):
+    registros = (
+        HistoricoVideo.objects.filter(usuario=request.user)
+        .select_related("video", "video__cadastrado_por")
+        .order_by("-data_visualizacao")
+    )
+    hoje = timezone.localdate()
+    ontem = hoje - timezone.timedelta(days=1)
+    grupos_por_data = {}
+
+    for registro in registros:
+        data_visualizacao = timezone.localtime(registro.data_visualizacao)
+        data = data_visualizacao.date()
+        if data not in grupos_por_data:
+            if data == hoje:
+                titulo = "Hoje"
+            elif data == ontem:
+                titulo = "Ontem"
+            else:
+                titulo = data.strftime("%d/%m/%Y")
+            grupos_por_data[data] = {
+                "titulo": titulo,
+                "itens": [],
+            }
+        grupos_por_data[data]["itens"].append(
+            {
+                "registro": registro,
+                "assistido_em": data_visualizacao,
+            }
+        )
+
+    return render(
+        request,
+        "website/historico_completo.html",
+        {"grupos_historico": list(grupos_por_data.values())},
+    )
+
+
+@require_POST
+@login_required
+def criar_playlist(request):
+    nome = request.POST.get("nome", "").strip()
+    video_id = request.POST.get("video_id", "").strip()
+
+    if nome:
+        video = None
+        if video_id:
+            try:
+                video = Video.objects.get(pk=int(video_id), ativo=True)
+            except (Video.DoesNotExist, TypeError, ValueError):
+                return JsonResponse(
+                    {"success": False, "error": "Vídeo inválido."},
+                    status=400,
+                )
+        playlist = Playlist.objects.create(nome=nome, usuario=request.user)
+        if video is not None:
+            playlist.videos.add(video)
+
+    next_url = request.POST.get("next", "")
+    if next_url.startswith("/"):
+        return redirect(next_url)
+    return redirect("historico")
+
+
+@require_POST
+@login_required
+def deletar_playlist(request, playlist_id):
+    playlist = get_object_or_404(
+        Playlist,
+        pk=playlist_id,
+        usuario=request.user,
+    )
+    playlist.delete()
+    return redirect("historico")
+
+
+@require_POST
+@login_required
+def toggle_video_playlist(request):
+    try:
+        playlist = Playlist.objects.get(
+            pk=request.POST.get("playlist_id"),
+            usuario=request.user,
+        )
+        video_id = int(request.POST.get("video_id"))
+        video = Video.objects.get(pk=video_id, ativo=True)
+    except (Playlist.DoesNotExist, Video.DoesNotExist, TypeError, ValueError):
+        return JsonResponse(
+            {"success": False, "error": "Playlist ou vídeo inválido."},
+            status=400,
+        )
+
+    salvo = request.POST.get("salvo") == "true"
+    if salvo:
+        playlist.videos.add(video)
+    else:
+        playlist.videos.remove(video)
+
+    return JsonResponse({"success": True, "salvo": salvo})
+
+
+@require_POST
+@login_required
+def registrar_pesquisa(request):
+    termo = request.POST.get("termo", "").strip()
+
+    if not termo:
+        return JsonResponse(
+            {"success": False, "error": "O termo da pesquisa é obrigatório."},
+            status=400,
+        )
+
+    historico = HistoricoPesquisa.objects.create(
+        usuario=request.user,
+        termo=termo,
+    )
+    return JsonResponse({"success": True, "id": historico.pk})
 
 
 def sair(request):
@@ -352,7 +507,7 @@ class VideoList(GroupRequiredMixin, LoginRequiredMixin, ListView):
         )
 
 
-class VideoDetail(GroupRequiredMixin, LoginRequiredMixin, DetailView):
+class VideoDetail(LoginRequiredMixin, DetailView):
     model = Video
     template_name = "website/video.html"
     context_object_name = "video"
@@ -361,7 +516,7 @@ class VideoDetail(GroupRequiredMixin, LoginRequiredMixin, DetailView):
     def get_queryset(self):
         return (
             super().get_queryset()
-            .filter(cadastrado_por=self.request.user)
+            .filter(ativo=True)
             .select_related("cadastrado_por", "subtema__tema")
             .prefetch_related(
                 "comentarios__cadastrado_por",
@@ -376,6 +531,11 @@ class VideoDetail(GroupRequiredMixin, LoginRequiredMixin, DetailView):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
+        if request.user.is_authenticated:
+            HistoricoVideo.objects.update_or_create(
+                usuario=request.user,
+                video=self.object,
+            )
         Video.objects.filter(pk=self.object.pk).update(visualizacoes=F('visualizacoes') + 1)
         self.object.refresh_from_db(fields=['visualizacoes'])
         self.object.link = self.object.converter_link
@@ -425,6 +585,39 @@ class VideoDetail(GroupRequiredMixin, LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        assistir_depois, _ = Playlist.objects.get_or_create(
+            usuario=self.request.user,
+            nome="Assistir mais tarde",
+        )
+        context["playlists"] = (
+            Playlist.objects.filter(usuario=self.request.user)
+            .prefetch_related("videos")
+            .order_by("nome", "pk")
+        )
+        context["assistir_depois_id"] = assistir_depois.pk
+        context["playlists_com_video"] = set(
+            Playlist.objects.filter(
+                usuario=self.request.user,
+                videos=self.object,
+            ).values_list("pk", flat=True)
+        )
+
+        playlist_id = self.request.GET.get("list")
+        playlist_atual = None
+        playlist_videos = Video.objects.none()
+        if playlist_id:
+            playlist_atual = Playlist.objects.filter(
+                pk=playlist_id,
+                usuario=self.request.user,
+            ).first()
+            if playlist_atual:
+                playlist_videos = (
+                    playlist_atual.videos.filter(ativo=True)
+                    .select_related("cadastrado_por", "subtema__tema")
+                    .order_by("pk")
+                )
+        context["playlist_atual"] = playlist_atual
+        context["playlist_videos"] = playlist_videos
         context["comentarios"] = (
             self.object.comentarios.select_related("cadastrado_por")
             .prefetch_related("likes")
@@ -464,8 +657,7 @@ class ComentarioDelete(SuccessMessageMixin, LoginRequiredMixin, UserPassesTestMi
 
     def get_success_url(self):
         return reverse_lazy("video_detail", kwargs={"pk": self.object.video.pk})
-
-
+    
 # class ComentarioCreate(CreateView):
 #     model = Comentario
 #     fields = ["texto", "video"]

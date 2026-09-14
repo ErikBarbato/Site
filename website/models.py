@@ -146,6 +146,50 @@ class Like(models.Model):
 
 
     
+class HistoricoPesquisa(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='historicos')
+    termo = models.CharField(max_length=255)
+    data_pesquisa = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"{self.usuario.username} - {self.termo}"
+
+
+class HistoricoVideo(models.Model):
+    usuario = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="historicos_video",
+    )
+    video = models.ForeignKey(
+        Video,
+        on_delete=models.CASCADE,
+        related_name="historicos_visualizacao",
+    )
+    data_visualizacao = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["usuario", "video"],
+                name="unique_historico_video_usuario",
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.usuario.username} - {self.video.titulo}"
+
+
+class Playlist(models.Model):
+    nome = models.CharField(max_length=255)
+    usuario = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="playlists",
+    )
+    videos = models.ManyToManyField(Video, blank=True, related_name="playlists")
+
+    def __str__(self):
+        return f"{self.nome} - {self.usuario.username}"
 
     

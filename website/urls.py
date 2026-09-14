@@ -51,6 +51,12 @@ urlpatterns = [
         extra_context={"titulo": "Login Professor", "botao": "Entrar"}
     ), name="LoginProfessor"),
     path("Tela/", Tela.as_view(), name="Tela"),
+    path("historico/", Historico.as_view(), name="historico"),
+    path("historico/completo/", historico_completo, name="historico_completo"),
+    path("playlists/criar/", criar_playlist, name="criar_playlist"),
+    path("playlists/<int:playlist_id>/deletar/", deletar_playlist, name="deletar_playlist"),
+    path("playlists/toggle-video/", toggle_video_playlist, name="toggle_video_playlist"),
+    path("pesquisas/registrar/", registrar_pesquisa, name="registrar_pesquisa"),
 
     # URLs para o models de Tema
     path("cadastrar/tema/", TemaCreate.as_view(), name="tema_creator"),
