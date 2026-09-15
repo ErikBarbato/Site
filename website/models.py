@@ -19,6 +19,13 @@ class Subtema(models.Model):
 
     def __str__(self):
         return f"{self.nome}"
+    
+class Perfil(models.Model):
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name="perfil")
+    foto = models.ImageField(upload_to="perfis/", null=True, blank=True)
+
+    def __str__(self):
+        return f"Perfil de {self.usuario.username}"
 
 class Video(models.Model):
     titulo = models.CharField(max_length=255)

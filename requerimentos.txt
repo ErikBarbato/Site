@@ -1,4 +1,5 @@
 django==5.2.13
+Pillow
 django-autocomplete-light==3.9.7
 django-braces==1.16.0
 django-crispy-forms==2.3

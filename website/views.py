@@ -13,6 +13,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 from django.urls import reverse, reverse_lazy
 
@@ -22,6 +23,7 @@ from .models import (
     HistoricoPesquisa,
     HistoricoVideo,
     Like,
+    Perfil,
     Playlist,
     Subtema,
     Tema,
@@ -41,6 +43,50 @@ class Criadores(TemplateView):
 
 class Config_user(TemplateView):
     template_name = "website/config_user.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            Perfil.objects.get_or_create(usuario=self.request.user)
+        return context
+
+
+@require_POST
+@login_required
+def alterar_foto_perfil(request):
+    foto = request.FILES.get("foto")
+    if foto is None:
+        return redirect("Config_user")
+
+    content_type = getattr(foto, "content_type", "") or ""
+    if not content_type.startswith("image/") or foto.size > 5 * 1024 * 1024:
+        messages.error(request, "Selecione uma imagem de até 5 MB.")
+        return redirect("Config_user")
+
+    perfil, _ = Perfil.objects.get_or_create(usuario=request.user)
+    perfil.foto = foto
+    perfil.save(update_fields=["foto"])
+    messages.success(request, "Foto de perfil atualizada com sucesso.")
+    return redirect("Config_user")
+
+def canal_usuario(request, user_id):
+    canal = get_object_or_404(User.objects.select_related("perfil"), pk=user_id)
+    todos_videos = (
+        Video.objects.filter(cadastrado_por=canal, ativo=True)
+        .select_related("subtema__tema", "cadastrado_por")
+        .order_by("-cadastrado_em")
+    )
+    playlists = Playlist.objects.filter(usuario=canal).prefetch_related("videos")
+    return render(
+        request,
+        "website/canal_usuario.html",
+        {
+            "canal": canal,
+            "todos_videos": todos_videos,
+            "videos_recentes": todos_videos[:3],
+            "playlists": playlists,
+        },
+    )
 
 class Config_priva(TemplateView):
     template_name = "website/config_priva.html"

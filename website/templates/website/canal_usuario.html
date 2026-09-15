@@ -1,0 +1,179 @@
+{% extends 'website/modelo.html' %}
+{% load static %}
+
+{% block conteudo %}
+<style>
+.channel-banner {
+    width: 100%;
+    height: 180px;
+    background: linear-gradient(to right, #729e44, #92c069);
+    background-size: cover;
+    background-position: center;
+    border-radius: 12px 12px 0 0;
+}
+
+.channel-header {
+    background-color: #b5cddb;
+    padding: 0 30px 15px 30px;
+    position: relative;
+}
+
+.profile-avatar-container {
+    position: relative;
+    top: -40px;
+    margin-bottom: -30px;
+}
+
+.profile-avatar-img {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    border: 4px solid #b5cddb;
+    object-fit: cover;
+    background-color: #8daec4;
+}
+
+.channel-nav-tabs {
+    border-bottom: 2px solid #9bb8cb;
+    background-color: #a4c2d5;
+    padding: 0 30px;
+}
+
+.channel-nav-tabs .nav-link {
+    color: #2b4152;
+    font-weight: 500;
+    font-size: 1.1rem;
+    border: none;
+    padding: 12px 20px;
+}
+
+.channel-nav-tabs .nav-link.active {
+    background-color: transparent;
+    color: #112233;
+    font-weight: bold;
+    border-bottom: 3px solid #112233;
+}
+
+.video-card-placeholder {
+    background-color: #dbe8f2;
+    border-radius: 16px;
+    height: 180px;
+    transition: transform 0.2s;
+    overflow: hidden;
+}
+
+.video-card-placeholder:hover {
+    transform: translateY(-3px);
+}
+
+.video-card-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+</style>
+
+<div class="container-fluid px-4 py-2">
+    <div
+        class="channel-banner"
+        {% if canal.perfil.banner %}style="background-image: url('{{ canal.perfil.banner.url }}');"{% endif %}
+    ></div>
+
+    <div class="channel-header d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+            <div class="profile-avatar-container">
+                {% if canal.perfil.foto %}
+                    <img src="{{ canal.perfil.foto.url }}" alt="{{ canal.username }}" class="profile-avatar-img">
+                {% else %}
+                    <div class="profile-avatar-img d-flex align-items-center justify-content-center text-white fs-1" aria-label="Sem foto de perfil">
+                        <span aria-hidden="true">&#128100;</span>
+                    </div>
+                {% endif %}
+            </div>
+            <div>
+                <h3 class="fw-bold mb-0 text-dark">
+                    {% if canal.first_name or canal.last_name %}
+                        {{ canal.first_name }} {{ canal.last_name }}
+                    {% else %}
+                        Prof. {{ canal.username }}
+                    {% endif %}
+                </h3>
+                <small class="text-muted fs-6">{{ canal.seguidores.count|default:0 }} Seguidores</small>
+            </div>
+            <div class="ms-3">
+                <button class="btn btn-light rounded-pill px-4 fw-semibold shadow-sm" type="button">Inscrito</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="channel-nav-tabs d-flex justify-content-between align-items-center">
+        <ul class="nav nav-pills" id="channelTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="inicio-tab" data-bs-toggle="tab" data-bs-target="#inicio" type="button" role="tab" aria-controls="inicio" aria-selected="true">Início</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="videos-tab" data-bs-toggle="tab" data-bs-target="#videos" type="button" role="tab" aria-controls="videos" aria-selected="false">Vídeos</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="playlist-tab" data-bs-toggle="tab" data-bs-target="#playlist" type="button" role="tab" aria-controls="playlist" aria-selected="false">Playlist</button>
+            </li>
+        </ul>
+        <span class="text-secondary small pe-2">Criado em {{ canal.date_joined|date:"d/m/Y" }}</span>
+    </div>
+
+    <div class="tab-content p-4" id="channelTabContent">
+        <div class="tab-pane fade show active" id="inicio" role="tabpanel" aria-labelledby="inicio-tab">
+            <div class="row g-4">
+                {% for video in videos_recentes %}
+                    <div class="col-md-4">
+                        <a href="{% url 'video_detail' video.id %}" class="text-decoration-none">
+                            <div class="video-card-placeholder p-3 d-flex flex-column justify-content-between">
+                                {% if video.thumbnail_url %}
+                                    <img src="{{ video.thumbnail_url }}" alt="{{ video.titulo }}" class="w-100 h-100 rounded">
+                                {% endif %}
+                            </div>
+                            <h6 class="mt-2 text-dark fw-bold mb-0">{{ video.titulo }}</h6>
+                            <small class="text-muted">{{ video.visualizacoes }} visualizações</small>
+                        </a>
+                    </div>
+                {% empty %}
+                    <div class="col-12"><p class="text-muted">Nenhum vídeo recente encontrado.</p></div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="videos" role="tabpanel" aria-labelledby="videos-tab">
+            <div class="row g-4">
+                {% for video in todos_videos %}
+                    <div class="col-md-4">
+                        <a href="{% url 'video_detail' video.id %}" class="text-decoration-none">
+                            <div class="video-card-placeholder p-3">
+                                {% if video.thumbnail_url %}
+                                    <img src="{{ video.thumbnail_url }}" alt="{{ video.titulo }}" class="w-100 h-100 rounded">
+                                {% endif %}
+                            </div>
+                            <h6 class="mt-2 text-dark fw-bold mb-0">{{ video.titulo }}</h6>
+                        </a>
+                    </div>
+                {% empty %}
+                    <div class="col-12"><p class="text-muted">Este canal ainda não possui vídeos enviados.</p></div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="playlist" role="tabpanel" aria-labelledby="playlist-tab">
+            <div class="row g-4">
+                {% for playlist in playlists %}
+                    <div class="col-md-4">
+                        <div class="video-card-placeholder p-3 d-flex align-items-center justify-content-center">
+                            <h5 class="fw-bold text-secondary">{{ playlist.nome }}</h5>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12"><p class="text-muted">Nenhuma playlist criada.</p></div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
     <style>
         * {
@@ -534,22 +535,33 @@
     <div class="main">
 
         <div class="header-actions-right login-topo-container">
-            <img src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/trimestre-zusnl2/assets/oacm626o1ib4/png-transparent-anonymous-person-login-google-account-computer-icons-user-activity-miscellaneous-computer-monochrome-thumbnail.png" alt="Login" class="login-avatar-btn user-profile-icon" id="btnLoginTopo">
+            <div class="dropdown" style="position: absolute; top: 15px; right: 20px; z-index: 9999;">
+                <button class="btn p-0 border-0 bg-transparent" type="button" id="dropdownPerfil" data-bs-toggle="dropdown" aria-expanded="false" style="outline: none; box-shadow: none;">
+                    {% if user.is_authenticated and user.perfil.foto %}
+                        <img src="{{ user.perfil.foto.url }}" alt="{{ user.username }}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                    {% else %}
+                        <span style="width: 40px; height: 40px; border-radius: 50%; background-color: #000; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                            <i class="bi bi-person-fill" aria-hidden="true"></i>
+                        </span>
+                    {% endif %}
+                </button>
+
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4 p-3 mt-2" aria-labelledby="dropdownPerfil" style="min-width: 180px;">
+                    <li class="px-2 py-1 mb-2 border-bottom fw-bold text-dark">
+                        Olá, {{ user.username|default:"admin" }}
+                    </li>
+                    <li>
+                        <a class="dropdown-menu-item dropdown-item d-flex align-items-center gap-2 rounded-2 text-danger py-2" href="{% url 'logout' %}">
+                            <span>🚪</span> Sair
+                        </a>
+                    </li>
+                </ul>
+            </div>
 
             {% if request.resolver_match.url_name == "historico" %}
                 <a class="historico-ver-tudo" href="{% url 'historico_completo' %}">Ver tudo</a>
             {% endif %}
             
-            <div class="login-dropdown-box" id="dropdownLoginTopo">
-                {% if user.is_authenticated %}
-                    <p class="usuario-logado-txt">Olá, {{ user.username }}</p>
-                    <div class="divisor-login"></div>
-                    <a href="{% url 'logout' %}">🚪 Sair</a>
-                {% else %}
-                    <a href="{% url 'login' %}">🔐 Entrar</a>
-                    <a href="#">📝 Cadastrar</a> 
-                {% endif %}
-            </div>
         </div>
 
         {% block conteudo %}
@@ -625,26 +637,12 @@
             event.preventDefault(); 
             event.stopPropagation(); 
             menuAjuda.classList.toggle("visivel");
-            dropdownLoginTopo.classList.remove("visivel");
-        });
-
-        // Código do Login do topo
-        const btnLoginTopo = document.getElementById("btnLoginTopo");
-        const dropdownLoginTopo = document.getElementById("dropdownLoginTopo");
-
-        btnLoginTopo.addEventListener("click", function (event) {
-            event.stopPropagation();
-            dropdownLoginTopo.classList.toggle("visivel");
-            menuAjuda.classList.remove("visivel");
         });
 
         // Fecha os menus se o usuário clicar em qualquer outro lugar da tela
         document.addEventListener("click", function (event) {
             if (!menuAjuda.contains(event.target) && event.target !== btnSuporte) {
                 menuAjuda.classList.remove("visivel");
-            }
-            if (!dropdownLoginTopo.contains(event.target) && event.target !== btnLoginTopo) {
-                dropdownLoginTopo.classList.remove("visivel");
             }
         });
 
