@@ -39,76 +39,57 @@ class Video(models.Model):
 
     def __str__(self):
         return f"{self.titulo}"
-    
-    @property
-    def converter_link(self):
-        from urllib.parse import urlparse, parse_qs
+
+    def _get_youtube_id(self):
+        from urllib.parse import parse_qs, urlparse
 
         if not self.link:
             return ""
 
-        # Se já for um link de embed, retorna o próprio link
-        if "/embed/" in self.link:
-            return self.link
-
         try:
             parsed = urlparse(self.link)
-            netloc = parsed.netloc.lower()
+            hostname = (parsed.hostname or "").lower()
 
-            # youtu.be short link -> path component is the id
-            if 'youtu.be' in netloc:
-                video_id = parsed.path.lstrip('/')
+            if hostname in {"youtu.be", "www.youtu.be"}:
+                return parsed.path.strip("/").split("/")[0]
+
+            if hostname.endswith(("youtube.com", "youtube-nocookie.com")):
+                video_id = parse_qs(parsed.query).get("v", [""])[0]
                 if video_id:
-                    return f"https://www.youtube.com/embed/{video_id}"
+                    return video_id
 
-            # youtube.com links
-            if 'youtube' in netloc or 'youtube-nocookie' in netloc:
-                # query param v
-                qs = parse_qs(parsed.query)
-                if 'v' in qs and qs['v']:
-                    return f"https://www.youtube.com/embed/{qs['v'][0]}"
+                parts = [part for part in parsed.path.split("/") if part]
+                for marker in ("embed", "v", "shorts", "live"):
+                    if marker in parts:
+                        marker_index = parts.index(marker)
+                        if marker_index + 1 < len(parts):
+                            return parts[marker_index + 1]
+        except (AttributeError, IndexError, TypeError, ValueError):
+            return ""
 
-                # path may contain /embed/VIDEOID or /v/VIDEOID
-                parts = parsed.path.split('/')
-                for i, part in enumerate(parts):
-                    if part in ('embed', 'v') and i + 1 < len(parts):
-                        candidate = parts[i + 1]
-                        return f"https://www.youtube.com/embed/{candidate}"
+        return ""
 
-            # Fallback: return original link
-            return self.link
-        except Exception:
-            return self.link
+    @property
+    def youtube_video_id(self):
+        return self._get_youtube_id()
+
+    @property
+    def embed_url(self):
+        video_id = self._get_youtube_id()
+        if not video_id:
+            return ""
+        return f"https://www.youtube.com/embed/{video_id}?autoplay=1"
+
+    @property
+    def converter_link(self):
+        return self.embed_url
 
     @property
     def thumbnail_url(self):
-        from urllib.parse import urlparse, parse_qs
-        if not self.link:
-            return ""
-
-        try:
-            parsed = urlparse(self.link)
-            netloc = parsed.netloc.lower()
-
-            video_id = None
-            if 'youtu.be' in netloc:
-                video_id = parsed.path.lstrip('/')
-            elif 'youtube' in netloc or 'youtube-nocookie' in netloc:
-                qs = parse_qs(parsed.query)
-                if 'v' in qs and qs['v']:
-                    video_id = qs['v'][0]
-                else:
-                    parts = parsed.path.split('/')
-                    for i, part in enumerate(parts):
-                        if part in ('embed', 'v') and i + 1 < len(parts):
-                            video_id = parts[i + 1]
-                            break
-
-            if video_id:
-                return f"https://img.youtube.com/vi/{video_id}/hqdefault.jpg"
-            return ""
-        except Exception:
-            return ""
+        video_id = self._get_youtube_id()
+        if not video_id:
+            return "https://via.placeholder.com/480x360?text=Sem+Miniatura"
+        return f"https://img.youtube.com/vi/{video_id}/hqdefault.jpg"
 
     @property
     def average_rating(self):

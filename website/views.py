@@ -10,7 +10,7 @@ from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-from django.http import JsonResponse
+from django.http import Http404, JsonResponse
 from django.views.decorators.http import require_POST
 from django.utils import timezone
 from django.contrib.auth.models import User
@@ -29,8 +29,21 @@ from .models import (
     Tema,
     Video,
 )
-from django.db.models import Avg, Count, F
+from django.db.models import Avg, Count, F, Q
 from django.db.models.functions import Round
+
+
+def _automated_user_filter(field_name="cadastrado_por__username"):
+    return (
+        Q(**{f"{field_name}__istartswith": "auto"})
+        | Q(**{f"{field_name}__istartswith": "search"})
+        | Q(**{f"{field_name}__istartswith": "test"})
+    )
+
+
+def _official_videos(queryset):
+    return queryset.exclude(_automated_user_filter())
+
 
 class Index(TemplateView):
     template_name = "website/menu.html"
@@ -72,7 +85,7 @@ def alterar_foto_perfil(request):
 def canal_usuario(request, user_id):
     canal = get_object_or_404(User.objects.select_related("perfil"), pk=user_id)
     todos_videos = (
-        Video.objects.filter(cadastrado_por=canal, ativo=True)
+        _official_videos(Video.objects.filter(cadastrado_por=canal, ativo=True))
         .select_related("subtema__tema", "cadastrado_por")
         .order_by("-cadastrado_em")
     )
@@ -110,7 +123,9 @@ class Historico(LoginRequiredMixin, TemplateView):
             nome="Assistir mais tarde",
         )
         context["historicos"] = (
-            HistoricoVideo.objects.filter(usuario=self.request.user)
+            HistoricoVideo.objects.filter(
+                usuario=self.request.user,
+            ).exclude(_automated_user_filter("video__cadastrado_por__username"))
             .select_related("video", "video__cadastrado_por")
             .order_by("-data_visualizacao")
             [:8]
@@ -126,7 +141,9 @@ class Historico(LoginRequiredMixin, TemplateView):
 @login_required
 def historico_completo(request):
     registros = (
-        HistoricoVideo.objects.filter(usuario=request.user)
+        HistoricoVideo.objects.filter(
+            usuario=request.user,
+        ).exclude(_automated_user_filter("video__cadastrado_por__username"))
         .select_related("video", "video__cadastrado_por")
         .order_by("-data_visualizacao")
     )
@@ -243,6 +260,18 @@ def registrar_pesquisa(request):
     return JsonResponse({"success": True, "id": historico.pk})
 
 
+def sugestoes_pesquisa(request):
+    termo = request.GET.get("q", "").strip()
+    sugestoes = []
+    if len(termo) >= 2:
+        sugestoes = list(
+            _official_videos(
+                Video.objects.filter(titulo__icontains=termo)
+            ).values_list("titulo", flat=True)[:5]
+        )
+    return JsonResponse({"sugestoes": sugestoes})
+
+
 def sair(request):
     logout(request)
     return redirect("login")
@@ -280,7 +309,12 @@ class Tela(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context["videos"] = Video.objects.annotate(
+        termo = self.request.GET.get("q", "").strip()
+        videos = _official_videos(Video.objects.all())
+        if termo:
+            videos = videos.filter(titulo__icontains=termo)
+
+        context["videos"] = videos.annotate(
             media_avaliacao=Avg('avaliacoes__nota'),
             media_avaliacao_rounded=Round(Avg('avaliacoes__nota')),
             comentarios_qtd=Count('comentarios')
@@ -349,7 +383,7 @@ class TemaList(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return (
-            super().get_queryset()
+            _official_videos(super().get_queryset())
             .filter(cadastrado_por=self.request.user)
             .select_related("cadastrado_por")
             .order_by("-cadastrado_em")
@@ -523,11 +557,29 @@ class VideoDelete(SuccessMessageMixin, GroupRequiredMixin, LoginRequiredMixin, D
         "titulo": "Deletar de Video",
         "botao": "Excluir"
     }
-    def get_queryset(self):
-        return super().get_queryset().filter(cadastrado_por=self.request.user)
+
+    def get_success_message(self, cleaned_data):
+        if self.object:
+            return self.success_message % {"titulo": self.object.titulo}
+        return "Operação realizada."
+
+    def get_object(self, queryset=None):
+        try:
+            return super().get_object(queryset)
+        except Http404:
+            messages.warning(
+                self.request,
+                "Este vídeo já foi excluído ou não existe.",
+            )
+            return None
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object is None:
+            return redirect(self.success_url)
+        return self.delete(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
         titulo = self.object.titulo
         response = super().delete(request, *args, **kwargs)
         messages.success(request, f'Vídeo "{titulo}" excluído com sucesso.')
@@ -561,7 +613,7 @@ class VideoDetail(LoginRequiredMixin, DetailView):
 
     def get_queryset(self):
         return (
-            super().get_queryset()
+            _official_videos(super().get_queryset())
             .filter(ativo=True)
             .select_related("cadastrado_por", "subtema__tema")
             .prefetch_related(
@@ -584,7 +636,6 @@ class VideoDetail(LoginRequiredMixin, DetailView):
             )
         Video.objects.filter(pk=self.object.pk).update(visualizacoes=F('visualizacoes') + 1)
         self.object.refresh_from_db(fields=['visualizacoes'])
-        self.object.link = self.object.converter_link
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -658,7 +709,7 @@ class VideoDetail(LoginRequiredMixin, DetailView):
             ).first()
             if playlist_atual:
                 playlist_videos = (
-                    playlist_atual.videos.filter(ativo=True)
+                    _official_videos(playlist_atual.videos.filter(ativo=True))
                     .select_related("cadastrado_por", "subtema__tema")
                     .order_by("pk")
                 )
@@ -672,7 +723,7 @@ class VideoDetail(LoginRequiredMixin, DetailView):
         context["avaliacao_media"] = float(self.object.media_avaliacao or 0)
         context["tema_filtros"] = Tema.objects.only("pk", "nome").order_by("nome")
         context["sidebar_videos"] = (
-            Video.objects.filter(ativo=True)
+            _official_videos(Video.objects.filter(ativo=True))
             .exclude(pk=self.object.pk)
             .select_related("cadastrado_por", "subtema__tema")
             .annotate(media_avaliacao=Avg("avaliacoes__nota"))

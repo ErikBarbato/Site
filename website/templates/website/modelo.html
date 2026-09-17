@@ -217,6 +217,42 @@
             width: 60%;
         }
 
+        .dropdown-sugestoes {
+            display: none;
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            width: 100%;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+            overflow: hidden;
+            z-index: 10000;
+        }
+
+        .dropdown-sugestao {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 11px 15px;
+            border: 0;
+            background: #fff;
+            color: #202124;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .dropdown-sugestao:hover,
+        .dropdown-sugestao:focus {
+            background: #f1f3f4;
+            outline: none;
+        }
+
+        .dropdown-sugestao i {
+            color: #6c757d;
+        }
+
         .search-box input {
             width: 100%;
             padding: 15px 45px 15px 15px;
@@ -567,10 +603,11 @@
         {% block conteudo %}
 
         <div class="search">
-            <div class="search-box">
-                <input type="text" id="inputPesquisa" placeholder="Pesquisar...">
+            <form id="formPesquisa" class="search-box" method="get" action="{% url 'Tela' %}">
+                <input type="text" id="inputPesquisa" name="q" placeholder="Pesquisar..." autocomplete="off">
+                <div id="dropdown-sugestoes" class="dropdown-sugestoes"></div>
                 {% csrf_token %}
-            </div>
+            </form>
         </div>
 
         <div class="row g-4" id="containerVideos">
@@ -579,33 +616,40 @@
                 <h4>Nenhum vídeo correspondente encontrado!</h4>
             </div>
 
-            {% for vid in videos %}
+            {% for video in videos %}
 
             <div class="col-md-4 card-video mb-4">
                 <div class="bg-white p-3 rounded-3 h-100">
-                    <a href="{% url 'video_detail' vid.pk %}" style="text-decoration:none; color:inherit; display:block;">
-                        {% if vid.thumbnail_url %}
+                    <a href="{% url 'video_detail' video.pk %}" style="text-decoration:none; color:inherit; display:block;">
+                        {% if video.thumbnail_url %}
                         <div style="position:relative; width:100%; height:215px; overflow:hidden; border-radius:8px;">
-                            <img src="{{ vid.thumbnail_url }}" alt="{{ vid.titulo }}" style="width:100%; height:100%; object-fit:cover; display:block;">
+                            <img src="{{ video.thumbnail_url }}" alt="{{ video.titulo }}" style="width:100%; height:100%; object-fit:cover; display:block;">
                             <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); font-size:42px; color:rgba(255,255,255,0.9); text-shadow:0 2px 8px rgba(0,0,0,0.6);">▶</div>
                         </div>
                         {% else %}
                         <div style="width:100%; height:215px; background:#ddd; display:flex; align-items:center; justify-content:center; border-radius:8px;">Sem miniatura</div>
                         {% endif %}
-                    </a>
-                    <h3 style="margin-top:12px;">{{ vid.titulo }}</h3>
-                    <div class="views">{{ vid.visualizacoes }} Views</div>
+                    <h3 style="margin-top:12px;">{{ video.titulo }}</h3>
+                    <div class="views">{{ video.visualizacoes }} Views</div>
                     <div class="stars">
                         {% for _ in "12345" %}
-                            {% if forloop.counter <= vid.media_avaliacao_rounded|default:0 %}
+                            {% if forloop.counter <= video.media_avaliacao_rounded|default:0 %}
                                 ★
                             {% else %}
                                 ☆
                             {% endif %}
                         {% endfor %}
-                        <span style="font-size:14px; color:#333;"> ({{ vid.media_avaliacao|default:0|floatformat:1 }})</span>
+                        <span style="font-size:14px; color:#333;"> ({{ video.media_avaliacao|default:0|floatformat:1 }})</span>
                     </div>
-                    <div class="comments">Comentários: {{ vid.comentarios_qtd }}</div>
+                    <div class="comments">Por:
+                        {% if video.cadastrado_por.get_full_name %}
+                            {{ video.cadastrado_por.get_full_name }}
+                        {% else %}
+                            {{ video.cadastrado_por.username }}
+                        {% endif %}
+                    </div>
+                    <div class="comments">Comentários: {{ video.comentarios_qtd }}</div>
+                    </a>
                 </div>
             </div>
 
@@ -650,8 +694,40 @@
            LÓGICA DE FILTRO DA BARRA DE PESQUISA (REAL-TIME)
            ======================================================= */
         const inputPesquisa = document.getElementById("inputPesquisa");
+        const formPesquisa = document.getElementById("formPesquisa");
+        const dropdownSugestoes = document.getElementById("dropdown-sugestoes");
         const cardsVideos = document.querySelectorAll(".card-video");
         const msgNenhumEncontrado = document.getElementById("msgNenhumEncontrado");
+
+        function esconderSugestoes() {
+            dropdownSugestoes.replaceChildren();
+            dropdownSugestoes.style.display = "none";
+        }
+
+        function renderizarSugestoes(sugestoes) {
+            dropdownSugestoes.replaceChildren();
+            if (!sugestoes.length) {
+                dropdownSugestoes.style.display = "none";
+                return;
+            }
+
+            sugestoes.forEach(function (titulo) {
+                const sugestao = document.createElement("button");
+                sugestao.type = "button";
+                sugestao.className = "dropdown-sugestao";
+                sugestao.innerHTML = '<i class="bi bi-search" aria-hidden="true"></i>';
+                const texto = document.createElement("span");
+                texto.textContent = titulo;
+                sugestao.appendChild(texto);
+                sugestao.addEventListener("click", function () {
+                    inputPesquisa.value = titulo;
+                    esconderSugestoes();
+                    formPesquisa.requestSubmit();
+                });
+                dropdownSugestoes.appendChild(sugestao);
+            });
+            dropdownSugestoes.style.display = "block";
+        }
 
         // Função auxiliar para remover acentos e converter para minúsculo
         function normalizarTexto(texto) {
@@ -661,6 +737,15 @@
         inputPesquisa.addEventListener("input", function () {
             const termoBusca = normalizarTexto(inputPesquisa.value);
             let encontrouAlgum = false;
+
+            if (inputPesquisa.value.trim().length < 2) {
+                esconderSugestoes();
+            } else {
+                fetch("{% url 'sugestoes_pesquisa' %}?q=" + encodeURIComponent(inputPesquisa.value.trim()))
+                    .then(response => response.json())
+                    .then(data => renderizarSugestoes(data.sugestoes || []))
+                    .catch(() => esconderSugestoes());
+            }
 
             cardsVideos.forEach(card => {
                 const tituloVideo = normalizarTexto(card.querySelector("h3").textContent);
@@ -700,6 +785,12 @@
                 },
                 body: new URLSearchParams({ termo: inputPesquisa.value.trim() }),
             });
+        });
+
+        document.addEventListener("click", function (event) {
+            if (!formPesquisa.contains(event.target)) {
+                esconderSugestoes();
+            }
         });
     });
 </script>
