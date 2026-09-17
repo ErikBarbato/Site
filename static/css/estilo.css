@@ -1,3 +1,261 @@
 *{
     font-family: 'Courier New', Courier, monospace;
 }
+
+/* Estilo forçado para a caixa de sugestões do Autocomplete */
+.ui-autocomplete,
+.dropdown-sugestoes,
+.search-suggestions {
+    background-color: #ffffff !important;
+    border: 1px solid #ccc !important;
+    z-index: 9999 !important;
+}
+
+.ui-autocomplete .ui-menu-item,
+.dropdown-sugestoes div,
+.dropdown-sugestoes .dropdown-sugestao,
+.dropdown-sugestoes .sugestao-item,
+.search-suggestions div {
+    color: #111111 !important;
+    background-color: transparent !important;
+    padding: 10px 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+html.dark-mode .ui-autocomplete,
+body.dark-mode .ui-autocomplete,
+html.dark-mode .dropdown-sugestoes,
+body.dark-mode .dropdown-sugestoes,
+html.dark-mode .search-suggestions,
+body.dark-mode .search-suggestions {
+    background-color: #1e1e22 !important;
+    border-color: #32323a !important;
+}
+
+html.dark-mode .ui-autocomplete .ui-menu-item,
+body.dark-mode .ui-autocomplete .ui-menu-item,
+html.dark-mode .dropdown-sugestoes div,
+body.dark-mode .dropdown-sugestoes div,
+html.dark-mode .dropdown-sugestoes .dropdown-sugestao,
+body.dark-mode .dropdown-sugestoes .dropdown-sugestao,
+html.dark-mode .dropdown-sugestoes .sugestao-item,
+body.dark-mode .dropdown-sugestoes .sugestao-item,
+html.dark-mode .search-suggestions div,
+body.dark-mode .search-suggestions div {
+    color: #f0f2f5 !important;
+}
+
+/* Containers da tela do player: modo claro */
+.video-page-container,
+.main-video-card,
+.side-playlist-card,
+.video-description-box,
+.bg-slate-panel,
+.info-desc-box,
+.sidebar-video-card {
+    background-color: #dce4ee !important;
+    color: #1a202c !important;
+    border: 1px solid rgba(255, 255, 255, 0.6) !important;
+}
+
+.video-description-box,
+.video-description-box span,
+.video-description-box p,
+.info-desc-box,
+.info-desc-box span,
+.info-desc-box p {
+    color: #2d3748 !important;
+}
+
+/* Containers da tela do player: modo escuro */
+html.dark-mode .video-page-container,
+html.dark-mode .main-video-card,
+html.dark-mode .side-playlist-card,
+html.dark-mode .video-description-box,
+html.dark-mode .bg-slate-panel,
+html.dark-mode .info-desc-box,
+html.dark-mode .sidebar-video-card,
+body.dark-mode .video-page-container,
+body.dark-mode .main-video-card,
+body.dark-mode .side-playlist-card,
+body.dark-mode .video-description-box,
+body.dark-mode .bg-slate-panel,
+body.dark-mode .info-desc-box,
+body.dark-mode .sidebar-video-card {
+    background-color: #1e1e22 !important;
+    color: #f0f2f5 !important;
+    border: 1px solid #32323a !important;
+}
+
+html.dark-mode .video-description-box,
+html.dark-mode .video-description-box span,
+html.dark-mode .video-description-box p,
+html.dark-mode .info-desc-box,
+html.dark-mode .info-desc-box span,
+html.dark-mode .info-desc-box p,
+body.dark-mode .video-description-box,
+body.dark-mode .video-description-box span,
+body.dark-mode .video-description-box p,
+body.dark-mode .info-desc-box,
+body.dark-mode .info-desc-box span,
+body.dark-mode .info-desc-box p {
+    color: #e2e8f0 !important;
+}
+
+html.dark-mode .sidebar,
+body.dark-mode .sidebar {
+    background-color: #121214 !important;
+    border-right: 1px solid #2a2a30 !important;
+}
+
+/* Força a cor do texto do autor/pílula para preto */
+.author-box,
+.author-pill,
+.user-name-tag,
+.btn-author-pill,
+.pill-author,
+[class*="author"] span,
+[class*="author"] p,
+[class*="author"] a {
+    color: #000000 !important;
+    font-weight: 600;
+}
+
+body.dark-mode .author-box,
+body.dark-mode .author-pill,
+body.dark-mode .user-name-tag,
+body.dark-mode .btn-author-pill,
+body.dark-mode .pill-author,
+body.dark-mode [class*="author"] span,
+body.dark-mode [class*="author"] p,
+body.dark-mode [class*="author"] a {
+    color: #000000 !important;
+}
+
+/* Força o texto dos cards laterais para branco no modo escuro */
+body.dark-mode .sidebar-container,
+body.dark-mode .card-sugestao,
+body.dark-mode .side-playlist-card,
+body.dark-mode .sidebar-video-card,
+body.dark-mode [class*="card"] h3,
+body.dark-mode [class*="card"] h4,
+body.dark-mode [class*="card"] p,
+body.dark-mode [class*="card"] span,
+body.dark-mode [class*="card"] small {
+    color: #ffffff !important;
+}
+
+body.dark-mode .video-title,
+body.dark-mode .card-title,
+body.dark-mode .sidebar-card-title,
+body.dark-mode .playlist-sidebar-video-title {
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+body.dark-mode .video-views,
+body.dark-mode .video-author,
+body.dark-mode .sidebar-card-prof,
+body.dark-mode .playlist-sidebar-channel,
+body.dark-mode .playlist-sidebar-order,
+body.dark-mode .sidebar-video-card .text-secondary {
+    color: #e2e8f0 !important;
+}
+
+/* GRID DE GERENCIAMENTO DE VÍDEOS */
+.gerenciar-videos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.card-gerenciamento {
+    background-color: #fff !important;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease;
+}
+
+.card-gerenciamento:hover {
+    transform: translateY(-4px);
+}
+
+.card-gerenciamento .thumb-wrapper {
+    width: 100%;
+    height: 180px;
+    background-color: #000;
+    overflow: hidden;
+}
+
+.card-gerenciamento .thumb-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-gerenciamento .card-body-content {
+    padding: 15px;
+}
+
+.card-gerenciamento,
+.card-gerenciamento h3,
+.card-gerenciamento h4,
+.card-gerenciamento p,
+.card-gerenciamento span,
+.card-gerenciamento small {
+    color: #1a202c !important;
+}
+
+.card-gerenciamento .video-titulo {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #1a202c !important;
+}
+
+.card-gerenciamento .video-meta {
+    font-size: 13px;
+    color: #4a5568 !important;
+    margin-bottom: 10px;
+}
+
+.card-gerenciamento .card-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 10px 15px;
+    background-color: #f7fafc;
+    border-top: 1px solid #edf2f7;
+}
+
+body.dark-mode .card-gerenciamento {
+    background-color: #1e1e24 !important;
+    border-color: #2d2d38 !important;
+}
+
+body.dark-mode .card-gerenciamento,
+body.dark-mode .card-gerenciamento h3,
+body.dark-mode .card-gerenciamento .video-titulo,
+body.dark-mode .card-gerenciamento p,
+body.dark-mode .card-gerenciamento span,
+body.dark-mode .card-gerenciamento small {
+    color: #fff !important;
+}
+
+body.dark-mode .card-gerenciamento .video-meta {
+    color: #a0aec0 !important;
+}
+
+body.dark-mode .card-gerenciamento .card-actions {
+    background-color: #141418 !important;
+    border-top-color: #2d2d38 !important;
+}

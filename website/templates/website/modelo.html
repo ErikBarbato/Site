@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -10,8 +11,125 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+
+        <script>
+            (function () {
+                if (localStorage.getItem("darkMode") === "true") {
+                    document.documentElement.classList.add("dark-mode");
+                }
+            })();
+        </script>
 
     <style>
+        :root {
+            --bg-main: #b7d1e2;
+            --bg-card: #e3eff7;
+            --text-color: #000000;
+            --navbar-bg: #b7d1e2;
+            --dropdown-bg: #ffffff;
+        }
+
+        body.dark-mode {
+            --bg-main: #0f0f0f;
+            --bg-card: #212121;
+            --text-color: #ffffff;
+            --navbar-bg: #0f0f0f;
+            --dropdown-bg: #282828;
+            background: var(--bg-main) !important;
+            background-color: var(--bg-main) !important;
+            color: var(--text-color) !important;
+        }
+
+        html.dark-mode {
+            --bg-main: #0f0f0f;
+            --bg-card: #212121;
+            --text-color: #ffffff;
+            --navbar-bg: #0f0f0f;
+            --dropdown-bg: #282828;
+            background-color: var(--bg-main) !important;
+        }
+
+        .theme-toggle-label {
+            flex-grow: 1;
+            min-width: 0;
+            white-space: nowrap;
+        }
+
+        .theme-toggle-switch {
+            flex: 0 0 auto;
+        }
+
+        body.dark-mode .main,
+        body.dark-mode .sidebar {
+            background: var(--bg-main) !important;
+            background-color: var(--bg-main) !important;
+            color: var(--text-color) !important;
+        }
+
+        body.dark-mode .bg-white,
+        body.dark-mode .dropdown-menu,
+        body.dark-mode .historico-card-item,
+        body.dark-mode .playlist-thumb,
+        body.dark-mode .btn-add-playlist,
+        body.dark-mode .profile-dropdown-menu {
+            background-color: var(--bg-card) !important;
+            color: var(--text-color) !important;
+        }
+
+        body.dark-mode .dropdown-menu {
+            background-color: var(--dropdown-bg) !important;
+            border-color: #383838 !important;
+        }
+
+        body.dark-mode .dropdown-item,
+        body.dark-mode .historico-card-item,
+        body.dark-mode .text-dark,
+        body.dark-mode h1,
+        body.dark-mode h2,
+        body.dark-mode h3,
+        body.dark-mode h4,
+        body.dark-mode p,
+        body.dark-mode span {
+            color: var(--text-color) !important;
+        }
+
+        body.dark-mode .form-control,
+        body.dark-mode input,
+        body.dark-mode textarea,
+        body.dark-mode select {
+            background-color: #282828 !important;
+            color: #fff !important;
+            border-color: #444 !important;
+        }
+
+        body.dark-mode .sidebar,
+        body.dark-mode nav.sidebar,
+        body.dark-mode aside {
+            border-right: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+
+        body.dark-mode .card,
+        body.dark-mode .video-card,
+        body.dark-mode .history-card,
+        body.dark-mode .historico-card-item,
+        body.dark-mode .playlist-card,
+        body.dark-mode .card-video {
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.05) !important;
+        }
+
+        body.dark-mode hr,
+        body.dark-mode .linha-divisor-historico {
+            border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+
+        body.dark-mode input,
+        body.dark-mode .search-bar,
+        body.dark-mode .search-box input {
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -203,6 +321,7 @@
             padding-top: 25px;
             position: relative;
             overflow: visible;
+            overflow-x: hidden !important;
         }
 
         /* SEARCH */
@@ -570,22 +689,34 @@
 
     <div class="main">
 
-        <div class="header-actions-right login-topo-container">
+        <div class="header-actions-right header-right-fixed login-topo-container">
             <div class="dropdown" style="position: absolute; top: 15px; right: 20px; z-index: 9999;">
                 <button class="btn p-0 border-0 bg-transparent" type="button" id="dropdownPerfil" data-bs-toggle="dropdown" aria-expanded="false" style="outline: none; box-shadow: none;">
                     {% if user.is_authenticated and user.perfil.foto %}
                         <img src="{{ user.perfil.foto.url }}" alt="{{ user.username }}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
                     {% else %}
-                        <span style="width: 40px; height: 40px; border-radius: 50%; background-color: #000; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                        <span class="user-icon" style="width: 40px; height: 40px; border-radius: 50%; background-color: #000; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px;">
                             <i class="bi bi-person-fill" aria-hidden="true"></i>
                         </span>
                     {% endif %}
                 </button>
 
-                <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4 p-3 mt-2" aria-labelledby="dropdownPerfil" style="min-width: 180px;">
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4 p-3 mt-2" aria-labelledby="dropdownPerfil" style="min-width: 220px;">
                     <li class="px-2 py-1 mb-2 border-bottom fw-bold text-dark">
                         Olá, {{ user.username|default:"admin" }}
                     </li>
+                    <li class="mb-2">
+                        <button type="button" id="toggleThemeBtn" class="dropdown-item d-flex align-items-center justify-content-between gap-3 py-2 px-2 rounded-2" style="cursor: pointer;">
+                            <span class="theme-toggle-label d-flex align-items-center gap-2">
+                                <i class="bi bi-moon-stars" id="themeIcon" aria-hidden="true"></i>
+                                <span id="themeText">Modo escuro</span>
+                            </span>
+                            <span class="theme-toggle-switch form-check form-switch m-0 p-0 d-flex align-items-center">
+                                <input class="form-check-input" type="checkbox" id="themeSwitch" style="cursor: pointer;">
+                            </span>
+                        </button>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
                     <li>
                         <a class="dropdown-menu-item dropdown-item d-flex align-items-center gap-2 rounded-2 text-danger py-2" href="{% url 'logout' %}">
                             <span>🚪</span> Sair
@@ -594,10 +725,6 @@
                 </ul>
             </div>
 
-            {% if request.resolver_match.url_name == "historico" %}
-                <a class="historico-ver-tudo" href="{% url 'historico_completo' %}">Ver tudo</a>
-            {% endif %}
-            
         </div>
 
         {% block conteudo %}
@@ -714,7 +841,7 @@
             sugestoes.forEach(function (titulo) {
                 const sugestao = document.createElement("button");
                 sugestao.type = "button";
-                sugestao.className = "dropdown-sugestao";
+                sugestao.className = "dropdown-sugestao sugestao-item";
                 sugestao.innerHTML = '<i class="bi bi-search" aria-hidden="true"></i>';
                 const texto = document.createElement("span");
                 texto.textContent = titulo;
@@ -792,6 +919,37 @@
                 esconderSugestoes();
             }
         });
+
+    });
+</script>
+<script>
+    function aplicarTema() {
+        const isDark = localStorage.getItem("darkMode") === "true";
+        document.documentElement.classList.toggle("dark-mode", isDark);
+        document.body.classList.toggle("dark-mode", isDark);
+
+        const themeSwitch = document.getElementById("themeSwitch");
+        const themeIcon = document.getElementById("themeIcon");
+        const themeText = document.getElementById("themeText");
+        if (themeSwitch) themeSwitch.checked = isDark;
+        if (themeIcon) themeIcon.className = isDark ? "bi bi-sun" : "bi bi-moon-stars";
+        if (themeText) themeText.textContent = isDark ? "Modo claro" : "Modo escuro";
+    }
+
+    function toggleDarkMode() {
+        const isDark = localStorage.getItem("darkMode") === "true";
+        localStorage.setItem("darkMode", (!isDark).toString());
+        aplicarTema();
+    }
+
+    window.aplicarTema = aplicarTema;
+    window.toggleDarkMode = toggleDarkMode;
+    aplicarTema();
+    document.addEventListener("DOMContentLoaded", function () {
+        aplicarTema();
+        const themeBtn = document.getElementById("btn-theme-toggle")
+            || document.getElementById("toggleThemeBtn");
+        if (themeBtn) themeBtn.addEventListener("click", toggleDarkMode);
     });
 </script>
 </body>

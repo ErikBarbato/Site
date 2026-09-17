@@ -8,6 +8,39 @@
     padding-top: 20px;
   }
 
+  .header-right-fixed {
+    position: fixed;
+    top: 15px;
+    right: 25px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    z-index: 1000;
+  }
+
+  .header-right-fixed .dropdown {
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+  }
+
+  .header-right-fixed img,
+  .header-right-fixed .user-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .header-right-fixed a {
+    font-size: 14px;
+    color: #000;
+    text-decoration: none;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
   .historico-titulo {
     font-size: 22px;
     font-weight: 400;
@@ -23,6 +56,19 @@
     margin-right: 0;
     margin-bottom: 15px;
     gap: 16px;
+  }
+
+  .historico-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+
+  .historico-header-controles {
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
 
   .historico-ver-tudo {
@@ -44,11 +90,60 @@
   }
 
   /* CARDS DO HISTÓRICO DE VÍDEOS */
-  .historico-row {
-    display: flex;
-    gap: 20px;
-    overflow-x: auto;
-    padding-bottom: 15px;
+  .historico-container-scroll {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    gap: 15px !important;
+    width: 100% !important;
+    padding-bottom: 10px !important;
+    scroll-behavior: smooth !important;
+    -ms-overflow-style: none;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch;
+    cursor: grab;
+  }
+
+  .historico-wrapper {
+    position: relative !important;
+    width: 100% !important;
+  }
+
+  .historico-container-scroll > * {
+    flex: 0 0 240px !important;
+    width: 240px !important;
+    max-width: 240px !important;
+  }
+
+  .historico-container-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .btn-scroll,
+  .btn-scroll-right {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    background-color: #fff !important;
+    color: #000 !important;
+    font-size: 20px !important;
+    font-weight: bold !important;
+    border: 2px solid rgba(0, 0, 0, 0.2) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+
+  .btn-scroll:hover,
+  .btn-scroll-right:hover {
+    background-color: #f0f0f0 !important;
+    transform: scale(1.1) !important;
   }
 
   .historico-card-item {
@@ -324,14 +419,24 @@
 <div class="historico-container">
 
   <!-- SEÇÃO: HISTÓRICO DE VÍDEOS -->
-  <section>
-    <div class="historico-cabecalho">
+  <div class="section-historico" style="width: 100%; clear: both;">
+    <div class="historico-header">
       <h2 class="historico-titulo mb-0">Histórico</h2>
+      <div class="historico-header-controles">
+        <button type="button" class="btn-scroll" title="Voltar" aria-label="Rolar histórico para a esquerda" onclick="document.getElementById('historicoList').scrollBy({left: -350, behavior: 'smooth'})">
+          &#10094;
+        </button>
+        <button type="button" class="btn-scroll btn-scroll-right" title="Avançar" aria-label="Rolar histórico para a direita" onclick="document.getElementById('historicoList').scrollBy({left: 350, behavior: 'smooth'})">
+          &#10095;
+        </button>
+        <a class="historico-ver-tudo" href="{% url 'historico_completo' %}">Ver tudo</a>
+      </div>
     </div>
-    <div class="historico-row" id="containerHistoricoVideos">
-      
+    <div class="carrossel-wrapper" style="position: relative !important; width: 100% !important; display: block !important;">
+      <div class="historico-container-scroll" id="historicoList" style="display: flex !important; flex-wrap: nowrap !important; overflow-x: auto !important; overflow-y: hidden !important; scroll-behavior: smooth !important; gap: 15px !important; width: 100% !important; padding-bottom: 10px !important;">
+
       {% for historico in historicos|slice:":8" %}
-        <a class="historico-card-item" href="{% url 'video_detail' historico.video.pk %}">
+        <a class="historico-card-item card-item" href="{% url 'video_detail' historico.video.pk %}" style="flex: 0 0 240px !important; width: 240px !important; min-width: 240px !important;">
           {% if historico.video.thumbnail_url %}
             <img
               class="historico-card-thumb"
@@ -352,8 +457,10 @@
         <p class="historico-vazio">Nenhum vídeo assistido.</p>
       {% endfor %}
 
+      </div>
+
     </div>
-  </section>
+  </div>
 
   <hr class="linha-divisor-historico" />
 
@@ -427,6 +534,49 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
+    const historyContainer = document.getElementById("historicoList");
+
+    if (historyContainer) {
+      historyContainer.addEventListener("wheel", function (event) {
+        if (event.deltaY !== 0) {
+          event.preventDefault();
+          historyContainer.scrollLeft += event.deltaY * 2.5;
+        }
+      }, { passive: false });
+
+      let isDragging = false;
+      let startX = 0;
+      let initialScrollLeft = 0;
+
+      historyContainer.addEventListener("mousedown", function (event) {
+        isDragging = true;
+        historyContainer.style.cursor = "grabbing";
+        startX = event.pageX - historyContainer.offsetLeft;
+        initialScrollLeft = historyContainer.scrollLeft;
+      });
+
+      historyContainer.addEventListener("mouseleave", function () {
+        isDragging = false;
+        historyContainer.style.cursor = "grab";
+      });
+
+      historyContainer.addEventListener("mouseup", function () {
+        isDragging = false;
+        historyContainer.style.cursor = "grab";
+      });
+
+      historyContainer.addEventListener("mousemove", function (event) {
+        if (!isDragging) {
+          return;
+        }
+
+        event.preventDefault();
+        const currentX = event.pageX - historyContainer.offsetLeft;
+        const distance = (currentX - startX) * 2;
+        historyContainer.scrollLeft = initialScrollLeft - distance;
+      });
+    }
+
     const modal = document.getElementById("playlistModal");
     const abrir = document.getElementById("abrirPlaylistModal");
     const fechar = document.getElementById("fecharPlaylistModal");
