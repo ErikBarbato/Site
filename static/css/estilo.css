@@ -165,6 +165,86 @@ body.dark-mode .sidebar-video-card .text-secondary {
     color: #e2e8f0 !important;
 }
 
+/* ===================================================
+   MODO ESCURO - BARRA LATERAL (SIDEBAR)
+   =================================================== */
+body.dark-mode .sidebar,
+body.dark-mode aside,
+body.dark-mode nav {
+    border-right-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+body.dark-mode .sidebar hr,
+body.dark-mode aside hr,
+body.dark-mode .sidebar-divider,
+body.dark-mode .sidebar .divisor {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+body.dark-mode .sidebar,
+body.dark-mode aside {
+    background-color: #121214 !important;
+}
+
+body.dark-mode .sidebar a,
+body.dark-mode aside a {
+    color: #ffffff !important;
+    border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ===================================================
+   MODO ESCURO - SEÇÃO DE COMENTÁRIOS
+   =================================================== */
+body.dark-mode .comentarios-container,
+body.dark-mode .comentarios-section,
+body.dark-mode .comentario-item,
+body.dark-mode .comment-section-title {
+    color: #ffffff !important;
+}
+
+body.dark-mode .comentario-item .usuario-nome,
+body.dark-mode .comentario-item strong,
+body.dark-mode .comentario-item h5,
+body.dark-mode .comentario-item h6,
+body.dark-mode .comment-author-name {
+    color: #f1f1f1 !important;
+}
+
+body.dark-mode .comentario-item .comentario-texto,
+body.dark-mode .comentario-item p,
+body.dark-mode .comment-text-content {
+    color: #e1e1e1 !important;
+}
+
+body.dark-mode .comentario-item .comentario-data,
+body.dark-mode .comentario-item small,
+body.dark-mode .comentario-item span,
+body.dark-mode .comment-meta-actions,
+body.dark-mode .comment-meta-actions span,
+body.dark-mode .comment-meta-actions a {
+    color: #aaaaaa !important;
+}
+
+body.dark-mode input[type="text"].input-comentario,
+body.dark-mode textarea.input-comentario,
+body.dark-mode .comentario-form input,
+body.dark-mode .comentario-form textarea,
+body.dark-mode .comment-input-container input {
+    background-color: #2a2a2e !important;
+    color: #ffffff !important;
+    border-color: #44444c !important;
+}
+
+body.dark-mode .comment-input-container {
+    border-bottom-color: #44444c !important;
+}
+
+body.dark-mode ::placeholder {
+    color: #aaaaaa !important;
+    opacity: 1;
+}
+
 /* GRID DE GERENCIAMENTO DE VÍDEOS */
 .gerenciar-videos-grid {
     display: grid;

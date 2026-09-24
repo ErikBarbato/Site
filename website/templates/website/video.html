@@ -25,6 +25,15 @@
         padding-left: 5px;
     }
 
+    .video-title {
+        color: #212529;
+    }
+
+    [data-bs-theme="dark"] .video-title,
+    body.dark-mode .video-title {
+        color: #ffffff !important;
+    }
+
     /* Player Customizado Proporção 16:9 */
     .player-canvas {
         position: relative;
@@ -520,7 +529,7 @@
                 
                 <div id="feedbackMessage" class="feedback-message d-none"></div>
                 
-                <div class="video-main-title">{{ video.titulo }}</div>
+                <div class="video-main-title video-title">{{ video.titulo }}</div>
                 
                 <div class="player-canvas">
                     <iframe width="100%" height="100%" src="{{ video.embed_url }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -590,7 +599,7 @@
                 <div class="info-desc-box">
                     <div class="d-flex justify-content-between align-items-center flex-wrap">
                         <div class="breadcrumb-tags">
-                            <span class="tag-primary">{{ video.subtema.tema.nome|default:"Matemática" }}</span> / 
+                            <span class="tag-primary">{{ video.subtema.tema.nome }}</span> /
                             <span class="tag-secondary">{{ video.subtema.nome|default:"Geral" }}</span>
                         </div>
                         <div class="text-secondary small">
@@ -663,7 +672,7 @@
 
                 <div class="d-flex gap-2 mb-3 flex-wrap">
                     <a href="#" data-tema="all" class="filter-chip-link">Todos</a>
-                    {% for tema in tema_filtros %}
+                    {% for tema in temas %}
                     <a href="#" data-tema="{{ tema.pk }}" class="filter-chip-link">{{ tema.nome }}</a>
                     {% endfor %}
                 </div>

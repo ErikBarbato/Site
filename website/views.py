@@ -721,7 +721,7 @@ class VideoDetail(LoginRequiredMixin, DetailView):
             .order_by("-cadastrado_em")
         )
         context["avaliacao_media"] = float(self.object.media_avaliacao or 0)
-        context["tema_filtros"] = Tema.objects.only("pk", "nome").order_by("nome")
+        context["temas"] = Tema.objects.all().only("pk", "nome").order_by("nome")
         context["sidebar_videos"] = (
             _official_videos(Video.objects.filter(ativo=True))
             .exclude(pk=self.object.pk)

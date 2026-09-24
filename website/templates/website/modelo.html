@@ -13,14 +13,6 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
         <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
 
-        <script>
-            (function () {
-                if (localStorage.getItem("darkMode") === "true") {
-                    document.documentElement.classList.add("dark-mode");
-                }
-            })();
-        </script>
-
     <style>
         :root {
             --bg-main: #b7d1e2;
@@ -701,28 +693,46 @@
                     {% endif %}
                 </button>
 
-                <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4 p-3 mt-2" aria-labelledby="dropdownPerfil" style="min-width: 220px;">
-                    <li class="px-2 py-1 mb-2 border-bottom fw-bold text-dark">
-                        Olá, {{ user.username|default:"admin" }}
-                    </li>
-                    <li class="mb-2">
-                        <button type="button" id="toggleThemeBtn" class="dropdown-item d-flex align-items-center justify-content-between gap-3 py-2 px-2 rounded-2" style="cursor: pointer;">
+                <div class="user-dropdown-menu dropdown-menu dropdown-menu-end shadow border-0 rounded-4 p-3 mt-2" aria-labelledby="dropdownPerfil" style="min-width: 220px;">
+                    {% if user.is_authenticated %}
+                        <div class="dropdown-header px-2 py-1 mb-2 border-bottom fw-bold text-dark">
+                            <strong>Olá, {{ user.username }}</strong>
+                        </div>
+                        <hr class="dropdown-divider">
+
+                        <div class="dropdown-item-theme dropdown-item d-flex align-items-center justify-content-between gap-3 py-2 px-2 rounded-2" onclick="toggleDarkMode()" style="cursor: pointer;">
                             <span class="theme-toggle-label d-flex align-items-center gap-2">
-                                <i class="bi bi-moon-stars" id="themeIcon" aria-hidden="true"></i>
-                                <span id="themeText">Modo escuro</span>
+                                <span>🌙 Modo escuro</span>
                             </span>
-                            <span class="theme-toggle-switch form-check form-switch m-0 p-0 d-flex align-items-center">
-                                <input class="form-check-input" type="checkbox" id="themeSwitch" style="cursor: pointer;">
-                            </span>
-                        </button>
-                    </li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li>
-                        <a class="dropdown-menu-item dropdown-item d-flex align-items-center gap-2 rounded-2 text-danger py-2" href="{% url 'logout' %}">
-                            <span>🚪</span> Sair
+                            <input class="form-check-input theme-toggle-switch m-0" type="checkbox" id="btn-theme-toggle" onclick="event.stopPropagation(); toggleDarkMode();" style="cursor: pointer;">
+                        </div>
+                        <hr class="dropdown-divider">
+
+                        <a href="{% url 'logout' %}" class="dropdown-item d-flex align-items-center gap-2 rounded-2 text-danger py-2">
+                            🚪 Sair
                         </a>
-                    </li>
-                </ul>
+                    {% else %}
+                        <div class="dropdown-header px-2 py-1 mb-2 border-bottom fw-bold text-dark">
+                            <strong>Seja bem-vindo!</strong>
+                        </div>
+                        <hr class="dropdown-divider">
+
+                        <div class="dropdown-item-theme dropdown-item d-flex align-items-center justify-content-between gap-3 py-2 px-2 rounded-2" onclick="toggleDarkMode()" style="cursor: pointer;">
+                            <span class="theme-toggle-label d-flex align-items-center gap-2">
+                                <span>🌙 Modo escuro</span>
+                            </span>
+                            <input class="form-check-input theme-toggle-switch m-0" type="checkbox" id="btn-theme-toggle" onclick="event.stopPropagation(); toggleDarkMode();" style="cursor: pointer;">
+                        </div>
+                        <hr class="dropdown-divider">
+
+                        <a href="{% url 'login' %}" class="dropdown-item d-flex align-items-center gap-2 rounded-2 text-primary py-2">
+                            🔑 Entrar
+                        </a>
+                        <a href="{% url 'menuCadastro' %}" class="dropdown-item d-flex align-items-center gap-2 rounded-2 py-2">
+                            📝 Criar conta
+                        </a>
+                    {% endif %}
+                </div>
             </div>
 
         </div>
@@ -923,33 +933,35 @@
     });
 </script>
 <script>
-    function aplicarTema() {
-        const isDark = localStorage.getItem("darkMode") === "true";
-        document.documentElement.classList.toggle("dark-mode", isDark);
-        document.body.classList.toggle("dark-mode", isDark);
-
-        const themeSwitch = document.getElementById("themeSwitch");
-        const themeIcon = document.getElementById("themeIcon");
-        const themeText = document.getElementById("themeText");
-        if (themeSwitch) themeSwitch.checked = isDark;
-        if (themeIcon) themeIcon.className = isDark ? "bi bi-sun" : "bi bi-moon-stars";
-        if (themeText) themeText.textContent = isDark ? "Modo claro" : "Modo escuro";
-    }
-
+    // Função global para alternar o modo escuro
     function toggleDarkMode() {
-        const isDark = localStorage.getItem("darkMode") === "true";
-        localStorage.setItem("darkMode", (!isDark).toString());
-        aplicarTema();
+        const body = document.body;
+        const isDark = body.classList.toggle("dark-mode");
+
+        // Salva no localStorage
+        localStorage.setItem("theme", isDark ? "dark" : "light");
+
+        // Sincroniza todas as checkboxes de tema na tela
+        document.querySelectorAll("#btn-theme-toggle").forEach((checkbox) => {
+            checkbox.checked = isDark;
+        });
     }
 
-    window.aplicarTema = aplicarTema;
-    window.toggleDarkMode = toggleDarkMode;
-    aplicarTema();
-    document.addEventListener("DOMContentLoaded", function () {
-        aplicarTema();
-        const themeBtn = document.getElementById("btn-theme-toggle")
-            || document.getElementById("toggleThemeBtn");
-        if (themeBtn) themeBtn.addEventListener("click", toggleDarkMode);
+    // Executa ao carregar a página
+    document.addEventListener("DOMContentLoaded", () => {
+        const savedTheme = localStorage.getItem("theme");
+        const isDark = savedTheme === "dark";
+
+        if (isDark) {
+            document.body.classList.add("dark-mode");
+        } else {
+            document.body.classList.remove("dark-mode");
+        }
+
+        // Atualiza o estado das checkboxes
+        document.querySelectorAll("#btn-theme-toggle").forEach((checkbox) => {
+            checkbox.checked = isDark;
+        });
     });
 </script>
 </body>
