@@ -1,6 +1,12 @@
 {% extends 'website/modelo.html' %}
 {% load static %}
 
+{% block classe_acoes_cabecalho %}historico-completo-acoes{% endblock %}
+
+{% block acao_cabecalho_perfil %}
+  <a class="historico-completo-voltar" href="{% url 'historico' %}">Voltar</a>
+{% endblock %}
+
 {% block conteudo %}
 <style>
   .historico-completo {
@@ -15,6 +21,26 @@
     margin-bottom: 28px;
   }
 
+  .header-actions-right.historico-completo-acoes {
+    top: 15px;
+    right: 20px;
+    flex-direction: row;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .historico-completo-acoes > .dropdown {
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+  }
+
+  .historico-completo-acoes #dropdownPerfil img,
+  .historico-completo-acoes #dropdownPerfil .user-icon {
+    width: 44px !important;
+    height: 44px !important;
+  }
+
   .historico-completo-titulo {
     margin: 0;
     color: #263238;
@@ -24,7 +50,8 @@
 
   .historico-completo-voltar {
     color: #3f51b5;
-    font-size: 14px;
+    font-size: 1.125rem;
+    font-weight: 600;
     text-decoration: none;
   }
 
@@ -98,6 +125,15 @@
     margin-top: 8px;
   }
 
+  body.dark-mode .historico-completo-item h3,
+  body.dark-mode .historico-completo-item .historico-completo-canal {
+    color: #263238 !important;
+  }
+
+  body.dark-mode .historico-completo-item .historico-completo-metadados {
+    color: #455a64 !important;
+  }
+
   .historico-completo-vazio {
     padding: 28px 0;
     color: #60727c;
@@ -120,7 +156,6 @@
 <div class="historico-completo">
   <div class="historico-completo-cabecalho">
     <h1 class="historico-completo-titulo">Histórico completo</h1>
-    <a class="historico-completo-voltar" href="{% url 'historico' %}">Voltar ao resumo</a>
   </div>
 
   {% for grupo in grupos_historico %}

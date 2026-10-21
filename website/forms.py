@@ -23,6 +23,7 @@ class VideoForm(forms.ModelForm):
     class Meta:
         model = Video
         fields = ["titulo", "descricao", "link", "subtema", "ativo"]
+        labels = {"ativo": "Autoral"}
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user", None)

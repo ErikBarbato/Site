@@ -5,12 +5,36 @@
 
 
 {% block conteudo %}
+<style>
+  body.dark-mode .form-alterar-senha .form-text,
+  body.dark-mode .form-alterar-senha .form-text p,
+  body.dark-mode .form-alterar-senha .form-text ul,
+  body.dark-mode .form-alterar-senha .form-text li,
+  body.dark-mode .form-alterar-senha .helptext {
+    color: #d1d5db !important;
+  }
+
+  body.dark-mode .form-alterar-senha input,
+  body.dark-mode .form-alterar-senha textarea,
+  body.dark-mode .form-alterar-senha select {
+    background-color: #282828 !important;
+    color: #f8f9fa !important;
+    border-color: #6c757d !important;
+  }
+
+  body.dark-mode .form-alterar-senha input::placeholder,
+  body.dark-mode .form-alterar-senha textarea::placeholder {
+    color: #adb5bd !important;
+    opacity: 1;
+  }
+</style>
+
 <div class="container">
   <h2 class="text-center border-bottom pb-2 mb-4">{{ titulo }}</h2>
 
   <div class="row justify-content-center">
     <div class="col-md-6">
-      <form method="post">
+      <form method="post"{% if titulo == "Alterar minha senha" %} class="form-alterar-senha"{% endif %}>
 
           {% csrf_token %}
 

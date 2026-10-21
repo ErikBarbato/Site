@@ -573,9 +573,9 @@
             <div class="divisor"></div>
 
             <div class="menu">
-                <p><a href="{% url 'Tela' %}">Inicio</a> <span>🏠</span></p>
-                <p>Canais inscritos <span>☆</span></p>
-                <p><a href="{% url 'historico' %}">Histórico</a> <span>🔄</span></p>
+                <p><a href="{% url 'Tela' %}">Inicio</a> <span></span></p>
+                <p>Canais inscritos <span></span></p>
+                <p><a href="{% url 'historico' %}">Histórico</a> <span></span></p>
                 
 
                 {% if user.is_authenticated %}
@@ -588,13 +588,13 @@
                     </button>
                     <ul class="dropdown-menu w-100">
                         <li>
-                            <a class="dropdown-item" href="{% url 'tema_listar' %}">📚 Tema</a>
+                            <a class="dropdown-item" href="{% url 'tema_listar' %}"> Tema</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="{% url 'subtema_listar' %}">🧩 Subtema</a>
+                            <a class="dropdown-item" href="{% url 'subtema_listar' %}"> Subtema</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="{% url 'video_listar' %}">🎥 Vídeos</a>
+                            <a class="dropdown-item" href="{% url 'video_listar' %}"> Vídeos</a>
                         </li>
                     </ul>
                 </div>
@@ -608,25 +608,25 @@
                     </button>
                     <ul class="dropdown-menu w-100">
                         <li>
-                            <a class="dropdown-item" href="{% url 'tema_creator' %}">➕ Cadastrar Tema</a>
+                            <a class="dropdown-item" href="{% url 'tema_creator' %}"> Cadastrar Tema</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="{% url 'subtema_creator' %}">➕ Cadastrar Subtema</a>
+                            <a class="dropdown-item" href="{% url 'subtema_creator' %}"> Cadastrar Subtema</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="{% url 'video_creator' %}">➕ Cadastrar Vídeo</a>
+                            <a class="dropdown-item" href="{% url 'video_creator' %}"> Cadastrar Vídeo</a>
                         </li>
                     </ul>
                 </div>
                 {% endif %}
 
                 <div class="divisor"></div>
-                <p><a href="{% url 'Config_user' %}">Configurações</a> <span>⚙️</span></p>
+                <p><a href="{% url 'Config_user' %}">Configurações</a> <span></span></p>
 
                 <div class="suporte-container">
                     <p class="item-clicavel" id="btnSuporte">
                         <a href="#">Suporte</a> 
-                        <span>🙋🏻‍♂️</span>
+                        <span></span>
                     </p>
 
                     <div class="ajuda-popover" id="menuAjuda">
@@ -659,19 +659,19 @@
                                 <p>Quer um atendimento mais aprofundado?</p>
                                 <a href="{% url 'contato' %}">Entre em contato</a>
                             </div>
-                            <div class="chat-icon-blue">💬</div>
+                            <div class="chat-icon-blue"></div>
                         </div>
                     </div>
                 </div>
 
-                <p><a href="{% url 'sobre' %}">Sobre</a> <span>📦</span></p>
+                <p><a href="{% url 'sobre' %}">Sobre</a> <span></span></p>
 
                 <div class="divisor"></div>
                 {% if user.is_authenticated %}
-                <p><a href="{% url 'alterar_senha' %}">Alterar senha</a> <span>🔑</span></p>
-                <p><a href="{% url 'logout' %}">Sair</a> <span>🚪</span></p>
+                <p><a href="{% url 'alterar_senha' %}">Alterar senha</a> <span></span></p>
+                <p><a href="{% url 'logout' %}">Sair</a> <span></span></p>
                 {% else %}
-                <p><a href="{% url 'login' %}">Entrar</a> <span>🔐</span></p>
+                <p><a href="{% url 'login' %}">Entrar</a> <span></span></p>
                 {% endif %}
                 
             </div>
@@ -681,7 +681,7 @@
 
     <div class="main">
 
-        <div class="header-actions-right header-right-fixed login-topo-container">
+        <div class="header-actions-right header-right-fixed login-topo-container {% block classe_acoes_cabecalho %}{% endblock %}">
             <div class="dropdown" style="position: absolute; top: 15px; right: 20px; z-index: 9999;">
                 <button class="btn p-0 border-0 bg-transparent" type="button" id="dropdownPerfil" data-bs-toggle="dropdown" aria-expanded="false" style="outline: none; box-shadow: none;">
                     {% if user.is_authenticated and user.perfil.foto %}
@@ -709,7 +709,7 @@
                         <hr class="dropdown-divider">
 
                         <a href="{% url 'logout' %}" class="dropdown-item d-flex align-items-center gap-2 rounded-2 text-danger py-2">
-                            🚪 Sair
+                             Sair
                         </a>
                     {% else %}
                         <div class="dropdown-header px-2 py-1 mb-2 border-bottom fw-bold text-dark">
@@ -719,7 +719,7 @@
 
                         <div class="dropdown-item-theme dropdown-item d-flex align-items-center justify-content-between gap-3 py-2 px-2 rounded-2" onclick="toggleDarkMode()" style="cursor: pointer;">
                             <span class="theme-toggle-label d-flex align-items-center gap-2">
-                                <span>🌙 Modo escuro</span>
+                                <span> Modo escuro</span>
                             </span>
                             <input class="form-check-input theme-toggle-switch m-0" type="checkbox" id="btn-theme-toggle" onclick="event.stopPropagation(); toggleDarkMode();" style="cursor: pointer;">
                         </div>
@@ -729,11 +729,13 @@
                             🔑 Entrar
                         </a>
                         <a href="{% url 'menuCadastro' %}" class="dropdown-item d-flex align-items-center gap-2 rounded-2 py-2">
-                            📝 Criar conta
+                             Criar conta
                         </a>
                     {% endif %}
                 </div>
             </div>
+
+            {% block acao_cabecalho_perfil %}{% endblock %}
 
         </div>
 
@@ -884,23 +886,26 @@
                     .catch(() => esconderSugestoes());
             }
 
-            cardsVideos.forEach(card => {
-                const tituloVideo = normalizarTexto(card.querySelector("h3").textContent);
+            if (cardsVideos.length) {
+                cardsVideos.forEach(card => {
+                    const tituloVideo = normalizarTexto(card.querySelector("h3").textContent);
 
-                // Se o título contiver o termo pesquisado, exibe; senão, oculta
-                if (tituloVideo.includes(termoBusca)) {
-                    card.classList.remove("d-none");
-                    encontrouAlgum = true;
-                } else {
-                    card.classList.add("d-none");
+                    // Se o título contiver o termo pesquisado, exibe; senão, oculta
+                    if (tituloVideo.includes(termoBusca)) {
+                        card.classList.remove("d-none");
+                        encontrouAlgum = true;
+                    } else {
+                        card.classList.add("d-none");
+                    }
+                });
+
+                if (msgNenhumEncontrado) {
+                    if (!encontrouAlgum && termoBusca !== "") {
+                        msgNenhumEncontrado.classList.remove("d-none");
+                    } else {
+                        msgNenhumEncontrado.classList.add("d-none");
+                    }
                 }
-            });
-
-            // Gerencia a mensagem de aviso caso nenhum vídeo bata com a pesquisa
-            if (!encontrouAlgum && termoBusca !== "") {
-                msgNenhumEncontrado.classList.remove("d-none");
-            } else {
-                msgNenhumEncontrado.classList.add("d-none");
             }
         });
 

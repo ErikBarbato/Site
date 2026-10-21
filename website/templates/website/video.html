@@ -521,6 +521,14 @@
     }
 </style>
 
+<div class="search">
+    <form id="formPesquisa" class="search-box" method="get" action="{% url 'Tela' %}">
+        <input type="text" id="inputPesquisa" name="q" placeholder="Pesquisar..." autocomplete="off">
+        <div id="dropdown-sugestoes" class="dropdown-sugestoes"></div>
+        {% csrf_token %}
+    </form>
+</div>
+
 <div class="container-fluid ifwatch-detail-container">
     <div class="row g-4">
         
